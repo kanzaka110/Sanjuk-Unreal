@@ -15,6 +15,7 @@
 8. [실전 예제](08-Practical-Examples.md) - 캐릭터 로코모션 세팅 자동화
 9. [트러블슈팅](09-Troubleshooting.md) - 자주 발생하는 문제와 해결법
 10. [참고 자료](10-References.md) - 공식 문서, 커뮤니티, 관련 프로젝트
+11. [v0.12.0 신규 기능](11-v0.12-New-Features.md) - Mesh, GAS, UI, AI, LogicDriver, C++ 도구
 
 ## 환경 요구사항
 

@@ -14,19 +14,22 @@ Sanjuk-Unreal/
 │   ├── Content/
 │   ├── Plugins/
 │   └── Scripts/
-├── Monolith-MCP-Tutorial/        # Monolith MCP 튜토리얼 (10편)
-├── runreal-MCP-Tutorial/         # runreal MCP 튜토리얼 (12편)
-├── AnimNext-Migration-Guide/     # AnimNext 마이그레이션 가이드 (13편)
-├── UAF-Setup-Guide/              # UAF 셋업 가이드 (12편)
-├── Monolith-Local-Setup-Guide.md # Monolith 로컬 전용 설치법
-└── Unreal_Briefing.md            # UE 애니메이션 데일리 브리핑 시스템
+├── Tutorial/                      # 튜토리얼 및 가이드 모음
+│   ├── Monolith-MCP-Tutorial/     # Monolith MCP 튜토리얼 (10편)
+│   ├── runreal-MCP-Tutorial/      # runreal MCP 튜토리얼 (12편)
+│   ├── AnimNext-Migration-Guide/  # AnimNext 마이그레이션 가이드 (13편)
+│   └── UAF-Setup-Guide/          # UAF 셋업 가이드 (12편)
+├── Monolith-Local-Setup-Guide.md  # Monolith 로컬 전용 설치법
+└── Unreal_Briefing.md             # UE 애니메이션 데일리 브리핑 시스템
 ```
 
-### 문서
+### 문서 (Tutorial/)
 - **Monolith-MCP-Tutorial/** — Monolith MCP 튜토리얼 10편 (UE 5.7 + Claude Code 애니메이션 제어)
 - **runreal-MCP-Tutorial/** — runreal MCP 튜토리얼 12편 (Python 기반 UE5 자동화)
 - **AnimNext-Migration-Guide/** — AnimNext 마이그레이션 가이드 13편 (ABP → AnimNext 전환)
 - **UAF-Setup-Guide/** — UAF 셋업 가이드 12편 (Universal Animation Framework)
+
+### 기타 문서 (루트)
 - **Monolith-Local-Setup-Guide.md** — 회사 P4에 안 올리고 로컬에서만 Monolith 사용하는 방법
 - **Unreal_Briefing.md** — UE 애니메이션 데일리 브리핑 시스템 설명
 
@@ -49,7 +52,7 @@ Sanjuk-Unreal/
 ## MCP 추천 조합 (애니메이션 특화)
 
 ```
-Monolith (메인, 115 애니메이션 액션)
+Monolith (메인, 1125 액션 / 15 모듈 / v0.12.0)
 + runreal/unreal-mcp (Python 확장/UAF 대비, 플러그인 불필요)
 + ChiR24/Unreal_mcp (Cloth 시뮬레이션, Chaos Cloth 유일 지원)
 ```
