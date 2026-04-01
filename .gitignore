@@ -1,0 +1,20 @@
+# Unreal Engine 5 Project (MonolithTest/)
+MonolithTest/Binaries/
+MonolithTest/Build/
+MonolithTest/DerivedDataCache/
+MonolithTest/Intermediate/
+MonolithTest/Saved/
+MonolithTest/.mcp.json
+MonolithTest/.mcp.json.txt
+
+# Monolith Plugin (로컬 전용)
+Plugins_Monolith-v0.10.0/
+
+# Claude Code 로컬 설정
+.claude/
+.mcp.json
+
+# OS
+Thumbs.db
+.DS_Store
+*.swp
