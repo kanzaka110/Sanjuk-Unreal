@@ -1,14 +1,5 @@
-# Unreal Engine 5 Project (MonolithTest/)
-MonolithTest/Binaries/
-MonolithTest/Build/
-MonolithTest/DerivedDataCache/
-MonolithTest/Intermediate/
-MonolithTest/Saved/
-MonolithTest/.mcp.json
-MonolithTest/.mcp.json.txt
-
-# Monolith Plugin (로컬 전용)
-Plugins_Monolith-v0.10.0/
+# UE5 프로젝트는 별도 관리 (C:\Users\ohmil\OneDrive\문서\Unreal Projects\MonolithTest)
+MonolithTest/
 
 # Claude Code 로컬 설정
 .claude/
