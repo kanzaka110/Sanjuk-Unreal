@@ -12,7 +12,8 @@ Sanjuk-Unreal/
 │   ├── Monolith-MCP-Tutorial/     # Monolith MCP 튜토리얼 (10편)
 │   ├── runreal-MCP-Tutorial/      # runreal MCP 튜토리얼 (12편)
 │   ├── AnimNext-Migration-Guide/  # AnimNext 마이그레이션 가이드 (13편)
-│   └── UAF-Setup-Guide/          # UAF 셋업 가이드 (12편)
+│   ├── UAF-Setup-Guide/          # UAF 셋업 가이드 (12편)
+│   └── FocalRig-Plugin-Tutorial/ # FocalRig 플러그인 튜토리얼 (10편)
 ├── Monolith-Local-Setup-Guide.md  # Monolith 로컬 전용 설치법
 └── Unreal_Briefing.md             # UE 애니메이션 데일리 브리핑 시스템
 ```
@@ -22,6 +23,7 @@ Sanjuk-Unreal/
 - **runreal-MCP-Tutorial/** — runreal MCP 튜토리얼 12편 (Python 기반 UE5 자동화)
 - **AnimNext-Migration-Guide/** — AnimNext 마이그레이션 가이드 13편 (ABP → AnimNext 전환)
 - **UAF-Setup-Guide/** — UAF 셋업 가이드 12편 (Universal Animation Framework)
+- **FocalRig-Plugin-Tutorial/** — FocalRig 플러그인 튜토리얼 10편 (프로시저럴 Look & Aim)
 
 ### 기타 문서 (루트)
 - **Monolith-Local-Setup-Guide.md** — 회사 P4에 안 올리고 로컬에서만 Monolith 사용하는 방법
