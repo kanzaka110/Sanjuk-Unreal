@@ -7,6 +7,14 @@
     "unreal-mcp": {
       "command": "npx",
       "args": ["-y", "@runreal/unreal-mcp"]
+    },
+    "unrealclaude-bridge": {
+      "command": "node",
+      "args": ["C:/Users/ohmil/OneDrive/문서/Unreal Projects/MonolithTest/Plugins/UnrealClaude/Resources/mcp-bridge/index.js"],
+      "env": {
+        "UNREAL_MCP_URL": "http://localhost:3000",
+        "INJECT_CONTEXT": "true"
+      }
     }
   }
 }

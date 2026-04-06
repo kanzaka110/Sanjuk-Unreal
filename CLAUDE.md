@@ -13,7 +13,10 @@ Sanjuk-Unreal/
 │   ├── runreal-MCP-Tutorial/      # runreal MCP 튜토리얼 (12편)
 │   ├── AnimNext-Migration-Guide/  # AnimNext 마이그레이션 가이드 (13편)
 │   └── UAF-Setup-Guide/          # UAF 셋업 가이드 (12편)
+├── Briefing/                      # 데일리 브리핑 아카이브 (날짜별)
 ├── Monolith-Local-Setup-Guide.md  # Monolith 로컬 전용 설치법
+├── UE-Animation-Tech-Report-2026.md  # UE 애니메이션 최신 기술 보고서
+├── UE5-AI-GitHub-Research-2026.md    # UE5 AI/GitHub 리서치
 └── Unreal_Briefing.md             # UE 애니메이션 데일리 브리핑 시스템
 ```
 
@@ -23,14 +26,17 @@ Sanjuk-Unreal/
 - **AnimNext-Migration-Guide/** — AnimNext 마이그레이션 가이드 13편 (ABP → AnimNext 전환)
 - **UAF-Setup-Guide/** — UAF 셋업 가이드 12편 (Universal Animation Framework)
 
-### 기타 문서 (루트)
+### 리서치 및 브리핑 (루트)
+- **Briefing/** — 데일리 브리핑 아카이브 (날짜별 폴더)
+- **UE-Animation-Tech-Report-2026.md** — UE 애니메이션 최신 기술 보고서
+- **UE5-AI-GitHub-Research-2026.md** — UE5 AI/GitHub 리서치 자료
 - **Monolith-Local-Setup-Guide.md** — 회사 P4에 안 올리고 로컬에서만 Monolith 사용하는 방법
 - **Unreal_Briefing.md** — UE 애니메이션 데일리 브리핑 시스템 설명
 
 ### UE5 프로젝트 (별도 관리, 이 레포에 포함하지 않음)
 - **MonolithTest** — Monolith MCP 테스트용 UE 5.7 프로젝트
   - 경로: `C:\Users\ohmil\OneDrive\문서\Unreal Projects\MonolithTest`
-  - Monolith v0.12.0 플러그인 포함 (1,125 액션, 15 모듈)
+  - Monolith v0.12.0 (1,125 액션, 16 모듈) + UnrealClaude v1.4.1 (20+ 도구)
 
 ## 관련 프로젝트
 
@@ -45,24 +51,27 @@ Sanjuk-Unreal/
 - 현재 프로젝트: MetaHumans (5.6), MetaHumans_5_5 (5.5), SlayAnimationSample (5.6), MonolithTest (5.7)
 - Monolith 사용 시 UE 5.7 필요
 
-## MCP 추천 조합 (애니메이션 특화)
+## MCP 도구 우선순위
 
-```
-Monolith (메인, 1125 액션 / 15 모듈 / v0.12.0)
-+ runreal/unreal-mcp (Python 확장/UAF 대비, 플러그인 불필요)
-+ ChiR24/Unreal_mcp (Cloth 시뮬레이션, Chaos Cloth 유일 지원)
-```
+**Monolith가 최우선.** 에디터 제어가 필요한 모든 작업은 Monolith를 먼저 사용.
+
+| 우선순위 | 도구 | 포트 | 용도 |
+|---------|------|------|------|
+| 1 (메인) | **Monolith** v0.12.0 | 9316 | 에디터 제어 전체 (1,125 액션 / 16 모듈) |
+| 2 (보조) | **UnrealClaude** v1.4.1 | 3000 | UE5.7 API 문서 컨텍스트 (11개), C++ 코딩 어시스턴트 |
+| 3 (확장) | **runreal** | stdio | Python 스크립트 자동화, UAF 대비 |
+| 4 (특수) | **ChiR24/Unreal_mcp** | — | Cloth 시뮬레이션 (Chaos Cloth 유일 지원) |
 
 ## 통합 작업 환경
 
 Claude Code 실행 위치: `C:\dev\Sanjuk-Unreal` (루트)
 
-- `.mcp.json` — Monolith MCP 서버 설정 (루트에서 접근)
+- `.mcp.json` — MCP 서버 3개 등록 (monolith, unreal-mcp, unrealclaude-bridge)
 - `.claude/settings.local.json` — Claude Code 로컬 설정
 - `.gitignore` — UE5 바이너리/임시 파일 제외
 
 MonolithTest 프로젝트는 `C:\Users\ohmil\OneDrive\문서\Unreal Projects\MonolithTest`에 위치.
-MCP 프록시가 절대 경로로 설정되어 있어 루트에서 Claude Code를 실행해도 UE 제어 가능.
+MCP 서버들이 절대 경로/HTTP로 설정되어 있어 루트에서 Claude Code를 실행해도 UE 제어 가능.
 
 ## 작업 규칙
 
