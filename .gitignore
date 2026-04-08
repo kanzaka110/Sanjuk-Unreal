@@ -1,8 +1,9 @@
 # UE5 프로젝트는 별도 관리 (C:\Users\ohmil\OneDrive\문서\Unreal Projects\MonolithTest)
 MonolithTest/
 
-# Claude Code 로컬 설정
-.claude/
+# Claude Code 로컬 설정 (commands/는 Git 추적)
+.claude/*
+!.claude/commands/
 
 # OS
 Thumbs.db

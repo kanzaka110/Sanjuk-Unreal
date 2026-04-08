@@ -14,6 +14,7 @@ Sanjuk-Unreal/
 │   ├── AnimNext-Migration-Guide/  # AnimNext 마이그레이션 가이드 (13편)
 │   └── UAF-Setup-Guide/          # UAF 셋업 가이드 (12편)
 ├── Briefing/                      # 데일리 브리핑 아카이브 (날짜별)
+├── .claude/commands/              # 커스텀 슬래시 명령어 (/push, /pull)
 ├── Monolith-Local-Setup-Guide.md  # Monolith 로컬 전용 설치법
 ├── UE-Animation-Tech-Report-2026.md  # UE 애니메이션 최신 기술 보고서
 ├── UE5-AI-GitHub-Research-2026.md    # UE5 AI/GitHub 리서치
