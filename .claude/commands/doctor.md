@@ -19,8 +19,9 @@
 3. 응답 상태 기록
 
 **runreal (stdio)** — 확장
-1. `npx -y @runreal/unreal-mcp --help` 실행 가능 여부 확인
-2. Python 의존성 확인
+1. npx 설치 확인: `which npx && npx --version`
+2. 패키지 존재 확인: `npm view @runreal/unreal-mcp version 2>/dev/null` (네트워크 필요)
+3. npx가 없으면 Node.js 설치 안내
 
 ### 2단계: UE5 프로젝트 상태
 

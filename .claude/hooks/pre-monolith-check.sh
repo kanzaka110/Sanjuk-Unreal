@@ -5,13 +5,9 @@
 HTTP_CODE=$(curl -s -o /dev/null -w '%{http_code}' --connect-timeout 2 http://localhost:9316/mcp 2>/dev/null)
 
 if [ "$HTTP_CODE" != "200" ] && [ "$HTTP_CODE" != "405" ]; then
-  jq -n '{
-    hookSpecificOutput: {
-      hookEventName: "PreToolUse",
-      permissionDecision: "deny",
-      permissionDecisionReason: "Monolith MCP 서버 미응답 (HTTP '"$HTTP_CODE"'). UE5 에디터가 실행 중인지 확인하세요. /recover 로 복구 가능."
-    }
-  }'
+  cat <<ENDJSON
+{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"Monolith MCP 서버 미응답 (HTTP ${HTTP_CODE}). UE5 에디터가 실행 중인지 확인하세요. /recover 로 복구 가능."}}
+ENDJSON
   exit 0
 fi
 
