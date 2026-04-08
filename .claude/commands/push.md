@@ -4,6 +4,22 @@
 
 ## 실행 순서
 
+### 0단계: Stale Branch 감지 (사전 점검)
+
+푸시 전에 원격과의 동기화 상태를 확인하여 충돌을 예방:
+
+1. `git fetch origin` 실행
+2. `git log HEAD..origin/master --oneline` 으로 원격에만 있는 커밋 확인
+3. 원격이 앞서 있으면 (커밋이 존재하면):
+   - **경고 표시:** "⚠️ origin/master가 N개 커밋 앞서 있습니다"
+   - 변경 내용 요약 표시
+   - 사용자에게 선택지 제시:
+     - `git pull --rebase origin master` 후 계속 진행
+     - `/pull` 먼저 실행 후 다시 `/push`
+     - 무시하고 강제 진행 (비추천)
+   - **사용자 확인 없이 자동으로 진행하지 않음**
+4. 동기화 상태이면 → 다음 단계로 진행
+
 ### 1단계: 메모리 업데이트
 - `~/.claude/projects/C--dev-Sanjuk-Unreal/memory/MEMORY.md` 및 개별 메모리 파일 확인
 - 이번 세션에서 새로 알게 된 정보가 있으면 메모리에 반영

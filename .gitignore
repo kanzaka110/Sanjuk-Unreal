@@ -4,6 +4,7 @@ MonolithTest/
 # Claude Code 로컬 설정 (commands/는 Git 추적)
 .claude/*
 !.claude/commands/
+!.claude/hooks/
 
 # OS
 Thumbs.db
