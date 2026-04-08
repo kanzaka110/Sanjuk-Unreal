@@ -73,6 +73,22 @@ Claude Code 실행 위치: `C:\dev\Sanjuk-Unreal` (루트)
 MonolithTest 프로젝트는 `C:\Users\ohmil\OneDrive\문서\Unreal Projects\MonolithTest`에 위치.
 MCP 서버들이 절대 경로/HTTP로 설정되어 있어 루트에서 Claude Code를 실행해도 UE 제어 가능.
 
+## 리모트 세션 (모바일 접속)
+
+GCP + 로컬 PC 두 세션 동시 운영. 모바일 claude.ai/code에서 접속.
+
+| 세션 | 환경 | 용도 | PC 꺼도 접근 |
+|------|------|------|-------------|
+| Sanjuk-Unreal (Local) | 로컬 PC | 문서 + Monolith/UE 제어 | X |
+| Sanjuk-Unreal (GCP) | GCP VM (sanjuk-project) | 문서 작업 전용 | O |
+
+- GCP 레포: `/home/ohmil/Sanjuk-Unreal/`
+- GCP tmux: `tmux attach -t unreal`
+- 재시작: `scripts/gcp-restart-remote.sh`
+- 로컬 시작: `scripts/local-remote-control.cmd`
+
+**동기화:** 세션 간 대화는 공유되지 않음. 중요한 컨텍스트는 이 CLAUDE.md에 기록하고 git push/pull로 동기화.
+
 ## 작업 규칙
 
 - 문서는 한국어로 작성
