@@ -36,10 +36,21 @@
   - `git push origin master`로 GitHub에 푸시
 - 변경사항이 없으면 "변경사항 없음" 보고
 
-### 4단계: GCP 동기화 안내
-- GCP VM에서 `git pull`이 필요함을 안내
-- 명령어 제시: `ssh sanjuk-vm 'cd /home/ohmil/Sanjuk-Unreal && git pull'`
-- 또는 모바일에서 GCP 세션 접속 후 `git pull` 실행 안내
+### 4단계: GCP 동기화
+- **Git 동기화:** `gcloud compute ssh sanjuk-project --zone=us-central1-b --command='cd /home/ohmil/Sanjuk-Unreal && git pull origin master'`
+- **메모리 동기화:** 로컬 메모리를 GCP로 복사
+  ```
+  gcloud compute scp --zone=us-central1-b \
+    ~/.claude/projects/C--dev-Sanjuk-Unreal/memory/* \
+    sanjuk-project:/home/ohmil/.claude/projects/-home-ohmil-Sanjuk-Unreal/memory/
+  ```
+- **글로벌 룰 동기화** (변경 시에만):
+  ```
+  gcloud compute scp --zone=us-central1-b \
+    ~/.claude/rules/common/* \
+    sanjuk-project:/home/ohmil/.claude/rules/common/
+  ```
+- 동기화 실패 시 오류 보고 (네트워크 문제, VM 꺼짐 등)
 
 ### 5단계: 결과 요약
 변경사항과 동기화 상태를 테이블로 요약:
@@ -49,4 +60,5 @@
 | 메모리 | 업데이트됨/변경없음 |
 | CLAUDE.md | 업데이트됨/변경없음 |
 | GitHub | 푸시됨/변경없음 |
-| GCP | 수동 pull 필요/변경없음 |
+| GCP Git | 동기화됨/실패/변경없음 |
+| GCP 메모리 | 동기화됨/실패/변경없음 |
