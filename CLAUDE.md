@@ -15,12 +15,13 @@ Sanjuk-Unreal/
 │   ├── UAF-Setup-Guide/          # UAF 셋업 가이드 (12편)
 │   └── Chaos-Cloth-Guide/        # Chaos Cloth & Physics Asset 가이드 (10편)
 ├── Briefing/                      # 데일리 브리핑 아카이브 (날짜별)
-├── .claude/commands/              # 커스텀 슬래시 명령어 (/push, /pull, /doctor, /recover)
+├── .claude/commands/              # 커스텀 슬래시 명령어 (/push, /pull, /doctor, /recover, /브리핑)
 ├── .claude/hooks/                 # PreToolUse 훅 (MCP 사전 점검)
 ├── Monolith-Local-Setup-Guide.md  # Monolith 로컬 전용 설치법
 ├── UE-Animation-Tech-Report-2026.md  # UE 애니메이션 최신 기술 보고서
 ├── UE5-AI-GitHub-Research-2026.md    # UE5 AI/GitHub 리서치
-└── Unreal_Briefing.md             # UE 애니메이션 데일리 브리핑 시스템
+├── Unreal_Briefing.md             # UE 애니메이션 데일리 브리핑 시스템
+└── briefing-py-haiku-patch.md     # briefing.py STEP 2 Haiku 전환 패치 가이드
 ```
 
 ### 문서 (Tutorial/)

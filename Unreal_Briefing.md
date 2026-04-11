@@ -172,3 +172,25 @@ GH_TOKEN="<토큰>" gh workflow run ue-animation-briefing.yml \
 - 오늘 생성 페이지: 제목 `🆕` + 체크박스 ON
 - 다음날 실행 시: 어제 이전 페이지 `🆕` 제거 + 체크박스 OFF
 - 본문 내 최근 1주 새 정보에 🆕 이모지 표기 요청
+
+### 2026-04-11: 병행 브리핑 전략 도입 & 비용 최적화
+
+#### 비용 최적화: STEP 2 Haiku 전환
+- STEP 2 (메타데이터 추출)의 모델을 `claude-sonnet-4-6` → `claude-haiku-4-5-20251001`로 변경
+- STEP 1 (웹검색), STEP 3 (본문 생성)은 Sonnet 유지
+- 예상 비용 절감: ~30%
+- 패치 가이드: `briefing-py-haiku-patch.md` 참조
+
+#### 병행 브리핑 체계
+
+| 방식 | 용도 | 비용 | 자동화 | 출력 |
+|------|------|------|--------|------|
+| **briefing.py** (자동) | 일일 모니터링 (10개 카테고리) | Anthropic API 종량제 | GitHub Actions 매일 9시 | Notion DB |
+| **Claude Code `/briefing`** (수동) | 심화 분석, 주간/월간 종합 리포트 | Max 플랜 내 포함 ($0) | 수동 요청 | `Briefing/` 폴더 .md |
+
+#### Claude Code `/브리핑` 명령어
+- 위치: `.claude/commands/브리핑.md`
+- 6개 카테고리 병렬 웹서치: 공식 채널, 커뮤니티, 업계 뉴스, GitHub, 핵심 키워드, 교육/심화
+- 이전 브리핑 대비 신규 정보 비교 & 🆕 표기
+- 특정 주제 심화 모드 지원 (예: `/briefing AnimNext`)
+- 기존 `Briefing/YYYY-MM-DD/` 폴더 구조 유지
