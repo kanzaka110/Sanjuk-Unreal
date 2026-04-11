@@ -12,7 +12,8 @@ Sanjuk-Unreal/
 │   ├── Monolith-MCP-Tutorial/     # Monolith MCP 튜토리얼 (10편)
 │   ├── runreal-MCP-Tutorial/      # runreal MCP 튜토리얼 (12편)
 │   ├── AnimNext-Migration-Guide/  # AnimNext 마이그레이션 가이드 (13편)
-│   └── UAF-Setup-Guide/          # UAF 셋업 가이드 (12편)
+│   ├── UAF-Setup-Guide/          # UAF 셋업 가이드 (12편)
+│   └── Chaos-Cloth-Guide/        # Chaos Cloth & Physics Asset 가이드 (10편)
 ├── Briefing/                      # 데일리 브리핑 아카이브 (날짜별)
 ├── .claude/commands/              # 커스텀 슬래시 명령어 (/push, /pull, /doctor, /recover)
 ├── .claude/hooks/                 # PreToolUse 훅 (MCP 사전 점검)
@@ -27,6 +28,7 @@ Sanjuk-Unreal/
 - **runreal-MCP-Tutorial/** — runreal MCP 튜토리얼 12편 (Python 기반 UE5 자동화)
 - **AnimNext-Migration-Guide/** — AnimNext 마이그레이션 가이드 13편 (ABP → AnimNext 전환)
 - **UAF-Setup-Guide/** — UAF 셋업 가이드 12편 (Universal Animation Framework)
+- **Chaos-Cloth-Guide/** — Chaos Cloth & Physics Asset 가이드 10편 (천 시뮬레이션, 충돌, 최적화)
 
 ### 리서치 및 브리핑 (루트)
 - **Briefing/** — 데일리 브리핑 아카이브 (날짜별 폴더)
