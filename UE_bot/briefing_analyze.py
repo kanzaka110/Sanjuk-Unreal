@@ -38,8 +38,7 @@ def chunk_text(text: str, max_chars: int = 5000) -> list[str]:
 
 def extract_facts(chunk: str, category: str) -> list[str]:
     """청크에서 핵심 사실을 추출 (haiku, map 단계)."""
-    prompt = f"""아래 텍스트에서 UE5 애니메이션 관련 **핵심 사실**만 추출하세요.
-카테고리: {category}
+    prompt = f"""아래 텍스트에서 UE5 애니메이션 [{category}] 관련 **핵심 사실**만 추출하세요.
 
 텍스트:
 {chunk}
@@ -50,6 +49,8 @@ def extract_facts(chunk: str, category: str) -> list[str]:
 - "~라고 한다" 같은 불확실한 표현 제거
 - 최소 5개, 최대 15개
 - URL이 있으면 반드시 포함
+- 소스 신뢰도 우선순위: Epic 공식 > GDC/Unreal Fest > 공식 포럼 > YouTube 튜토리얼 > 일반 블로그
+- Epic/공식 소스의 사실을 먼저, 비공식 소스는 공식과 일치할 때만 포함
 
 FACT:로 시작하는 줄만 출력하세요."""
 
@@ -74,11 +75,11 @@ FACT:로 시작하는 줄만 출력하세요."""
 def map_reduce_extract(raw_text: str, category: str) -> str:
     """Map-Reduce로 전체 텍스트에서 핵심 사실 추출 (절삭 없음).
 
-    1. raw_text를 ~3000자 청크로 분할
+    1. raw_text를 ~5000자 청크로 분할
     2. 각 청크에서 haiku로 사실 추출 (map)
     3. 중복 제거 후 병합 (reduce)
     """
-    chunks = chunk_text(raw_text, max_chars=3000)
+    chunks = chunk_text(raw_text, max_chars=5000)
     print(f"    청크: {len(chunks)}개")
 
     all_facts: list[str] = []
@@ -87,16 +88,39 @@ def map_reduce_extract(raw_text: str, category: str) -> str:
         print(f"    청크 {i+1}/{len(chunks)}: {len(facts)}개 사실 추출")
         all_facts.extend(facts)
 
-    # 중복 제거 (정확히 같은 문장)
-    seen: set[str] = set()
+    # 중복 제거: 완전 일치 + 유사 문장 (단어 70% 이상 겹침)
     unique_facts: list[str] = []
+    seen_exact: set[str] = set()
+    seen_word_sets: list[set[str]] = []
+
     for f in all_facts:
         normalized = f.lower().strip()
-        if normalized not in seen:
-            seen.add(normalized)
-            unique_facts.append(f)
+        if normalized in seen_exact:
+            continue
+        seen_exact.add(normalized)
 
-    print(f"    총 사실: {len(unique_facts)}개 (중복 제거 후)")
+        words = set(normalized.split())
+        if len(words) < 3:
+            unique_facts.append(f)
+            seen_word_sets.append(words)
+            continue
+
+        is_duplicate = False
+        for existing_words in seen_word_sets:
+            if len(existing_words) < 3:
+                continue
+            overlap = len(words & existing_words)
+            similarity = overlap / min(len(words), len(existing_words))
+            if similarity >= 0.7:
+                is_duplicate = True
+                break
+
+        if not is_duplicate:
+            unique_facts.append(f)
+            seen_word_sets.append(words)
+
+    removed = len(all_facts) - len(unique_facts)
+    print(f"    총 사실: {len(unique_facts)}개 (중복 {removed}개 제거)")
     return "\n".join(unique_facts)
 
 

@@ -93,6 +93,24 @@ def fetch_content(
             print(f"  ℹ️ {category}: 핵심사실 추출 실패")
             return {}
 
+        # ── STEP 3.5: 조기 중복 체크 (STEP 4~5 비용 절약) ──
+        if not force and previous_summaries:
+            fact_words = set(facts.lower().split())
+            for existing in previous_summaries:
+                if existing.get("category") != category:
+                    continue
+                existing_text = existing.get("text", "")
+                if not existing_text:
+                    continue
+                existing_words = set(existing_text.lower().split())
+                if len(fact_words) < 5 or len(existing_words) < 5:
+                    continue
+                overlap = len(fact_words & existing_words)
+                similarity = overlap / min(len(fact_words), len(existing_words))
+                if similarity >= 0.6:
+                    print(f"  ⏭  사실 수준 중복 감지 ({similarity:.0%}) — STEP 4~5 스킵")
+                    return {}
+
         # ── STEP 4: 트렌드 분석 ──
         print(f"  📊 트렌드 분석 중...")
         trend_context = analyze_trends(
@@ -125,6 +143,7 @@ def fetch_content(
             "태그": meta.get("태그", []),
             "카테고리": category,
             "본문_마크다운": body_markdown,
+            "_facts": facts,  # 교차 분석용 원본 사실
         }
 
     except Exception as e:
@@ -211,7 +230,8 @@ def run_briefing(
     fact_map: dict[str, str] = {}
     for (cat, _), data in category_data.items():
         if data and isinstance(data, dict) and data.get("본문_마크다운"):
-            fact_map[cat] = data.get("요약", "")
+            # 교차 분석에는 원본 사실 사용 (요약보다 정보량이 많음)
+            fact_map[cat] = data.get("_facts", "") or data.get("요약", "")
 
     if len(fact_map) >= 2:
         print(f"\n🔗 교차 분석 중 ({len(fact_map)}개 카테고리)...")

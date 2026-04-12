@@ -63,13 +63,25 @@ def generate_metadata(category: str, facts: str) -> dict:
     return extract_json(result) or {}
 
 
+def _has_video_urls(facts: str) -> bool:
+    """사실 텍스트에 영상 URL이 포함되어 있는지 확인."""
+    video_indicators = ["youtube.com", "youtu.be", "vimeo.com", "twitch.tv"]
+    facts_lower = facts.lower()
+    return any(ind in facts_lower for ind in video_indicators)
+
+
+def _extract_urls_from_facts(facts: str) -> list[str]:
+    """사실 텍스트에서 모든 URL을 추출."""
+    return re.findall(r"https?://\S+", facts)
+
+
 def generate_body(
     category: str,
     facts: str,
     trend_context: str = "",
     target_version: str | None = None,
 ) -> str:
-    """핵심 사실 + 트렌드 컨텍스트로 Notion 본문 마크다운 생성 (opus)."""
+    """핵심 사실 + 트렌드 컨텍스트로 Notion 본문 마크다운 생성."""
     ver_note = (
         f"\n\n⚠️ **이 페이지는 UE {target_version} 버전 전용입니다.** "
         f"이 버전에서의 기능, 변경사항, 제한사항만 다루세요."
@@ -83,34 +95,93 @@ def generate_body(
 {trend_context[:2000]}
 """
 
-    prompt = f"""UE 애니메이션 전문 교육자로서 아래 사실을 Notion 마크다운 본문으로 작성하세요.{ver_note}
+    # ⑦ 영상 섹션: 사실에 영상 URL이 있을 때만 포함
+    video_section = ""
+    if _has_video_urls(facts):
+        video_section = """
+---
+## 🎬 관련 영상
+| 제목 | 출처 | 링크 | 길이 |
+핵심 사실에 있는 영상 URL만 사용. URL이 없는 영상은 절대 추가하지 말 것."""
 
-## 핵심 사실
+    prompt = f"""UE5 애니메이션 TA 교육 콘텐츠를 작성하세요.{ver_note}
+
+## 입력 데이터 (핵심 사실)
 {facts[:6000]}
 {trend_section}
-⚠️ URL은 핵심 사실에 있는 것만 사용. 추측 금지.
+⚠️ URL은 위 데이터에 있는 것만 사용. 절대 추측/생성 금지.
 
-## 형식
+## 출력 형식 (Notion 마크다운, 이 구조를 정확히 따를 것)
+
 # 📖 {category} 상세 정리
-## {category}란? (4~6문장 + > 💡 핵심 가치 인용구)
----
-## 주요 활용 분야 (표: 분야|설명|예시)
----
-## 핵심 구조 (표: 요소|역할|비고 + 작동 원리)
----
-## UE 5.x 업데이트 (### 🔷 주요 기능별 4~6문장)
----
-## 비교표 (표: 기법|특징|용도|성능)
----
-# 🎬 영상 목록 (표: 제목|출처|링크|시간, 최소 5개)
----
-# 🛠️ 단계별 가이드 (STEP 1~4+, UI 경로 포함)
----
-# 🔗 연관 자료 (링크 리스트)
----
-규칙: 마크다운 테이블, ```코드```, ---구분, >팁, **굵게**, 한국어, 🆕는 1주 내 신규만"""
 
-    return claude_cli(prompt, model="sonnet", timeout=300, effort="max") or ""
+## 개요
+4~6문장으로 이 기술이 무엇이고 왜 중요한지 설명.
+> 💡 한 줄 핵심 인사이트
+
+---
+## 주요 활용 분야
+| 분야 | 설명 | 실제 예시 |
+각 행에 구체적인 UE5 사용 사례를 기술.
+
+---
+## 핵심 구조
+| 요소 | 역할 | 비고 |
+기술의 아키텍처/구성요소를 표로 정리. 표 아래에 작동 원리 2~3문장 추가.
+
+---
+## UE 5.x 최신 업데이트
+### 🔷 (기능명)
+각 기능에 4~6문장. 버전 번호와 변경사항을 명확히.
+
+---
+## 기법 비교
+| 기법 | 특징 | 용도 | 성능 영향 |
+{video_section}
+---
+## 🛠️ 단계별 가이드
+STEP 1~4+. 각 단계에 UE5 에디터 UI 경로 포함 (예: Edit > Project Settings > ...).
+
+---
+## 🔗 연관 자료
+- 핵심 사실의 URL만 사용한 링크 리스트
+
+---
+규칙: 한국어, **굵게**, `코드`, 마크다운 테이블 활용. 🆕는 1주 내 신규만.
+⚠️ 핵심 사실에 없는 URL을 절대 만들지 말 것. 없으면 해당 섹션을 비워두세요."""
+
+    raw_body = claude_cli(prompt, model="sonnet", timeout=300, effort="max") or ""
+
+    # ⑧ 생성 후 URL 검증: 입력 facts에 없는 URL 제거
+    if raw_body:
+        raw_body = _validate_urls(raw_body, facts)
+
+    return raw_body
+
+
+def _validate_urls(body: str, facts: str) -> str:
+    """생성된 본문에서 입력 facts에 없는 URL을 제거."""
+    fact_urls = set(_extract_urls_from_facts(facts))
+    body_urls = set(_extract_urls_from_facts(body))
+
+    # facts에 없는 URL = 환각
+    hallucinated = body_urls - fact_urls
+    if not hallucinated:
+        return body
+
+    cleaned = body
+    for bad_url in hallucinated:
+        # URL이 마크다운 링크 안에 있는 경우: [text](url) → text
+        cleaned = re.sub(
+            r"\[([^\]]*)\]\(" + re.escape(bad_url) + r"\)",
+            r"\1",
+            cleaned,
+        )
+        # 단독 URL인 경우 제거
+        cleaned = cleaned.replace(bad_url, "")
+
+    print(f"  🔍 URL 검증: {len(hallucinated)}개 환각 URL 제거")
+    return cleaned
 
 
 def make_fallback(category: str, facts: str) -> dict:

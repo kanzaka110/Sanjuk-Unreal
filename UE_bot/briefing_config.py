@@ -55,3 +55,20 @@ SEARCH_SOURCES: dict[str, list[str]] = {
         "site:youtube.com UE5 animation tutorial",
     ],
 }
+
+# 카테고리별 특화 키워드 (범용 쿼리 대신 정밀 검색)
+CATEGORY_KEYWORDS: dict[str, list[str]] = {
+    "Animation Blueprint": ["ABP", "AnimGraph", "State Machine", "AnimInstance"],
+    "Control Rig": ["Control Rig", "Procedural Rigging", "IK solver", "Full Body IK"],
+    "Motion Matching": ["Pose Search", "Motion Matching", "trajectory prediction", "dance card"],
+    "UAF/AnimNext": ["AnimNext", "Universal Animation Framework", "TraitStack", "Chooser Table"],
+    "MetaHuman": ["MetaHuman", "facial animation", "MetaHuman Animator", "face capture"],
+    "Sequencer": ["Sequencer", "cinematic animation", "Level Sequence", "camera rig"],
+    "Live Link": ["Live Link", "motion capture", "mocap streaming", "ARKit face"],
+    "ML Deformer": ["ML Deformer", "machine learning deformer", "neural deformation", "NNE"],
+    "GASP": ["GASP", "animation warping", "stride warping", "orientation warping"],
+    "Mover Plugin": ["Mover", "character movement", "Mover Component", "movement mode"],
+    "AI Animation Tech": ["neural animation", "motion diffusion", "AI motion generation", "MotionGPT"],
+    "Physics/Simulation": ["Chaos Cloth", "Physics Asset", "hair simulation", "ragdoll"],
+    "GitHub/Open Source": ["UE5 plugin release", "animation tool open source", "UE5 GitHub"],
+}
