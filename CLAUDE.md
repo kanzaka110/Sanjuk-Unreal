@@ -17,8 +17,9 @@ Sanjuk-Unreal/
 ├── Briefing/                      # 데일리 브리핑 아카이브 (날짜별)
 ├── UE_bot/                        # 텔레그램 봇 + 브리핑 자동화 (briefing.py v2)
 ├── shared_config.py               # 봇 공통 설정 (Claude CLI, 환경변수 검증)
-├── .claude/commands/              # 커스텀 슬래시 명령어 (/push, /pull, /doctor, /recover, /브리핑)
-├── .claude/hooks/                 # PreToolUse 훅 (MCP 사전 점검)
+├── .claude/commands/              # 커스텀 슬래시 명령어 (9개)
+├── .claude/hooks/                 # Pre/PostToolUse 훅 (MCP 점검 3개)
+├── .claude/rules/                 # UE5 전용 룰 (도메인, MCP, 코딩, 매크로, 에이전트, 버전)
 ├── Monolith-Local-Setup-Guide.md  # Monolith 로컬 전용 설치법
 ├── UE-Animation-Tech-Report-2026.md  # UE 애니메이션 최신 기술 보고서
 ├── UE5-AI-GitHub-Research-2026.md    # UE5 AI/GitHub 리서치
