@@ -10,3 +10,6 @@ MonolithTest/
 Thumbs.db
 .DS_Store
 *.swp
+*.pyc
+__pycache__/
+data/*.db
