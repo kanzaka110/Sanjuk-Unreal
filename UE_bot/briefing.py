@@ -416,10 +416,10 @@ def fetch_content(category: str, *, target_version: str | None = None) -> dict |
         raw_research = _web_search(queries)
         print(f"  📄 수집 완료 ({len(raw_research)}자)")
 
-        # ── STEP 2: 메타데이터 JSON 추출 ──
+        # ── STEP 2: 메타데이터 JSON 추출 (Haiku — 단순 추출 작업, 비용 절감) ──
         meta_text = claude_cli(
             _build_meta_prompt(category, raw_research),
-            model="opus", timeout=120, effort="max",
+            model="haiku", timeout=120, effort="max",
         )
         meta = _extract_json(meta_text) or {}
 
