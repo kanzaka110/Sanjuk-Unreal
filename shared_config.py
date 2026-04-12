@@ -57,7 +57,19 @@ BOT_EXTRA_ENV: dict[str, list[EnvRequirement]] = {
 
 
 # ─── Claude CLI 유틸리티 ───────────────────────────��───
-CLAUDE_CLI = "/usr/bin/claude"
+def _find_claude_cli() -> str:
+    """플랫폼에 맞는 Claude CLI 경로를 반환."""
+    import shutil
+    found = shutil.which("claude")
+    if found:
+        return found
+    if sys.platform == "win32":
+        candidate = os.path.expanduser("~/.local/bin/claude")
+        if os.path.exists(candidate):
+            return candidate
+    return "/usr/bin/claude"
+
+CLAUDE_CLI = _find_claude_cli()
 
 
 def claude_cli(
@@ -97,6 +109,7 @@ def claude_cli(
     try:
         result = subprocess.run(
             cmd, capture_output=True, text=True, timeout=timeout,
+            encoding="utf-8", errors="replace",
         )
         if result.returncode == 0 and result.stdout.strip():
             return result.stdout.strip()

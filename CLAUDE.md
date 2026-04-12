@@ -15,6 +15,8 @@ Sanjuk-Unreal/
 │   ├── UAF-Setup-Guide/          # UAF 셋업 가이드 (12편)
 │   └── Chaos-Cloth-Guide/        # Chaos Cloth & Physics Asset 가이드 (10편)
 ├── Briefing/                      # 데일리 브리핑 아카이브 (날짜별)
+├── UE_bot/                        # 텔레그램 봇 + 브리핑 자동화 (briefing.py v2)
+├── shared_config.py               # 봇 공통 설정 (Claude CLI, 환경변수 검증)
 ├── .claude/commands/              # 커스텀 슬래시 명령어 (/push, /pull, /doctor, /recover, /브리핑)
 ├── .claude/hooks/                 # PreToolUse 훅 (MCP 사전 점검)
 ├── Monolith-Local-Setup-Guide.md  # Monolith 로컬 전용 설치법
