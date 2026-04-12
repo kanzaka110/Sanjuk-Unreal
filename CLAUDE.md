@@ -20,8 +20,7 @@ Sanjuk-Unreal/
 ├── Monolith-Local-Setup-Guide.md  # Monolith 로컬 전용 설치법
 ├── UE-Animation-Tech-Report-2026.md  # UE 애니메이션 최신 기술 보고서
 ├── UE5-AI-GitHub-Research-2026.md    # UE5 AI/GitHub 리서치
-├── Unreal_Briefing.md             # UE 애니메이션 데일리 브리핑 시스템
-└── briefing-py-haiku-patch.md     # briefing.py STEP 2 Haiku 전환 패치 가이드
+└── Unreal_Briefing.md             # UE 애니메이션 데일리 브리핑 시스템
 ```
 
 ### 문서 (Tutorial/)

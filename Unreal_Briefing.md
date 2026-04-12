@@ -173,24 +173,62 @@ GH_TOKEN="<토큰>" gh workflow run ue-animation-briefing.yml \
 - 다음날 실행 시: 어제 이전 페이지 `🆕` 제거 + 체크박스 OFF
 - 본문 내 최근 1주 새 정보에 🆕 이모지 표기 요청
 
-### 2026-04-11: 병행 브리핑 전략 도입 & 비용 최적화
-
-#### 비용 최적화: STEP 2 Haiku 전환
-- STEP 2 (메타데이터 추출)의 모델을 `claude-sonnet-4-6` → `claude-haiku-4-5-20251001`로 변경
-- STEP 1 (웹검색), STEP 3 (본문 생성)은 Sonnet 유지
-- 예상 비용 절감: ~30%
-- 패치 가이드: `briefing-py-haiku-patch.md` 참조
+### 2026-04-11: 병행 브리핑 전략 도입
 
 #### 병행 브리핑 체계
 
 | 방식 | 용도 | 비용 | 자동화 | 출력 |
 |------|------|------|--------|------|
-| **briefing.py** (자동) | 일일 모니터링 (10개 카테고리) | Anthropic API 종량제 | GitHub Actions 매일 9시 | Notion DB |
-| **Claude Code `/briefing`** (수동) | 심화 분석, 주간/월간 종합 리포트 | Max 플랜 내 포함 ($0) | 수동 요청 | `Briefing/` 폴더 .md |
+| **briefing.py** (자동) | 일일 모니터링 (13개 카테고리) | Claude CLI ($0) | cron / GitHub Actions | Notion DB |
+| **Claude Code `/브리핑`** (수동) | 심화 분석, 주간/월간 종합 리포트 | Max 플랜 내 포함 ($0) | 수동 요청 | `Briefing/` 폴더 .md |
 
 #### Claude Code `/브리핑` 명령어
 - 위치: `.claude/commands/브리핑.md`
 - 6개 카테고리 병렬 웹서치: 공식 채널, 커뮤니티, 업계 뉴스, GitHub, 핵심 키워드, 교육/심화
 - 이전 브리핑 대비 신규 정보 비교 & 🆕 표기
-- 특정 주제 심화 모드 지원 (예: `/briefing AnimNext`)
+- 특정 주제 심화 모드 지원 (예: `/브리핑 AnimNext`)
 - 기존 `Briefing/YYYY-MM-DD/` 폴더 구조 유지
+
+### 2026-04-12: briefing.py v2 전면 개선
+
+#### 7개 문제 해결
+| # | 문제 | 해결 |
+|---|------|------|
+| 1 | 데이터 절삭 (3000/6000자) | Map-Reduce 패턴 — 청크별 사실 추출 후 병합 |
+| 2 | 검색 깊이 부족 (4-6개 쿼리) | 8-15개 쿼리 + 6개 소스 카테고리 |
+| 3 | 단일 패스 (재검색 없음) | 품질 점수 기반 조건부 재검색 (최대 2라운드) |
+| 4 | 교차 분석 없음 | 카테고리 간 연관성 분석 (항상 ON) |
+| 5 | 트렌드 추적 없음 | 이전 Notion 브리핑과 비교 분석 |
+| 6 | DuckDuckGo 미활용 | DDGS 보조 검색 소스로 활용 |
+| 7 | 소스 다양성 검증 없음 | 도메인별 추적 + 다양성 점수 |
+
+#### 모듈 분리 (1,316줄 → 7개 파일)
+```
+UE_bot/
+├── briefing.py              # 엔트리포인트 + 오케스트레이터 (~80줄)
+├── briefing_config.py       # 상수, 카테고리, 검색소스 (~60줄)
+├── briefing_search.py       # STEP 1-2: 다중소스 검색 + 품질 검증 (~300줄)
+├── briefing_analyze.py      # STEP 3-4: Map-Reduce + 교차분석 (~150줄)
+├── briefing_generate.py     # STEP 5: 메타데이터 + 본문 생성 (~180줄)
+├── briefing_notion.py       # Notion 업로드 + 블록 변환 (~350줄)
+└── briefing_telegram.py     # 텔레그램 알림 (~70줄)
+```
+
+#### 5 STEP 파이프라인
+```
+STEP 1: 다중소스 병렬 검색 (Claude CLI sonnet + DDGS)
+STEP 2: 검색 품질 검증 → 미달 시 보완 재검색
+STEP 3: 청킹 + 핵심사실 추출 (haiku, Map-Reduce)
+STEP 4: 교차 분석 + 이전 브리핑 트렌드 비교
+STEP 5: 메타데이터(haiku) + 본문 생성(opus)
+```
+
+#### 모델 배분
+| STEP | 역할 | 모델 |
+|------|------|------|
+| 1 | 웹검색 | sonnet |
+| 2 | 품질 검증 | (점수 산출, 모델 불필요) |
+| 3 | 사실 추출 (map) | haiku |
+| 4 | 트렌드/교차 분석 | sonnet |
+| 5a | 메타데이터 | haiku |
+| 5b | 본문 생성 | opus |
