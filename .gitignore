@@ -6,6 +6,10 @@ MonolithTest/
 !.claude/commands/
 !.claude/hooks/
 
+# Secrets
+.env
+*.env
+
 # OS
 Thumbs.db
 .DS_Store
