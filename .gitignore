@@ -11,6 +11,9 @@ MonolithTest/
 .env
 *.env
 
+# Migration local config
+migration/env.local
+
 # OS
 Thumbs.db
 .DS_Store

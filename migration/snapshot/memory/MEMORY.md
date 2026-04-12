@@ -1,0 +1,18 @@
+- [사용자 프로필](user_profile.md) — UE5 애니메이션 TA, 한국어, MCP 기반 AI-UE 연동
+- [Monolith 최우선순위](feedback_monolith_priority.md) — MCP 도구 사용 시 Monolith 우선, UnrealClaude는 보조
+- [MCP 구성 현황](project_mcp_setup.md) — Monolith(9316) + UnrealClaude(3000) + runreal(stdio) 3개 서버
+- [UnrealClaude 설치](project_unrealclaude_setup.md) — v1.4.1, MonolithTest에 설치, API 문서 컨텍스트 11개
+- [UE5 프로젝트 경로](project_ue5_paths.md) — MonolithTest(Monolith+UnrealClaude), 엔진 경로 포함
+- [UAF MCP 지원 부재](project_uaf_gap.md) — Monolith 미지원, runreal 커스텀 스크립트로 대응
+- [레포 구조](project_repo_structure.md) — 문서 전용 레포, Briefing/ 추가, UE5 바이너리 미포함
+- [리모트 세션 운영](project_remote_sessions.md) — GCP+로컬 듀얼 remote-control, 모바일 접속 구성
+- [신규 PC 셋팅 가이드](guide_new_pc_setup.md) — Git/Node/.NET/UE5.7/Monolith/UnrealClaude/Claude Code 전체 절차
+- [커스텀 명령어 및 훅](project_custom_commands.md) — /push, /pull, /doctor, /recover + PreToolUse 훅
+- [MCP 리깅 한계](feedback_mcp_rig_limits.md) — 그래프 기반 가능, Control Rig/Cloth 디테일은 복제 후 수정 전략
+- [GCP 자동 동기화 필수](feedback_auto_gcp_sync.md) — 작업 후 항상 GCP로 메모리/룰/git 동기화
+- [브리핑 검색 소스 확장](feedback_briefing_search_scope.md) — 브리핑 시 6개 카테고리(공식/커뮤니티/뉴스/GitHub/키워드/교육) 전체 서치 필수
+- [브리핑 병행 전략](project_briefing_dual_strategy.md) — briefing.py(자동) + /briefing(심화/무료) 병행, STEP2 Haiku 전환
+- [UE_bot 코드 위치](project_ue_bot_location.md) — briefing.py 등 텔레그램 봇이 Sanjuk-Unreal/UE_bot/으로 이관
+- [briefing v2 아키텍처](project_briefing_v2_architecture.md) — 5 STEP 파이프라인, 7개 모듈, Map-Reduce, 교차분석
+- [하네스 적용](project_harness.md) — 2026-04-12 test_harness.py(6개) + validate.py + CI 적용
+- [UE 전문 에이전트 구성](project_ue_agent_setup.md) — 룰 6개 + 명령어 4개 + 훅 2개 + 매크로 5개
