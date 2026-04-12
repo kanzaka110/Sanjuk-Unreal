@@ -16,3 +16,4 @@
 - [briefing v2 아키텍처](project_briefing_v2_architecture.md) — 5 STEP 파이프라인, 7개 모듈, Map-Reduce, 교차분석
 - [하네스 적용](project_harness.md) — 2026-04-12 test_harness.py(6개) + validate.py + CI 적용
 - [UE 전문 에이전트 구성](project_ue_agent_setup.md) — 룰 6개 + 명령어 4개 + 훅 2개 + 매크로 5개
+- [환경 이전 예정](project_env_migration.md) — 2026-04-13~ 새 PC/계정 이전, migration/ 패키지 준비 완료

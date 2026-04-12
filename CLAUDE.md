@@ -20,6 +20,7 @@ Sanjuk-Unreal/
 ├── .claude/commands/              # 커스텀 슬래시 명령어 (9개)
 ├── .claude/hooks/                 # Pre/PostToolUse 훅 (MCP 점검 3개)
 ├── .claude/rules/                 # UE5 전용 룰 (도메인, MCP, 코딩, 매크로, 에이전트, 버전)
+├── migration/                     # 환경 마이그레이션 패키지 (backup/restore + snapshot)
 ├── Monolith-Local-Setup-Guide.md  # Monolith 로컬 전용 설치법
 ├── UE-Animation-Tech-Report-2026.md  # UE 애니메이션 최신 기술 보고서
 ├── UE5-AI-GitHub-Research-2026.md    # UE5 AI/GitHub 리서치
