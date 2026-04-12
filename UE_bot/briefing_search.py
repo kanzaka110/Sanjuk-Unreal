@@ -214,21 +214,26 @@ def build_queries(category: str) -> list[str]:
 
 
 def multi_source_search(category: str) -> list[SourcedResult]:
-    """Claude CLI + DDGS 병합 검색."""
+    """DDGS 1차 검색 + Claude CLI 보완. 토큰 최적화."""
     queries = build_queries(category)
 
-    # Claude CLI 메인 검색 (상위 10개 쿼리)
-    claude_results = search_claude_cli(category, queries[:10])
-    print(f"    Claude: {len(claude_results)}건")
-
-    # DDGS 보조 검색 (하위 5개 쿼리)
-    ddgs_results = search_ddgs(queries[5:10], max_results_per_query=3)
+    # DDGS 1차 검색 (무료, 토큰 0)
+    ddgs_results = search_ddgs(queries[:8], max_results_per_query=3)
     print(f"    DDGS: {len(ddgs_results)}건")
+
+    # DDGS 결과가 충분하면 Claude CLI 스킵
+    if len(ddgs_results) >= 15:
+        print(f"    Claude: 스킵 (DDGS 충분)")
+        return ddgs_results
+
+    # Claude CLI 보완 검색 (DDGS 부족 시)
+    claude_results = search_claude_cli(category, queries[:6])
+    print(f"    Claude: {len(claude_results)}건")
 
     # 병합 (URL 중복 제거)
     seen_urls: set[str] = set()
     merged: list[SourcedResult] = []
-    for r in claude_results + ddgs_results:
+    for r in ddgs_results + claude_results:
         if r.url and r.url in seen_urls:
             continue
         if r.url:

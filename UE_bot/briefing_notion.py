@@ -234,7 +234,13 @@ def markdown_to_notion_blocks(markdown: str) -> list[dict]:
     i = 0
 
     def _rt(text: str) -> list[dict]:
-        return [{"type": "text", "text": {"content": text[:2000]}}]
+        """rich_text 배열 생성 (2000자 초과 시 분할)."""
+        if len(text) <= 2000:
+            return [{"type": "text", "text": {"content": text}}]
+        parts: list[dict] = []
+        for i in range(0, len(text), 2000):
+            parts.append({"type": "text", "text": {"content": text[i:i+2000]}})
+        return parts
 
     while i < len(lines):
         line = lines[i]

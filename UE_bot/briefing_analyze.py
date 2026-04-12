@@ -11,8 +11,8 @@ from shared_config import claude_cli
 
 # ─── STEP 3: Map-Reduce (데이터 절삭 해결) ────────────────────────────────────
 
-def chunk_text(text: str, max_chars: int = 3000) -> list[str]:
-    """텍스트를 의미 단위(--- 또는 줄바꿈 기준)로 청크 분할."""
+def chunk_text(text: str, max_chars: int = 5000) -> list[str]:
+    """텍스트를 의미 단위로 청크 분할. 기본 5000자 (호출 횟수 최소화)."""
     if len(text) <= max_chars:
         return [text]
 
@@ -107,7 +107,7 @@ def analyze_trends(
     category: str,
     previous_summaries: list[dict],
 ) -> str:
-    """이전 브리핑과 비교하여 트렌드 분석."""
+    """이전 브리핑과 비교하여 트렌드 분석. 이전 데이터 없으면 스킵."""
     # 같은 카테고리의 이전 브리핑만 필터
     prev_texts: list[str] = []
     for s in previous_summaries:
@@ -117,7 +117,7 @@ def analyze_trends(
                 prev_texts.append(text)
 
     if not prev_texts:
-        return "(이전 브리핑 데이터 없음 — 첫 실행)"
+        return ""  # CLI 호출 스킵
 
     prev_context = "\n".join(prev_texts[:10])
 

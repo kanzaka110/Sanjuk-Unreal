@@ -70,6 +70,7 @@ def fetch_content(
     *,
     target_version: str | None = None,
     previous_summaries: list[dict] | None = None,
+    force: bool = False,
 ) -> dict | None:
     """5 STEP 파이프라인으로 콘텐츠 수집 → 분석 → 생성."""
     ver_label = f" (UE {target_version})" if target_version else ""
@@ -102,7 +103,7 @@ def fetch_content(
         print(f"  📋 메타데이터 추출 중...")
         meta = generate_metadata(category, facts)
 
-        if not meta.get("새_정보_여부", True):
+        if not force and not meta.get("새_정보_여부", True):
             print(f"  ℹ️ {category}: 최근 3일 내 신규 정보 없음 — 스킵")
             return {}
 
@@ -195,6 +196,7 @@ def run_briefing(
                 category,
                 target_version=version,
                 previous_summaries=existing_summaries,
+                force=force,
             )
             if data is not None:
                 break
