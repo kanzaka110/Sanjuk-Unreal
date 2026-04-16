@@ -42,9 +42,11 @@ Sanjuk-Unreal/
 - **Unreal_Briefing.md** — UE 애니메이션 데일리 브리핑 시스템 설명
 
 ### UE5 프로젝트 (별도 관리, 이 레포에 포함하지 않음)
-- **MonolithTest** — Monolith MCP 테스트용 UE 5.7 프로젝트
-  - 경로: `C:\Users\ohmil\OneDrive\문서\Unreal Projects\MonolithTest`
-  - Monolith v0.12.0 (1,125 액션, 16 모듈) + UnrealClaude v1.4.1 (20+ 도구)
+- **SB2** — SHIFTUP SB2 메인 프로젝트 (커스텀 UE 5.7.4)
+  - 경로: `E:\Perforce\SB2\Workspace\Internal\SB2\SB2.uproject`
+  - Monolith v0.12.1 (988 액션, 13 모듈) + UnrealClaude (포트 3000)
+- **GameAnimationSample (GASP)** — Epic 공식 MM 샘플 + DynamicAdditiveOverlay 예제
+  - 경로: `C:\Users\SHIFTUP\Documents\Unreal Projects\GameAnimationSample`
 
 ## 관련 프로젝트
 
@@ -56,7 +58,7 @@ Sanjuk-Unreal/
 ## UE5 프로젝트 환경
 
 - UE 프로젝트 경로: `C:\Users\ohmil\OneDrive\문서\Unreal Projects\`
-- 현재 프로젝트: MetaHumans (5.6), MetaHumans_5_5 (5.5), SlayAnimationSample (5.6), MonolithTest (5.7)
+- 현재 프로젝트: SB2 (5.7.4 커스텀), GameAnimationSample (GASP)
 - Monolith 사용 시 UE 5.7 필요
 
 ## MCP 도구 우선순위
@@ -78,7 +80,7 @@ Claude Code 실행 위치: `C:\dev\Sanjuk-Unreal` (루트)
 - `.claude/settings.local.json` — Claude Code 로컬 설정
 - `.gitignore` — UE5 바이너리/임시 파일 제외
 
-MonolithTest 프로젝트는 `C:\Users\ohmil\OneDrive\문서\Unreal Projects\MonolithTest`에 위치.
+SB2 프로젝트는 `E:\Perforce\SB2\Workspace\Internal\SB2`에 위치.
 MCP 서버들이 절대 경로/HTTP로 설정되어 있어 루트에서 Claude Code를 실행해도 UE 제어 가능.
 
 ## 리모트 세션 (모바일 접속)
