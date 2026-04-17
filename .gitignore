@@ -21,3 +21,6 @@ Thumbs.db
 *.pyc
 __pycache__/
 data/*.db
+
+# Session-local temp artifacts (T3D dumps, rig backups)
+scripts/_*
