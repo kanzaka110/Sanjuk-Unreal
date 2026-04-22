@@ -24,3 +24,9 @@ data/*.db
 
 # Session-local temp artifacts (T3D dumps, rig backups)
 scripts/_*
+
+# Monolith RPC diagnostic dumps (root-level .json)
+/*.json
+
+# tmp work dir
+/tmp/
