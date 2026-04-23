@@ -1,4 +1,4 @@
-"""PC_01_Hair_01 Groom 에셋의 물리/시뮬레이션 파라미터 덤프.
+"""PC_01 Groom 에셋 물리/시뮬레이션 파라미터 덤프 (Original vs Sanjuk 비교용).
 
 실행:
   UE 에디터 > Window > Developer Tools > Output Log
@@ -16,7 +16,7 @@ from typing import Any
 import unreal
 
 GROOM_PATHS: list[str] = [
-    "/Game/Art/Character/PC/PC_01/Equipment/Hair/PC_01_Hair_01/PC_01_Hair_01",
+    "/Game/Art/Character/PC/PC_01/Equipment/Hair/PC_01_Hair_01/PC_01_Hair_Original",
     "/Game/Art/Character/PC/PC_01/Equipment/Hair/PC_01_Hair_01/PC_01_Hair_Sanjuk",
 ]
 BINDING_PATH: str = (
