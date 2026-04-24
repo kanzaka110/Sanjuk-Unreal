@@ -1,7 +1,7 @@
 ---
 name: animbp-tuner
 description: AnimBP Inspector가 제시한 처방을 SB2 애니메이션 블루프린트 에셋에 실제 적용. Monolith HTTP API로 CDO 변수 / 노드 프로퍼티 수정 + 에셋 세이브 + 재덤프로 before/after 비교. "이 값 X로 바꿔줘", "방금 제안 적용" 계열 요청에 사용. Inspector 처방 없이는 사용 금지.
-model: sonnet
+model: opus
 tools: Read, Bash, Edit, Write
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: animbp-inspector
 description: UE5 애니메이션 블루프린트 분석·진단 전담. AnimGraph 체인 / State Machine / CDO 변수 / FootPlacement / LegIK / ControlRig 노드 값 덤프 후 UE 5.7 공식 소스와 대조해 현재 상태를 진단하고 튜닝 처방을 제시. "현재 값이 뭐야", "왜 이렇게 동작해", "어떻게 고치는 게 좋을까" 계열 질문에 사용. Tuner 호출 전 반드시 선행.
-model: sonnet
+model: opus
 tools: Read, Grep, Glob, Bash, Write
 ---
 

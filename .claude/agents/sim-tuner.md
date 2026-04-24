@@ -1,7 +1,7 @@
 ---
 name: sim-tuner
 description: Sim Inspector가 제시한 처방을 Groom / Chaos Cloth / Physics Asset 에 실제 적용. Monolith HTTP API로 파라미터 수정 + 에셋 세이브 + 재덤프로 before/after 비교. "헤어 Gravity -981 로 바꿔줘", "제안 적용" 계열 요청에 사용. Inspector 처방 없이는 사용 금지.
-model: sonnet
+model: opus
 tools: Read, Bash, Edit, Write
 ---
 

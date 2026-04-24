@@ -1,7 +1,7 @@
 ---
 name: sim-inspector
 description: UE5 시뮬레이션 에셋 (Groom 헤어 / Chaos Cloth / Physics Asset / KawaiiPhysics) 분석·진단 전담. 물리 파라미터 덤프 후 UE 5.7 공식 소스와 대조해 현재 상태를 진단하고 튜닝 처방을 제시. "헤어가 뻣뻣해", "천이 관통해", "떨림이 심해" 계열 질문에 사용. Sim Tuner 호출 전 반드시 선행.
-model: sonnet
+model: opus
 tools: Read, Grep, Glob, Bash, Write
 ---
 
