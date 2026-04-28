@@ -25,6 +25,7 @@ data/*.db
 
 # Session-local temp artifacts (T3D dumps, rig backups)
 scripts/_*
+scripts/dumps/
 # 단, _archive/ 는 완료된 실험 스크립트 보관용으로 커밋 허용
 !scripts/_archive/
 !scripts/_archive/**
