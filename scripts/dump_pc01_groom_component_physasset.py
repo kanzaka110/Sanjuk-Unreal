@@ -72,17 +72,59 @@ def dump_groom_component(obj: Any, idx: int) -> None:
     if sim_settings:
         try:
             override = sim_settings.get_editor_property("b_override_settings")
-            log(f"      sim_override   = {override}")
+            log(f"      sim_override        = {override}")
         except Exception as e:
-            log(f"      sim_override   = [error] {e}")
+            log(f"      sim_override        = [error] {e}")
 
-        # Component 측 시뮬 설정 값들도 덤프 (override=True 시 이게 적용됨)
-        for prop_name in ("solver_settings", "external_force", "material_constraints", "collision_constraints"):
+        # SimulationSetup 내부 7개 핵심 필드
+        sim_setup = None
+        for key in ("simulation_setup", "SimulationSetup"):
             try:
-                val = sim_settings.get_editor_property(prop_name)
-                log(f"      sim.{prop_name} = {val}")
+                sim_setup = sim_settings.get_editor_property(key)
+                if sim_setup is not None:
+                    break
             except Exception:
-                pass
+                continue
+
+        if sim_setup:
+            _SETUP_FIELDS = (
+                ("b_local_simulation",    "local_simulation"),
+                ("linear_velocity_scale", "LinearVelocityScale"),
+                ("angular_velocity_scale","AngularVelocityScale"),
+                ("local_bone",            "LocalBone"),
+                ("teleport_distance",     "TeleportDistance"),
+                ("b_reset_simulation",    "reset_simulation"),
+                ("b_debug_simulation",    "debug_simulation"),
+            )
+            for snake, fallback in _SETUP_FIELDS:
+                val = None
+                for k in (snake, fallback):
+                    try:
+                        val = sim_setup.get_editor_property(k)
+                        break
+                    except Exception:
+                        continue
+                log(f"      setup.{snake:<26}= {val}")
+        else:
+            log("      simulation_setup    = [추출 실패]")
+
+        # SolverSettings (SubSteps, Iterations)
+        solver = None
+        for key in ("solver_settings", "SolverSettings"):
+            try:
+                solver = sim_settings.get_editor_property(key)
+                if solver is not None:
+                    break
+            except Exception:
+                continue
+        if solver:
+            for k in ("enable_simulation", "b_force_visible", "sub_steps", "iteration_count",
+                      "SubSteps", "IterationCount"):
+                try:
+                    val = solver.get_editor_property(k)
+                    log(f"      solver.{k:<27}= {val}")
+                except Exception:
+                    continue
 
 
 def iter_cdo_components(cdo: Any) -> list[Any]:
