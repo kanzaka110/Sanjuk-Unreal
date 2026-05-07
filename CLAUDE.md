@@ -13,7 +13,8 @@ Sanjuk-Unreal/
 │   ├── runreal-MCP-Tutorial/      # runreal MCP 튜토리얼 (12편)
 │   ├── AnimNext-Migration-Guide/  # AnimNext 마이그레이션 가이드 (13편)
 │   ├── UAF-Setup-Guide/          # UAF 셋업 가이드 (12편)
-│   └── Chaos-Cloth-Guide/        # Chaos Cloth & Physics Asset 가이드 (10편)
+│   ├── Chaos-Cloth-Guide/        # Chaos Cloth & Physics Asset 가이드 (10편)
+│   └── MayaMCP-Groom-Setup/      # Maya MCP + Groom 셋업 가이드
 ├── Briefing/                      # 데일리 브리핑 아카이브 (날짜별)
 ├── UE_bot/                        # 텔레그램 봇 + 브리핑 자동화 (briefing.py v2)
 ├── shared_config.py               # 봇 공통 설정 (Claude CLI, 환경변수 검증)
@@ -34,6 +35,7 @@ Sanjuk-Unreal/
 - **AnimNext-Migration-Guide/** — AnimNext 마이그레이션 가이드 13편 (ABP → AnimNext 전환)
 - **UAF-Setup-Guide/** — UAF 셋업 가이드 12편 (Universal Animation Framework)
 - **Chaos-Cloth-Guide/** — Chaos Cloth & Physics Asset 가이드 10편 (천 시뮬레이션, 충돌, 최적화)
+- **MayaMCP-Groom-Setup/** — Maya MCP + Groom 셋업 가이드 (.mcp.json에 Maya MCP 서버 등록)
 
 ### 리서치 및 브리핑 (루트)
 - **Briefing/** — 데일리 브리핑 아카이브 (날짜별 폴더)
