@@ -20,6 +20,10 @@
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp"]
     },
+    "maya": {
+      "command": "C:/Dev/MayaMCP/.venv/Scripts/python.exe",
+      "args": ["C:/Dev/MayaMCP/src/maya_mcp_server.py"]
+    },
     "confluence": {
       "command": "npx",
       "args": ["-y", "@aashari/mcp-server-atlassian-confluence"],
