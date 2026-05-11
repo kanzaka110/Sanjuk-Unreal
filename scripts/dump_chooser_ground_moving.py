@@ -22,6 +22,7 @@ SUB_CHOOSER_SUFFIXES = [
     ":N_LockOn_GroundMoving",
     ":N_TransitToGroundMoving_Peaceful",
     ":N_TransitToGroundMoving_Battle",
+    ":N_AfterEvade",  # 2026-05-11 추가 — Pivot/AfterEvade 라우팅 진단용
 ]
 
 def ipath(suf):
