@@ -38,3 +38,12 @@ scripts/dumps/
 
 # tmp work dir
 /tmp/
+
+# ABP dump 백업 (Tuner/Inspector 작업 흔적)
+Saved/
+
+# 일회성 진단 dump (scripts/*.json)
+scripts/*.json
+
+# Monolith dump 텍스트
+DevSanjuk-Unrealdump*.txt
