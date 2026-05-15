@@ -39,6 +39,9 @@ scripts/dumps/
 # tmp work dir
 /tmp/
 
+# Briefing 작업 폴더 임시 dump (Inspector / ANIM_REC 슬라이스 등)
+Briefing/_tmp/
+
 # ABP dump 백업 (Tuner/Inspector 작업 흔적)
 Saved/
 
