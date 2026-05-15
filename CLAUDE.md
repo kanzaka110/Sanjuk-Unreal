@@ -95,7 +95,7 @@ GCP + 로컬 PC 두 세션 동시 운영. 모바일 claude.ai/code에서 접속.
 | Sanjuk-Unreal (Local) | 로컬 PC | 문서 + Monolith/UE 제어 | X |
 | Sanjuk-Unreal (GCP) | GCP VM (sanjuk-project) | 문서 작업 전용 | O |
 
-- GCP 레포: `/home/ohmil/Sanjuk-Unreal/`
+- GCP 레포: `/home/kanzaka110/Sanjuk-Unreal/` (SSH 시 `kanzaka110@sanjuk-project` 유저 필수, ohmil 유저로 접근 불가)
 - GCP tmux: `tmux attach -t unreal`
 - 재시작: `scripts/gcp-restart-remote.sh`
 - 로컬 시작: `scripts/local-remote-control.cmd`
