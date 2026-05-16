@@ -29,25 +29,10 @@ Sanjuk-Unreal/
 └── Unreal_Briefing.md             # UE 애니메이션 데일리 브리핑 시스템
 ```
 
-### 문서 (Tutorial/)
-- **Monolith-MCP-Tutorial/** — Monolith MCP 튜토리얼 10편 (UE 5.7 + Claude Code 애니메이션 제어)
-- **runreal-MCP-Tutorial/** — runreal MCP 튜토리얼 12편 (Python 기반 UE5 자동화)
-- **AnimNext-Migration-Guide/** — AnimNext 마이그레이션 가이드 13편 (ABP → AnimNext 전환)
-- **UAF-Setup-Guide/** — UAF 셋업 가이드 12편 (Universal Animation Framework)
-- **Chaos-Cloth-Guide/** — Chaos Cloth & Physics Asset 가이드 10편 (천 시뮬레이션, 충돌, 최적화)
-- **MayaMCP-Groom-Setup/** — Maya MCP + Groom 셋업 가이드 (.mcp.json에 Maya MCP 서버 등록)
-
-### 리서치 및 브리핑 (루트)
-- **Briefing/** — 데일리 브리핑 아카이브 (날짜별 폴더)
-- **UE-Animation-Tech-Report-2026.md** — UE 애니메이션 최신 기술 보고서
-- **UE5-AI-GitHub-Research-2026.md** — UE5 AI/GitHub 리서치 자료
-- **Monolith-Local-Setup-Guide.md** — 회사 P4에 안 올리고 로컬에서만 Monolith 사용하는 방법
-- **Unreal_Briefing.md** — UE 애니메이션 데일리 브리핑 시스템 설명
-
 ### UE5 프로젝트 (별도 관리, 이 레포에 포함하지 않음)
 - **SB2** — SHIFTUP SB2 메인 프로젝트 (커스텀 UE 5.7.4)
   - 경로: `E:\Perforce\SB2\Workspace\Internal\SB2\SB2.uproject`
-  - Monolith v0.12.1 (988 액션, 13 모듈) + UnrealClaude (포트 3000)
+  - Monolith (1,226 액션 / 16 모듈, 2026-05 기준) + UnrealClaude (포트 3000)
 - **GameAnimationSample (GASP)** — Epic 공식 MM 샘플 + DynamicAdditiveOverlay 예제
   - 경로: `C:\Users\SHIFTUP\Documents\Unreal Projects\GameAnimationSample`
 
@@ -68,18 +53,27 @@ Sanjuk-Unreal/
 
 **Monolith가 최우선.** 에디터 제어가 필요한 모든 작업은 Monolith를 먼저 사용.
 
-| 우선순위 | 도구 | 포트 | 용도 |
-|---------|------|------|------|
-| 1 (메인) | **Monolith** v0.12.0 | 9316 | 에디터 제어 전체 (1,125 액션 / 16 모듈) |
-| 2 (보조) | **UnrealClaude** v1.4.1 | 3000 | UE5.7 API 문서 컨텍스트 (11개), C++ 코딩 어시스턴트 |
-| 3 (확장) | **runreal** | stdio | Python 스크립트 자동화, UAF 대비 |
-| 4 (특수) | **ChiR24/Unreal_mcp** | — | Cloth 시뮬레이션 (Chaos Cloth 유일 지원) |
+### UE 직접 제어 (3개)
+
+| 우선순위 | 도구 | 포트/방식 | 용도 |
+|---------|------|----------|------|
+| 1 (메인) | **Monolith** | HTTP `localhost:9316` | 에디터 제어 전체 (1,226 액션 / 16 모듈, 2026-05 기준) |
+| 2 (보조) | **unrealclaude-bridge** (UnrealClaude v1.4.1) | Node bridge + `localhost:3000` | UE5.7 API 문서 컨텍스트 (11개), C++ 코딩 어시스턴트 |
+| 3 (확장) | **unreal-mcp** (runreal) | `npx @runreal/unreal-mcp` | Python 스크립트 자동화, UAF 대비 |
+
+### 보조 MCP (3개)
+
+| 도구 | 방식 | 용도 |
+|------|------|------|
+| **context7** | `npx @upstash/context7-mcp` | 외부 라이브러리/프레임워크 docs (UE 외부) |
+| **maya** | local Python (`C:/Dev/MayaMCP/`) | Maya 제어 (Groom 셋업) |
+| **confluence** | `npx @aashari/mcp-server-atlassian-confluence` | 회사 위키 (shiftupcorp.atlassian.net) |
 
 ## 통합 작업 환경
 
 Claude Code 실행 위치: `C:\dev\Sanjuk-Unreal` (루트)
 
-- `.mcp.json` — MCP 서버 3개 등록 (monolith, unreal-mcp, unrealclaude-bridge)
+- `.mcp.json` — MCP 서버 6개 등록 (monolith, unreal-mcp, unrealclaude-bridge, context7, maya, confluence)
 - `.claude/settings.local.json` — Claude Code 로컬 설정
 - `.gitignore` — UE5 바이너리/임시 파일 제외
 
