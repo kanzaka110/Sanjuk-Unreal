@@ -397,6 +397,79 @@ class MonolithClient:
             ),
         }
 
+    # ── 시각 검증 / 스크린샷 ──────────────────────────────────────────────
+    def screenshot(
+        self,
+        resolution: tuple[int, int] = (1920, 1080),
+        label: str = "",
+        sb2_project_root: str = r"E:\Perforce\SB2\Workspace\Internal\SB2",
+        copy_to: str | None = None,
+    ) -> dict:
+        """현재 viewport (또는 PIE) HighResShot 캡처.
+
+        흐름:
+          1. editor.run_console_command("HighResShot WxH") 호출
+          2. <project>/Saved/Screenshots/WindowsEditor/HighresScreenshot*.png 폴링
+          3. 최근 파일 path 반환 (copy_to 지정 시 그쪽으로 복사 + rename)
+
+        AI 가 결과 path 를 `Read` 로 multimodal 분석 가능. [[feedback-visual-mesh-over-anim-rec]]
+        의 "시각이 진짜 기준" 원칙 자동화.
+
+        한계:
+          - PIE 가 안 돌면 에디터 viewport (보통 빈 레벨) 만 캡처
+          - PC_01 캐릭터 시각 검증은 PIE 시작 후 호출 필수
+          - SB2 P4 워크스페이스 외 경로면 sb2_project_root 인자로 override
+        """
+        import os
+        import shutil
+        import time
+        from datetime import datetime
+
+        screenshots_dir = os.path.join(
+            sb2_project_root, "Saved", "Screenshots", "WindowsEditor"
+        )
+        before = {
+            f: os.path.getmtime(os.path.join(screenshots_dir, f))
+            for f in (os.listdir(screenshots_dir) if os.path.isdir(screenshots_dir) else [])
+            if f.lower().endswith(".png")
+        }
+        t_start = time.time()
+        cmd_result = self.editor(
+            "run_console_command", command=f"HighResShot {resolution[0]}x{resolution[1]}"
+        )
+        # 새 파일 폴링 (최대 5초)
+        new_path = None
+        for _ in range(50):
+            time.sleep(0.1)
+            if not os.path.isdir(screenshots_dir):
+                continue
+            for f in os.listdir(screenshots_dir):
+                if not f.lower().endswith(".png"):
+                    continue
+                p = os.path.join(screenshots_dir, f)
+                mt = os.path.getmtime(p)
+                if mt > t_start - 1 and (f not in before or mt > before[f] + 0.1):
+                    new_path = p
+                    break
+            if new_path:
+                break
+
+        result = {
+            "command_result": cmd_result,
+            "resolution": list(resolution),
+            "label": label,
+            "captured_path": new_path,
+            "elapsed_seconds": round(time.time() - t_start, 2),
+        }
+        if new_path and copy_to:
+            os.makedirs(copy_to, exist_ok=True)
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            slug = f"{timestamp}{'_' + label if label else ''}.png"
+            dest = os.path.join(copy_to, slug)
+            shutil.copy2(new_path, dest)
+            result["copied_to"] = dest
+        return result
+
     def rollback(self, timestamp_or_label: str, dry_run: bool = True) -> dict:
         """백업의 변수 default 값으로 복원. dry_run=True 면 적용 계획만 출력.
 

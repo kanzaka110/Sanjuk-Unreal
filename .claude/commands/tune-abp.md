@@ -40,6 +40,18 @@ Agent tool 의 `subagent_type=animbp-tuner` 로 호출. prompt 에 다음 포함
 - after-dump + diff
 - 결과 보고 (변경 항목 + side effect 가능성)
 
+## 시각 검증 (선택, 사용자 호소 영역에 권장)
+
+[[feedback-visual-mesh-over-anim-rec]] — "시각이 진짜 기준" 원칙. ANIM_REC 수치 검증만으로 부족한 경우:
+
+```bash
+py scripts/screenshot.py --before-after <label> --copy dumps/screenshots
+```
+- 사용자 PIE 시작 → before 캡처 → 변경 적용 → after 캡처
+- AI 가 두 PNG `Read` 로 multimodal 비교
+
+상세: [[reference-visual-verification]]
+
 ## 사용 안 할 때
 
 - 처방 없이 사용자가 직접 값 변경하고 싶다 → 직접 monolith.blueprint_query 호출 (또는 scripts/monolith_helpers.py)
