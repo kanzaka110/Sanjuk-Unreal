@@ -454,11 +454,19 @@ class MonolithClient:
             if new_path:
                 break
 
+        # viewport 정보 동시 dump (카메라 자동 이동은 Python plugin 필요라 불가,
+        # 대신 캡처 시점 카메라 메타 저장 → before/after 비교 시 카메라 변동 자동 감지)
+        try:
+            viewport = self.editor("get_viewport_info")
+        except MonolithError:
+            viewport = None
+
         result = {
             "command_result": cmd_result,
             "resolution": list(resolution),
             "label": label,
             "captured_path": new_path,
+            "viewport_info": viewport,
             "elapsed_seconds": round(time.time() - t_start, 2),
         }
         if new_path and copy_to:
@@ -468,7 +476,56 @@ class MonolithClient:
             dest = os.path.join(copy_to, slug)
             shutil.copy2(new_path, dest)
             result["copied_to"] = dest
+            # viewport_info 메타도 PNG 옆에 .json 저장
+            if viewport is not None:
+                import json
+                meta_path = os.path.splitext(dest)[0] + ".camera.json"
+                with open(meta_path, "w", encoding="utf-8") as f:
+                    json.dump(viewport, f, indent=2, ensure_ascii=False)
+                result["camera_meta_path"] = meta_path
         return result
+
+    @staticmethod
+    def compare_camera(before_meta_path: str, after_meta_path: str, tol: float = 1.0) -> dict:
+        """before/after .camera.json 비교. 거리/회전 차이 + 변동 여부.
+
+        tol 단위:
+          - location: cm
+          - rotation: degree
+          - fov: degree
+
+        반환:
+          {drift_location_cm, drift_rotation_deg, drift_fov_deg, moved, warning}
+        """
+        import json
+        import math
+
+        with open(before_meta_path, "r", encoding="utf-8") as f:
+            b = json.load(f)
+        with open(after_meta_path, "r", encoding="utf-8") as f:
+            a = json.load(f)
+
+        bl = b.get("camera_location") or [0, 0, 0]
+        al = a.get("camera_location") or [0, 0, 0]
+        br = b.get("camera_rotation") or [0, 0, 0]
+        ar = a.get("camera_rotation") or [0, 0, 0]
+
+        dist = math.sqrt(sum((al[i] - bl[i]) ** 2 for i in range(3)))
+        rot_deltas = [abs(ar[i] - br[i]) for i in range(3)]
+        rot_max = max(rot_deltas) if rot_deltas else 0.0
+        fov_delta = abs((a.get("fov") or 0) - (b.get("fov") or 0))
+
+        moved = dist > tol or rot_max > tol or fov_delta > tol
+        return {
+            "drift_location_cm": round(dist, 2),
+            "drift_rotation_deg": [round(d, 2) for d in rot_deltas],
+            "drift_fov_deg": round(fov_delta, 2),
+            "moved": moved,
+            "warning": (
+                "⚠ 카메라가 이동했음 — mesh 차이가 진짜 변경이 아닌 카메라 이동 영향일 수 있음"
+                if moved else None
+            ),
+        }
 
     def rollback(self, timestamp_or_label: str, dry_run: bool = True) -> dict:
         """백업의 변수 default 값으로 복원. dry_run=True 면 적용 계획만 출력.

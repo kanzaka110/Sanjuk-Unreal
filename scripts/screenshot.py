@@ -85,6 +85,20 @@ def main() -> int:
             sb2_project_root=args.sb2_root, copy_to=copy_dir,
         )
         print(f"  ✓ {after.get('copied_to') or after.get('captured_path')}")
+
+        # 카메라 변동 자동 비교
+        if before.get("camera_meta_path") and after.get("camera_meta_path"):
+            cmp_result = MonolithClient.compare_camera(
+                before["camera_meta_path"], after["camera_meta_path"]
+            )
+            print(f"\n[camera drift]")
+            print(f"  location : {cmp_result['drift_location_cm']} cm")
+            print(f"  rotation : {cmp_result['drift_rotation_deg']} deg")
+            print(f"  fov      : {cmp_result['drift_fov_deg']} deg")
+            if cmp_result["warning"]:
+                print(f"  {cmp_result['warning']}")
+            else:
+                print(f"  ✓ 카메라 동일 — mesh 차이가 진짜 변경")
         return 0
 
     result = cli.screenshot(
