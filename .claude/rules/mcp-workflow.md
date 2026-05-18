@@ -6,19 +6,31 @@
 2. **UnrealClaude** (localhost:3000) — UE5 API 문서 컨텍스트, C++ 참조용
 3. **runreal** (stdio) — Python 스크립트 자동화, 배치 작업
 
-## Monolith 모듈 (v0.12.0, 1,125 액션)
+## Monolith 도메인 (v0.12.1, 893 액션 — 2026-05-18 measured)
 
-| 모듈 | 액션 수 | 용도 |
-|------|---------|------|
-| Animation | 115 | AnimSequence, Montage, BlendSpace, ABP, State Machine |
-| Blueprint | 88 | 그래프 편집, 변수, 리플리케이션 |
-| Material | 57 | 머티리얼 함수, 파라미터 |
-| Niagara | 96 | 파티클, 이미터, 다이나믹 인풋 |
-| MonolithMesh | 242 | 레벨 디자인, 공간 쿼리, 프로시저럴 지오메트리 |
-| MonolithGAS | 130 | 어빌리티, 어트리뷰트, 게임플레이 이펙트 |
-| MonolithAI | 229 | BT, Blackboard, StateTree, EQS, Perception |
-| MonolithUI | 42 | 위젯 블루프린트, UI 템플릿 |
-| MonolithLogicDriver | 66 | 상태 머신 생성/제어 |
+`monolith_discover()` 응답 기반 — 갱신은 `py scripts/save_discover_snapshot.py`.
+
+| 도메인 | 액션 수 | 용도 |
+|------|---:|------|
+| ai | 218 | BT, Blackboard, StateTree, EQS, Perception, Mass, Smart Object, navmesh |
+| mesh | 197 | 레벨 디자인, 공간 쿼리, 프로시저럴, blockout, prefab, LOD, navmesh |
+| animation | 116 | AnimSequence, Montage, BlendSpace, ABP, SM, PSD/PoseSearch, Control Rig |
+| niagara | 97 | 파티클, 이미터, 다이나믹 인풋, NPC, Effect Type |
+| blueprint | 88 | 그래프 편집, 변수, 노드, CDO, 컴파일 |
+| material | 57 | 머티리얼 그래프, 함수, 인스턴스 |
+| ui | 42 | 위젯 블루프린트, UI 템플릿, 접근성 |
+| editor | 25 | 빌드/로그/scene preview/console command/asset CRUD |
+| character | 15 | 캐릭터 데이터, MovementParams, stats table |
+| source | 11 | UE 소스 read/find_references/callers/callees |
+| enhanced_input | 8 | InputAction, MappingContext, Trigger, Modifier |
+| config | 6 | INI 설정 resolve/explain/diff |
+| project | 6 | search/find_references/dependencies |
+| monolith | 4 | discover, status, update, reindex (메타) |
+| scripting | 3 | execute_script, history, cleanup |
+
+**Optional (not installed):** combograph (ComboGraph 플러그인 필요, Fab marketplace)
+
+**참고:** 이전 표의 MonolithGAS(130) / MonolithLogicDriver(66) 도메인은 v0.12.1 SB2 빌드에 **없음**.
 
 ## 액션 패턴
 

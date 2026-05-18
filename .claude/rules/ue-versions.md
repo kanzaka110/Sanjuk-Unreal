@@ -11,7 +11,7 @@
 ## UE 5.6 → 5.7 주요 변경
 
 - **AnimNext 정식화** — UAF 프로덕션 사용 가능 수준
-- **Monolith 호환** — MCP 기반 AI 에디터 제어 (v0.12.0)
+- **Monolith 호환** — MCP 기반 AI 에디터 제어 (v0.12.1 — 893 액션 / 15 도메인, 2026-05-18 measured)
 - **StateTree 개선** — AI 상태 관리 강화, Logic Driver 연동
 - **Chaos Cloth 개선** — 성능 최적화, 풍력 시뮬레이션 정밀도
 - **MetaHuman 5.7** — 신규 바디 타입, 페이셜 개선

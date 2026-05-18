@@ -32,7 +32,7 @@ Sanjuk-Unreal/
 ### UE5 프로젝트 (별도 관리, 이 레포에 포함하지 않음)
 - **SB2** — SHIFTUP SB2 메인 프로젝트 (커스텀 UE 5.7.4)
   - 경로: `E:\Perforce\SB2\Workspace\Internal\SB2\SB2.uproject`
-  - Monolith (1,226 액션 / 16 모듈, 2026-05 기준) + UnrealClaude (포트 3000)
+  - Monolith v0.12.1 (893 액션 / 15 도메인, 2026-05-18 measured) + UnrealClaude (포트 3000)
 - **GameAnimationSample (GASP)** — Epic 공식 MM 샘플 + DynamicAdditiveOverlay 예제
   - 경로: `C:\Users\SHIFTUP\Documents\Unreal Projects\GameAnimationSample`
 
@@ -57,7 +57,7 @@ Sanjuk-Unreal/
 
 | 우선순위 | 도구 | 포트/방식 | 용도 |
 |---------|------|----------|------|
-| 1 (메인) | **Monolith** | HTTP `localhost:9316` | 에디터 제어 전체 (1,226 액션 / 16 모듈, 2026-05 기준) |
+| 1 (메인) | **Monolith** | HTTP `localhost:9316` | 에디터 제어 전체 (v0.12.1 — 893 액션 / 15 도메인, 2026-05-18 measured) |
 | 2 (보조) | **unrealclaude-bridge** (UnrealClaude v1.4.1) | Node bridge + `localhost:3000` | UE5.7 API 문서 컨텍스트 (11개), C++ 코딩 어시스턴트 |
 | 3 (확장) | **unreal-mcp** (runreal) | `npx @runreal/unreal-mcp` | Python 스크립트 자동화, UAF 대비 |
 

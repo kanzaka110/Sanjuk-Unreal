@@ -64,6 +64,37 @@
 5. editor_query("simulate") → PIE에서 결과 확인
 ```
 
+## 매크로 6: Groom Maya→UE 파이프라인 (cross-MCP)
+
+목표: Maya XGen Groom 을 UE GroomAsset 으로 import + 메타 cross-check + Physics 검증.
+
+전제: maya MCP + Monolith MCP 둘 다 응답 중.
+
+```
+1. (Maya) mcp__maya__scene_open → Groom 작업 씬 로드
+2. (Maya) mcp__maya__dump_groom_metadata(verbose=True)
+   → xgen_legacy[] / interactive_groom[] / alembic_attrs[] 확인
+   → groom_guides / groom_root_uv / groom_group_id schema 일치 검증
+3. (외부) Maya 에서 Alembic 익스포트 (.abc) — 자동화 미지원, 수동 또는 Maya 스크립트
+4. (UE) Monolith editor_query("list_assets",
+        directory="/Game/Art/Character/PC/<TARGET>/Hair",
+        class_filter="GroomAsset") → 기존 Groom 자산 확인
+5. (UE) Monolith editor_query("get_asset_info",
+        asset_path="<Groom>", include_properties=True)
+   → 현재 PhysicsAsset / BindingAsset / Material 슬롯 확인
+6. (UE) Monolith blueprint_query("set_cdo_property", ...) 또는
+        editor_query("set_asset_property", ...) 로 그룹 파라미터 조정
+   → 메모리 [[reference-groom-physics-params]] 의 CosseratRods 솔버 권장값 참조
+7. (UE) Monolith animation_query("get_physics_asset_info") → 콜리전 검증
+   → [[feedback-project-collision-requires-physassets-review]] 의 ProjectCollision=True 시
+     PhysAsset 캡슐이 메시 외부로 빠지는지 확인
+8. (UE) PIE 에서 헤어 시뮬 — DrawDebug 또는 콘솔 `r.HairStrands.DebugMode 6`
+```
+
+주의:
+- [[project-pc01-hair-gravity-bug]] 처럼 Grp 별 Gravity / BendStiffness 가 다른 케이스 → 6단계에서 그룹 단위 set
+- Maya 에서 Binding asset 이 Original 메시 참조 중이면 UE에서 강제 re-bind 필요 (수동)
+
 ## 매크로 사용 원칙
 
 - 각 단계 실행 후 결과 확인 (실패 시 즉시 중단 + 원인 분석)

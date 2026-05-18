@@ -43,7 +43,23 @@
 1. `~/.claude/projects/C--dev-Sanjuk-Unreal/memory/MEMORY.md` 존재 확인
 2. 메모리 파일 개수 및 마지막 수정일 확인
 
-### 5단계: 결과 리포트
+### 5단계: Monolith 액션 카탈로그 추세
+
+Monolith 가 1단계에서 ✅ 일 때만 실행. ❌ 면 스킵.
+
+1. `py scripts/save_discover_snapshot.py` 실행 → `.claude/state/action_catalog.json` 갱신 + `catalog_history/catalog_<timestamp>.json` 스냅샷.
+2. 직전 스냅샷과 비교 — 도메인 / 액션 추가·제거 감지:
+   ```bash
+   ls -t .claude/state/catalog_history/*.json | head -2
+   ```
+   두 파일 diff 가 의미 있으면 새 액션 enumerate 후 사용자에게 보고. 없으면 한 줄로 "변동 없음" 표시.
+3. (선택) `py scripts/analyze_action_usage.py` → `action_usage.json` 갱신. scripts/ 가 새로 추가된 후 호출 분포 변화 추적.
+4. 카운트 변화 시 다음 문서 stale 알림:
+   - `CLAUDE.md` (액션 수 두 곳)
+   - `.claude/rules/mcp-workflow.md` (도메인 표)
+   - `.claude/rules/ue-versions.md` (Monolith 버전)
+
+### 6단계: 결과 리포트
 
 모든 점검 결과를 단일 테이블로 출력:
 
@@ -58,8 +74,15 @@
 | Git | 로컬 상태 | clean/dirty | — |
 | Git | 원격 동기화 | 최신/N커밋 뒤처짐 | — |
 | 메모리 | 파일 수 | N개 | — |
+| 카탈로그 | 액션 수 / 도메인 | N/M (Δ vs 직전) | — |
+| MCP 사용률 | monolith / unrealclaude / runreal / maya / context7 / confluence | 사용 / 등록 | stale (3개월+ 미호출) MCP 표시 |
 
-### 6단계: 권장 조치
+**MCP 사용률 산출 (간단 휴리스틱):**
+- `grep -l "mcp__<name>__\|<name>_query\|<name> MCP" scripts/ Tutorial/ .claude/ Briefing/ memory/` 매칭 파일 수
+- 0 매칭 = **stale**, 3개월 이상 갱신 없으면 빨간 알림
+- 등록만 되고 사용 흔적 0인 MCP는 `.mcp.json` 정리 후보로 표시
+
+### 7단계: 권장 조치
 
 ❌ 항목이 있으면 각각에 대해 복구 방법 제시:
 - MCP 실패 → `/recover` 명령어 안내
