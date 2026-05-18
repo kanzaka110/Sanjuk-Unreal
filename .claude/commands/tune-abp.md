@@ -13,7 +13,13 @@ Inspector 가 제시한 처방을 **실제 ABP 에셋에 적용**. Monolith HTTP
 
 1. **Inspector 처방이 반드시 선행** — 단독 호출 금지. `/inspect-abp` 보고서 없으면 거부
 2. **dry-run 옵션 명시** — 어떤 변경이 일어날지 사전 출력
-3. **백업 자동 생성 확인** — 변경 전 전체 그래프 dump (변수, 노드 ID, 핀 연결) 보존
+3. **백업 자동 생성 (필수)** — 변경 직전 다음 한 줄 실행 후 결과 path 를 prompt 에 포함:
+   ```bash
+   py scripts/abp_backup.py backup <asset> <간략한_라벨>
+   ```
+   - 5종 dump 묶음 (abp_info/state_machines/transitions/variables) `.claude/state/backups/<ASSET>/<TIMESTAMP>_<label>/` 보존
+   - 변경 후 문제 발생 시 `py scripts/abp_backup.py restore <asset> <label> --apply` 로 변수 default 복원
+   - 노드 추가/삭제, transition rule chain 변경은 자동 복원 불가 → 사용자 에디터 수동
 4. **save_asset 실패 가능성 알림** — P4 잠금이면 사용자 Ctrl+S 안내 ([[project-pc01-psd-gmt-continuing-bias]] 학습)
 
 ## 실행 지침

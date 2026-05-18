@@ -261,6 +261,212 @@ class MonolithClient:
             out["save"] = {"error": str(exc), "hint": "P4 잠금 가능 — 에디터 Ctrl+S"}
         return out
 
+    # ── 백업 / 롤백 ─────────────────────────────────────────────────────
+    @staticmethod
+    def _asset_slug(asset: str) -> str:
+        return asset.rsplit("/", 1)[-1].split(".")[0]
+
+    def _backup_root(self) -> str:
+        import os
+
+        here = os.path.dirname(os.path.abspath(__file__))
+        repo = os.path.dirname(here)
+        return os.path.join(repo, ".claude", "state", "backups", self._asset_slug(self.asset))
+
+    def backup(self, label: str = "") -> dict:
+        """현재 ABP 상태 5종 dump 묶음 저장. timestamp + label 디렉토리.
+
+        구성: abp_info / state_machines / transitions / variables / graphs(목록만)
+        용도: Tuner 변경 적용 직전 자동 호출. 변경 후 rollback 가능.
+        """
+        import json
+        import os
+        from datetime import datetime
+
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        slug = timestamp + (f"_{label}" if label else "")
+        out_dir = os.path.join(self._backup_root(), slug)
+        os.makedirs(out_dir, exist_ok=True)
+
+        snapshot: dict[str, Any] = {
+            "_meta": {
+                "asset": self.asset,
+                "timestamp": timestamp,
+                "label": label,
+                "created_at": datetime.now().isoformat(),
+            },
+            "abp_info": self.get_abp_info(),
+            "state_machines": self.get_state_machines(),
+            "transitions": self.get_transitions(),
+            "variables": self.get_variables(),
+        }
+        for key, data in snapshot.items():
+            if key == "_meta":
+                continue
+            with open(os.path.join(out_dir, f"{key}.json"), "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+        with open(os.path.join(out_dir, "_meta.json"), "w", encoding="utf-8") as f:
+            json.dump(snapshot["_meta"], f, indent=2, ensure_ascii=False)
+
+        return {
+            "path": out_dir,
+            "timestamp": timestamp,
+            "label": label,
+            "asset": self.asset,
+            "files": 5,
+        }
+
+    def list_backups(self) -> list[dict]:
+        """이 asset 에 대한 백업 목록 (timestamp 역순)."""
+        import json
+        import os
+
+        root = self._backup_root()
+        if not os.path.isdir(root):
+            return []
+        out = []
+        for name in sorted(os.listdir(root), reverse=True):
+            meta_path = os.path.join(root, name, "_meta.json")
+            if not os.path.isfile(meta_path):
+                continue
+            with open(meta_path, "r", encoding="utf-8") as f:
+                meta = json.load(f)
+            meta["dir"] = os.path.join(root, name)
+            out.append(meta)
+        return out
+
+    def diff_against_backup(self, timestamp_or_label: str) -> dict:
+        """현재 dump vs 백업 비교. 변수 default / SM transition count / graph 노드 수 차이 요약."""
+        import json
+        import os
+
+        target_dir = None
+        for entry in self.list_backups():
+            name = os.path.basename(entry["dir"])
+            if timestamp_or_label in name:
+                target_dir = entry["dir"]
+                break
+        if not target_dir:
+            raise MonolithError(f"백업 {timestamp_or_label!r} 못 찾음")
+
+        with open(os.path.join(target_dir, "abp_info.json"), "r", encoding="utf-8") as f:
+            old_info = json.load(f)
+        with open(os.path.join(target_dir, "variables.json"), "r", encoding="utf-8") as f:
+            old_vars = json.load(f)
+        with open(os.path.join(target_dir, "state_machines.json"), "r", encoding="utf-8") as f:
+            old_sms = json.load(f)
+
+        new_info = self.get_abp_info()
+        new_vars = self.get_variables()
+        new_sms = self.get_state_machines()
+
+        def var_default_map(payload: dict) -> dict[str, Any]:
+            out: dict[str, Any] = {}
+            for v in payload.get("variables", []) if isinstance(payload, dict) else []:
+                if isinstance(v, dict):
+                    out[v.get("name", "?")] = v.get("default")
+            return out
+
+        old_defaults = var_default_map(old_vars)
+        new_defaults = var_default_map(new_vars)
+
+        added_vars = sorted(set(new_defaults) - set(old_defaults))
+        removed_vars = sorted(set(old_defaults) - set(new_defaults))
+        changed_vars = sorted(
+            n for n in (set(old_defaults) & set(new_defaults))
+            if old_defaults[n] != new_defaults[n]
+        )
+
+        return {
+            "backup_dir": target_dir,
+            "abp_meta_changed": {
+                "variable_count": [old_info.get("variable_count"), new_info.get("variable_count")],
+                "graph_count":    [old_info.get("graph_count"),    new_info.get("graph_count")],
+                "sm_count":       [old_info.get("state_machine_count"), new_info.get("state_machine_count")],
+            },
+            "variables_added": added_vars,
+            "variables_removed": removed_vars,
+            "variables_changed_default": changed_vars,
+            "sm_transition_count_old": sum(
+                sm.get("transition_count", 0)
+                for sm in old_sms.get("state_machines", [])
+            ),
+            "sm_transition_count_new": sum(
+                sm.get("transition_count", 0)
+                for sm in new_sms.get("state_machines", [])
+            ),
+        }
+
+    def rollback(self, timestamp_or_label: str, dry_run: bool = True) -> dict:
+        """백업의 변수 default 값으로 복원. dry_run=True 면 적용 계획만 출력.
+
+        주의: 변수 default 복원만 안전. 노드/그래프 구조 복원은 사용자가 에디터에서 수동.
+        그래프 토폴로지 변경 (노드 add/remove) 은 본 메서드 범위 외.
+        """
+        diff = self.diff_against_backup(timestamp_or_label)
+        plan = {
+            "asset": self.asset,
+            "backup_dir": diff["backup_dir"],
+            "dry_run": dry_run,
+            "operations": [],
+            "unsupported": [],
+        }
+        # 변수 default 복원
+        import json
+        import os
+
+        with open(os.path.join(diff["backup_dir"], "variables.json"), "r", encoding="utf-8") as f:
+            old_vars = json.load(f)
+        old_defaults: dict[str, Any] = {}
+        for v in old_vars.get("variables", []) if isinstance(old_vars, dict) else []:
+            if isinstance(v, dict):
+                old_defaults[v.get("name", "?")] = v.get("default")
+
+        for vname in diff["variables_changed_default"]:
+            old_val = old_defaults.get(vname)
+            plan["operations"].append({
+                "type": "set_variable_default",
+                "variable": vname,
+                "to": old_val,
+            })
+
+        if diff["variables_added"]:
+            plan["unsupported"].append({
+                "type": "remove_variable_to_match_backup",
+                "variables": diff["variables_added"],
+                "reason": "신규 변수 자동 제거는 위험 — 사용자가 수동 결정",
+            })
+        if diff["variables_removed"]:
+            plan["unsupported"].append({
+                "type": "re_add_variable_with_default",
+                "variables": diff["variables_removed"],
+                "reason": "변수 type 정보 손실 가능 — 사용자가 수동 결정",
+            })
+        if diff["sm_transition_count_old"] != diff["sm_transition_count_new"]:
+            plan["unsupported"].append({
+                "type": "state_machine_transition_topology",
+                "delta": diff["sm_transition_count_new"] - diff["sm_transition_count_old"],
+                "reason": "SM transition 구조 복원은 Monolith 한계 — 사용자가 에디터 수동",
+            })
+
+        if not dry_run:
+            applied = []
+            for op in plan["operations"]:
+                if op["type"] == "set_variable_default":
+                    try:
+                        result = self.bp(
+                            "set_variable_defaults",
+                            variable_name=op["variable"],
+                            default_value=op["to"],
+                        )
+                        applied.append({"op": op, "result": result})
+                    except MonolithError as exc:
+                        applied.append({"op": op, "error": str(exc)})
+            plan["applied"] = applied
+            plan["commit"] = self.commit()
+
+        return plan
+
 
 # ── 모듈 단독 실행: 헬퍼 동작 smoke test ────────────────────────────────
 if __name__ == "__main__":
