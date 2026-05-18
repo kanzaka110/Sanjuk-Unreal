@@ -9,10 +9,12 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SNAPSHOT_DIR="$SCRIPT_DIR/snapshot"
 
-# 현재 사용자 홈 (Windows Git Bash: /c/Users/ohmil)
+# 현재 사용자 홈 (Windows Git Bash: /c/Users/ohmil 또는 /c/Users/SHIFTUP)
 USER_HOME="$HOME"
 # Windows 스타일 경로 변환
-USER_HOME_WIN=$(echo "$USER_HOME" | sed 's|^/\([a-z]\)/|/\1/|')
+USER_HOME_WIN=$(echo "$USER_HOME" | sed 's|^/\([a-z]\)/|\U\1\E:/|')
+# 사용자명만 추출 (예: ohmil, SHIFTUP)
+USER_NAME=$(basename "$USER_HOME")
 
 echo "=== Claude Code 환경 백업 ==="
 echo "REPO_ROOT: $REPO_ROOT"
@@ -55,11 +57,13 @@ if [ -f "$SETTINGS_SRC" ]; then
     # 절대 경로를 플레이스홀더로 치환
     sed \
         -e "s|C:/dev/Sanjuk-Unreal|{{REPO_ROOT}}|g" \
+        -e "s|C:/Dev/Sanjuk-Unreal|{{REPO_ROOT}}|g" \
         -e "s|C:\\\\dev\\\\Sanjuk-Unreal|{{REPO_ROOT}}|g" \
-        -e "s|C:/Users/ohmil|{{USER_HOME}}|g" \
-        -e "s|C:\\\\Users\\\\ohmil|{{USER_HOME}}|g" \
-        -e "s|//c/Users/ohmil|{{USER_HOME_UNC}}|g" \
-        -e "s|C:/Users/ohmil/OneDrive/문서/Unreal Projects/MonolithTest|{{UE_PROJECT_ROOT}}|g" \
+        -e "s|C:\\\\Dev\\\\Sanjuk-Unreal|{{REPO_ROOT}}|g" \
+        -e "s|C:/Users/${USER_NAME}|{{USER_HOME}}|g" \
+        -e "s|C:\\\\Users\\\\${USER_NAME}|{{USER_HOME}}|g" \
+        -e "s|//c/Users/${USER_NAME}|{{USER_HOME_UNC}}|g" \
+        -e "s|C:/Users/${USER_NAME}/OneDrive/문서/Unreal Projects/MonolithTest|{{UE_PROJECT_ROOT}}|g" \
         "$SETTINGS_SRC" > "$SNAPSHOT_DIR/settings.local.json.tpl"
     echo "  → 템플릿 생성 완료"
 else
@@ -71,8 +75,8 @@ echo "[4/4] .mcp.json 템플릿 생성..."
 MCP_SRC="$REPO_ROOT/.mcp.json"
 if [ -f "$MCP_SRC" ]; then
     sed \
-        -e "s|C:/Users/ohmil/OneDrive/문서/Unreal Projects/MonolithTest|{{UE_PROJECT_ROOT}}|g" \
-        -e "s|C:\\\\Users\\\\ohmil\\\\OneDrive\\\\문서\\\\Unreal Projects\\\\MonolithTest|{{UE_PROJECT_ROOT}}|g" \
+        -e "s|C:/Users/${USER_NAME}/OneDrive/문서/Unreal Projects/MonolithTest|{{UE_PROJECT_ROOT}}|g" \
+        -e "s|C:\\\\Users\\\\${USER_NAME}\\\\OneDrive\\\\문서\\\\Unreal Projects\\\\MonolithTest|{{UE_PROJECT_ROOT}}|g" \
         "$MCP_SRC" > "$SNAPSHOT_DIR/mcp.json.tpl"
     echo "  → 템플릿 생성 완료"
 else
