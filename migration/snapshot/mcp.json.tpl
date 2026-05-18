@@ -10,10 +10,27 @@
     },
     "unrealclaude-bridge": {
       "command": "node",
-      "args": ["{{UE_PROJECT_ROOT}}/Plugins/UnrealClaude/Resources/mcp-bridge/index.js"],
+      "args": ["D:/Perforce/SB2/Workspace/Internal/SB2/Plugins/UnrealClaude/Resources/mcp-bridge/index.js"],
       "env": {
         "UNREAL_MCP_URL": "http://localhost:3000",
         "INJECT_CONTEXT": "true"
+      }
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
+    },
+    "maya": {
+      "command": "C:/Dev/MayaMCP/.venv/Scripts/python.exe",
+      "args": ["C:/Dev/MayaMCP/src/maya_mcp_server.py"]
+    },
+    "confluence": {
+      "command": "npx",
+      "args": ["-y", "@aashari/mcp-server-atlassian-confluence"],
+      "env": {
+        "ATLASSIAN_SITE_NAME": "shiftupcorp",
+        "ATLASSIAN_USER_EMAIL": "${CONFLUENCE_EMAIL}",
+        "ATLASSIAN_API_TOKEN": "${CONFLUENCE_API_TOKEN}"
       }
     }
   }

@@ -1,0 +1,21 @@
+{
+  "_comment": "계정/요금제 메타데이터 스냅샷 (PUBLIC 안전 — 식별자 마스킹됨). 백업일: 2026-05-18",
+  "accountUuid_masked": "4dce2265-****-****-****-1d063c1e4c52",
+  "organizationUuid_masked": "12e98244-****-****-****-0375e79dba86",
+  "userID_masked": "1ce0704e...437acd58",
+  "emailDomain": "shiftup.co.kr",
+  "organizationName": "Shift Up Corporation",
+  "organizationType": "claude_enterprise",
+  "organizationRole": "user",
+  "organizationRateLimitTier": "default_raven_enterprise",
+  "userRateLimitTier": "default_claude_zero",
+  "seatTier": "enterprise_usage_based",
+  "billingType": "stripe_subscription_contracted",
+  "hasExtraUsageEnabled": true,
+  "accountCreatedAt": "2026-04-13T07:27:03.395962Z",
+  "subscriptionCreatedAt": "2026-01-26T19:10:06.934731Z",
+  "claudeCodeFirstTokenDate": "2026-02-10T01:37:05.759413Z",
+  "firstStartTime": "2026-04-14T02:28:36.727Z",
+  "numStartups": 74,
+  "note_for_restore": "계정 변경 후 `claude login` → 위 organizationName / seatTier 일치 여부 확인. 사용량 상세는 console.anthropic.com 참조."
+}
