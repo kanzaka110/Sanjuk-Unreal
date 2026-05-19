@@ -102,3 +102,11 @@ GCP + 로컬 PC 두 세션 동시 운영. 모바일 claude.ai/code에서 접속.
 - 마크다운 파일명은 소문자와 하이픈 또는 숫자 접두사 사용
 - 새 튜토리얼/가이드 추가 시 해당 폴더의 README.md 또는 00_INDEX.md 업데이트
 - UE5 프로젝트 파일(Binaries, Intermediate, Saved, DerivedDataCache)은 커밋 금지
+
+## 토큰 효율 (Max plan 한도 절약)
+
+- **작업 단위로 `/clear`** — 한 세션 안에서 큰 dump가 누적되면 매 메시지 cache_read 비대. 작업 완료 후 새 세션
+- **대량 enumerate 자제** — Monolith `getall AnimInstance` (100+ entries), `monolith_discover()` 전체 등은 컨텍스트 폭발. 필요 부분만 query
+- **MCP 응답 필터링** — `get_graph_summary` (195 노드 풀 dump) 대신 `get_node_details` 로 노드 ID 명시 조회
+- **거대 메모리 Read 시 offset/limit** — 5,000 tok 이상 파일은 offset 지정으로 부분 read
+- **간단 작업은 Sonnet** — `/model claude-sonnet-4-6` 또는 명시. Opus는 복잡한 분석/그래프 작업만
