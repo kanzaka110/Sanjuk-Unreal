@@ -45,6 +45,8 @@ Briefing/_tmp/
 
 # ABP dump 백업 (Tuner/Inspector 작업 흔적)
 Saved/
+backups/
+scripts/backups/
 
 # 일회성 진단 dump (scripts/*.json)
 scripts/*.json
