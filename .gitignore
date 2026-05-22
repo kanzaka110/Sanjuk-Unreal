@@ -47,6 +47,7 @@ Briefing/_tmp/
 Saved/
 backups/
 scripts/backups/
+scripts/backup/
 
 # 일회성 진단 dump (scripts/*.json)
 scripts/*.json
