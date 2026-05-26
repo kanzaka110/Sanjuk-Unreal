@@ -32,6 +32,31 @@
 
 **참고:** 이전 표의 MonolithGAS(130) / MonolithLogicDriver(66) 도메인은 v0.12.1 SB2 빌드에 **없음**.
 
+## SB2 차단/주의 액션 (재시도 금지)
+
+SB2 licensee 빌드 특성상 아래 액션은 호출해도 실패하거나 위험하다. 매 세션 재발견하지 말 것.
+
+### 🔴 차단 (호출 금지 — 실패 확정)
+| 액션 | 이유 | 대체 |
+|------|------|------|
+| `source.*` (11액션) | Engine/Source DB 없는 licensee 빌드. `trigger_project_reindex`도 무효 | `cache/ue57/` 로컬 헤더 + 사내 CodeIndexClient MCP |
+| `scripting_query("execute_script", python)` | PythonScriptPlugin 비활성 (SB2.uproject 미등록) | runreal `editor_run_python` (별 프로세스) 또는 사용자 수동 실행 |
+
+### 🟡 한계 (부분만 가능)
+| 대상 | 한계 | 비고 |
+|------|------|------|
+| Chooser `ResultsStructs` | protected — 셀별 결과 시퀀스 매핑 불가 | 컬럼 메타/row count/disabled까지만. 정밀 매핑은 에디터 수동 inspect |
+| State Machine transition rule | sub-graph 미접근 | `get_transitions`로 rule 존재까지만 |
+| `save_asset` | P4 체크아웃 필요 시 실패 | 수동 저장 / P4 체크아웃 선행 |
+
+### ⚠ read-only도 무조건 안전하지 않다
+- **경로 sanitize 필수** — `//Game/...` 이중 슬래시는 read-only 호출이어도 **에디터 즉시 fatal crash** (2026-05-19 2회 발생). 모든 인풋 단일 슬래시 검증.
+- **`monolith_discover` 전체 / `getall` 100+ 금지** — 토큰 폭발. 항상 **targeted query**(asset_path 한정, property_names 명시)로.
+- **결과 크기 제한** — `get_cdo_properties` 전체 호출 금지(응답 중단), `get_graph_summary` 풀 dump 대신 `get_node_details` 노드 ID 명시.
+
+### 승인 전 금지 (write 액션)
+`create_* / add_* / remove_* / set_* / connect_* / disconnect_* / save_asset / rebuild_pose_search_index` 및 Chooser·PSD·ABP 변경은 **사용자 승인 전 실행 금지**. (Inspector는 read-only만, 변경은 Tuner가 승인 후)
+
 ## 액션 패턴
 
 ```

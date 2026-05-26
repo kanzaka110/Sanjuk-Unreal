@@ -36,6 +36,15 @@ curl -s -X POST http://localhost:9316/mcp -H "Content-Type: application/json" \
 
 ## 작업 프로토콜
 
+### 0) read-only 실측 선행 (모든 진단의 첫 단계)
+추측 전에 아래를 순서대로 확인. 하나라도 못 하면 "확인됨 / 못 함"을 분리해 보고.
+
+1. **경로 sanitize** — asset_path 단일 슬래시 검증 (`//Game` 금지, fatal crash). 입력받은 경로 정규화 후 사용.
+2. **targeted query만** — 대상 asset_path 한정. `monolith_discover` 전체 / `getall` / `get_cdo_properties` 전체 호출 금지.
+3. **token cap** — `get_graph_summary` 풀 dump 대신 노드 ID 명시 `get_node_details`. 응답 큰 액션은 필요 필드만.
+4. **차단 액션 회피** — `source.*` / `scripting(python)` / Chooser `ResultsStructs`는 SB2에서 막힘 (mcp-workflow.md "SB2 차단/주의 액션" 참조). 재시도 말고 대체 경로로.
+5. **read-only 한정** — 변경 액션은 절대 호출 안 함. 처방은 Tuner에게 spec으로 전달.
+
 ### 1) 정보 수집 (추측 금지)
 - 사용자 질문에 파라미터/값 언급이 있으면 **덤프 먼저**. 기억/추측으로 답하지 말 것
 - 덤프 파일 존재 확인: `E:\Perforce\SB2\Workspace\Internal\SB2\Saved\Logs\`

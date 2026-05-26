@@ -9,9 +9,6 @@
 세 서버 모두 동시에 확인:
 
 ```bash
-# Monolith
-curl -s -o /dev/null -w "%{http_code}" --connect-timeout 2 http://localhost:9316/mcp
-
 # UnrealClaude
 curl -s -o /dev/null -w "%{http_code}" --connect-timeout 2 http://localhost:3000
 
@@ -19,16 +16,23 @@ curl -s -o /dev/null -w "%{http_code}" --connect-timeout 2 http://localhost:3000
 which npx 2>/dev/null && echo "OK" || echo "MISSING"
 ```
 
+**Monolith는 `monolith_status` 액션으로 실측** (단순 포트 응답이 아니라 버전/액션수/프로젝트 확인):
+- MCP 노출 세션: `monolith_status()`
+- 미노출 세션: `curl -s -X POST http://localhost:9316/mcp -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"monolith_status","arguments":{}}}'`
+- 반환: `version` / `total_actions` / `namespaces` / `project_name` / `server_running`
+
 ### 2단계: Monolith 상세 (연결 성공 시만)
 
-Monolith가 응답하면 추가 정보 수집:
-1. `tools/list` 호출 → 사용 가능한 모듈 수 확인
-2. 현재 열린 프로젝트/레벨 정보 (가능 시)
+`monolith_status` 응답으로 헬스 판정:
+1. `server_running == true` 확인
+2. `total_actions` 기대치(≈900) 비교 → 현저히 적으면 부분 로드/인덱싱 미완 의심
+3. `project_name == "SB2"` 확인 (엉뚱한 프로젝트 연결 감지)
+4. ⚠ `monolith_discover` 전체 호출로 모듈 enumerate 하지 말 것 (토큰 폭발) — status 요약으로 충분
 
 ### 3단계: 한 줄 요약 출력
 
 ```
-🟢 Monolith (16모듈) | 🟢 UnrealClaude | 🟢 runreal — 모든 MCP 정상
+🟢 Monolith v0.12.1 (900액션/15도메인, SB2) | 🟢 UnrealClaude | 🟢 runreal — 모든 MCP 정상
 ```
 
 또는
