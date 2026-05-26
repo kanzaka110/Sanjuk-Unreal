@@ -110,3 +110,7 @@ GCP + 로컬 PC 두 세션 동시 운영. 모바일 claude.ai/code에서 접속.
 - **MCP 응답 필터링** — `get_graph_summary` (195 노드 풀 dump) 대신 `get_node_details` 로 노드 ID 명시 조회
 - **거대 메모리 Read 시 offset/limit** — 5,000 tok 이상 파일은 offset 지정으로 부분 read
 - **간단 작업은 Sonnet** — `/model claude-sonnet-4-6` 또는 명시. Opus는 복잡한 분석/그래프 작업만
+
+## 세션 시작 시 필수 확인
+- `~/claude-sync/session-bridge.md` 를 읽어서 다른 세션의 최근 작업을 파악할 것
+- 관련 메모리에 최신 digest 충돌/stale 항목이 있으면 최신 ground truth 우선

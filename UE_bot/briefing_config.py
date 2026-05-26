@@ -27,7 +27,10 @@ VALID_TAGS: list[str] = [
 ]
 
 DIFFICULTY_LEVELS = ["초급", "중급", "고급"]
-UE_VERSIONS = ["5.5", "5.6", "5.7", "5.8+"]
+UE_VERSIONS = ["5.5", "5.6", "5.7", "5.8", "6.0"]
+
+# 최우선 버전: 검색/분석/생성 전 단계에서 이 버전 정보를 우선함
+PRIORITY_VERSIONS = ["5.8", "6.0"]
 
 # 6개 검색 카테고리 (다중소스 검색용)
 SEARCH_SOURCES: dict[str, list[str]] = {

@@ -163,9 +163,9 @@ def upload_to_notion(notion: Client, database_id: str, data: dict) -> bool:
     if difficulty not in DIFFICULTY_LEVELS:
         difficulty = "중급"
 
-    ue_version = data.get("UE_버전", "5.7")
+    ue_version = data.get("UE_버전", "5.8")
     if ue_version not in UE_VERSIONS:
-        ue_version = "5.7"
+        ue_version = "5.8"
 
     tags = [t for t in data.get("태그", []) if t in VALID_TAGS]
 

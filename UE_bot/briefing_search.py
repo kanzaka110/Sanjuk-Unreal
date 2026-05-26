@@ -7,11 +7,13 @@ from dataclasses import dataclass, field
 from datetime import date, timedelta
 from pathlib import Path
 
-from briefing_config import CATEGORY_KEYWORDS, SEARCH_SOURCES
+from briefing_config import CATEGORY_KEYWORDS, PRIORITY_VERSIONS, SEARCH_SOURCES
 
 # UE 관련성 판별용 키워드 (하나라도 포함되면 관련 결과로 판정)
 _UE_RELEVANCE_TERMS = frozenset({
-    "unreal", "ue5", "ue4", "ue 5", "ue 4", "epic games", "언리얼",
+    "unreal", "ue5", "ue4", "ue 5", "ue 4", "ue6", "ue 6",
+    "unreal engine 6", "unreal 6", "ue 5.8", "ue5.8", "ue 6.0", "ue6.0",
+    "epic games", "언리얼",
     "blueprint", "블루프린트", "nanite", "lumen", "niagara", "metahuman",
     "sequencer", "control rig", "animation blueprint", "animgraph",
     "skeletal mesh", "morph target", "chaos", "fab.com", "fab marketplace",
@@ -90,8 +92,12 @@ def search_claude_cli(category: str, queries: list[str]) -> list[SourcedResult]:
 검색어:
 {chr(10).join(f'- {q}' for q in queries)}
 
+🔴 최우선: Unreal Engine 5.8 및 6.0 관련 정보를 반드시 먼저 검색하세요.
+- UE 5.8 / 6.0의 새 기능, 변경사항, 마이그레이션 정보가 가장 중요합니다.
+- 5.8/6.0 관련 결과가 있으면 다른 버전보다 우선 포함하세요.
+
 검색 우선순위:
-1. Epic Games 공식 블로그/문서/Unreal Fest/GDC 발표
+1. Epic Games 공식 블로그/문서/Unreal Fest/GDC 발표 (특히 5.8/6.0 관련)
 2. YouTube (Alex Forsythe, Ryan Laley, Matt Aspland 등 UE 유튜버)
 3. 80.lv, Reddit r/unrealengine 등 게임개발 커뮤니티
 4. GitHub 오픈소스, Fab 마켓플레이스 신규 에셋/플러그인
@@ -296,8 +302,15 @@ def build_queries(category: str) -> list[str]:
     """카테고리별 특화 키워드 기반으로 정밀 쿼리 생성."""
     keywords = CATEGORY_KEYWORDS.get(category, [category])
 
-    # 1순위: 카테고리 특화 쿼리 (가장 정밀)
+    # 0순위: UE 5.8 / 6.0 최우선 검색
     queries: list[str] = []
+    for ver in PRIORITY_VERSIONS:
+        queries.append(f"Unreal Engine {ver} {keywords[0]}")
+        queries.append(f"UE {ver} {category} new features")
+    queries.append(f"Unreal Engine 5.8 6.0 animation {keywords[0]}")
+    queries.append(f"언리얼 엔진 5.8 6.0 {category} 새 기능")
+
+    # 1순위: 카테고리 특화 쿼리 (가장 정밀)
     for kw in keywords[:3]:
         queries.append(f"UE5 {kw} new 2026")
         queries.append(f"Unreal Engine {kw} update")

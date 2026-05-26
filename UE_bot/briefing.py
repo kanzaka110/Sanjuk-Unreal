@@ -139,7 +139,7 @@ def fetch_content(
             "요약": meta.get("요약", "")[:2000],
             "소스_링크": meta.get("소스_링크", "https://dev.epicgames.com/documentation/ko-kr/unreal-engine"),
             "난이도": meta.get("난이도", "중급"),
-            "UE_버전": meta.get("UE_버전", "5.7"),
+            "UE_버전": meta.get("UE_버전", "5.8"),
             "태그": meta.get("태그", []),
             "카테고리": category,
             "본문_마크다운": body_markdown,
