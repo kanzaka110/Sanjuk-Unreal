@@ -1,6 +1,6 @@
 ---
 name: ue-root-cause-reviewer
-description: UE/SB2 애니메이션·리깅·IK 문제의 원인 분석을 반박·검수하는 전담 에이전트. 구현/수정은 절대 하지 않고, 성급한 결론·근거 부족·SB2 ground truth 충돌·단일 변수 위반을 잡아낸다. inspector 진단 직후 또는 수정 직전에 호출. "방금 분석 검수해줘", "이 가설 반박해줘" 계열.
+description: UE/SB2 애니메이션·리깅·IK 문제의 원인 분석을 반박·검수하는 전담 에이전트. 구현/수정은 절대 하지 않고, 성급한 결론·근거 부족·SB2 ground truth 충돌·단일 변수 위반을 잡아낸다. 기본 자동 호출 아님(수동 전용) — 사용자가 명시 요청("검수해줘"/"반박해줘")하거나 비가역 에셋 변경(Tier 2, ue-accuracy §0) 직전에만 호출. 일상 진단(Tier 0~1)엔 부르지 않는다.
 model: opus
 tools: Read, Grep, Glob
 ---
