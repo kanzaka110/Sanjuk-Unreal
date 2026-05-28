@@ -4,6 +4,87 @@ Groom Hair Manager는 **Cache로 Import된 Interactive Description**만 desc_sou
 
 > 출처: [Confluence — Groom Hair Manager](https://shiftupcorp.atlassian.net/wiki/spaces/SB2/pages/285638786/Groom+Hair+Manager) "사용 전 준비" 1번.
 
+## 0. XGen Scene Import (원본 자산 → Maya)
+
+01편 Preparation 에서 TA로부터 수령한 원본 자산을 작업 씬으로 가져온다. 받은 자산 형태에 따라 4가지 방식.
+
+### 0.1 케이스별 방법
+
+| 받은 자산 | 방법 | MEL |
+|---|---|---|
+| **.ma + xgen/ 폴더 (통씬)** ← 권장 | File > Open (Set Project 후) | `file -open -force "<path>.ma";` |
+| **.xgen 컬렉션만 (Legacy)** | XGen Window → File > **Import Collection** | `xgmImportCollection "<path>/collection.xgen" "" 0;` |
+| **Interactive Description (.xgip)** | XGen Interactive Groom Editor → File > **Import** | `xgmInteractiveImport -file "<path>.xgip";` |
+| **Cache (.abc)** | XGen → File > **Import Cache** | `xgmSplineCache -fileName "<path>.abc" -import 1;` |
+
+### 0.2 Set Project 선행 (필수)
+
+`${PROJECT}` 변수 해석 + xgen 데이터 폴더 경로 매칭에 사용. 안 하면 description은 보이지만 strand 0개.
+
+```mel
+// 1) 작업 폴더를 Maya Project로 등록
+setProject "C:/Users/SHIFTUP/Documents/maya/projects/PC_01_Hair";
+
+// 2) 씬 오픈
+file -open -force "C:/Users/SHIFTUP/Documents/maya/projects/PC_01_Hair/scenes/PC_01_Hair_v2_source.ma";
+```
+
+### 0.3 권장 폴더 구조 (TA에게 요청할 형태)
+
+```
+PC_01_Hair/                              ← Maya Project root
+├── workspace.mel
+├── scenes/
+│   └── PC_01_Hair_v2_source.ma          ← .ma 메인 (read-only)
+├── xgen/
+│   └── collections/
+│       └── <desc1>/
+│           ├── <desc1>.xgen
+│           └── <data>/                  ← guide curves, attribute maps
+└── ...
+```
+
+⚠ `xgen/collections/` 의 **데이터 폴더(`<data>/`) 까지 받아야** strand 복원 가능. .xgen 파일만 받으면 description은 뜨지만 strand 0개.
+
+### 0.4 검증
+
+```mel
+// Legacy XGen
+python("import xgenm as xg; print(xg.palettes())");
+python("import xgenm as xg; print(xg.descriptions('PC_01'))");
+python("import xgenm as xg; print(xg.boundGeometry('PC_01', 'hair_main'))");
+```
+
+또는 Claude Code 에서:
+
+```
+mcp__maya__dump_groom_metadata(verbose=True)
+```
+
+기대:
+- `xgen_legacy[].bound_geometry` 가 채워짐 (scalp_mesh 매칭)
+- 빈 배열이면 → 0.5 함정 절 확인
+
+### 0.5 함정 4가지
+
+| 함정 | 증상 | 해결 |
+|---|---|---|
+| `${PROJECT}` 경로 미해석 | description 보이는데 strand 0 | `setProject` 선행, 또는 XGen Window → Description 우클릭 → `Repair Paths` |
+| data 폴더 누락 | "Description has no point cloud" 워닝 | TA에게 `xgen/collections/<desc>/data/` 통째 재요청 |
+| scalp_mesh 미바인딩 | bound_geometry 빈 배열 | XGen Window → Description 선택 → `Bind to Geometry` → scalp_mesh |
+| XGen 플러그인 미로드 | Outliner에 description 안 보임 | Plug-in Manager → `xgenToolkit.mll` Loaded + Auto load |
+
+### 0.6 체크포인트 (0절 종료)
+
+- [ ] Set Project 완료 (`workspace.mel` 인식됨)
+- [ ] 씬 또는 컬렉션 import 성공
+- [ ] `xg.palettes()` 비어있지 않음
+- [ ] `xg.descriptions()` 5개 (PC_01 기준) 또는 의도한 개수
+- [ ] `xg.boundGeometry()` 가 scalp_mesh 가리킴
+- [ ] XGen Viewport 에서 strand 시각 확인
+
+OK면 → 1절 (Description → Interactive 변환) 진행.
+
 ## 1. Description → Interactive Description 변환
 
 ### 1.1 변환 직전 백업
