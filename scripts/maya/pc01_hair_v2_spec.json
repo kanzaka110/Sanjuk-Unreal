@@ -1,0 +1,84 @@
+{
+  "_schema": "PC_01_Hair_v2 — Maya Groom 자동화 spec",
+  "_notes": [
+    "Tutorial/PC01-Hair-Workflow/09-Automation.md 단일 출처.",
+    "이 spec은 desc_sources / guide_sources의 노드명이 Maya 씬에 존재해야 동작.",
+    "최초 실행 전 mcp__maya__groom_inspect_sfup() 으로 사내 모듈 함수 시그니처 검증.",
+    "그 다음 mcp__maya__groom_apply_spec(spec_json_path=..., dry_run=True) 로 dry-run."
+  ],
+
+  "asset_id": "PC_01_Hair_v2",
+  "maya_scene_save_as": "C:/Users/SHIFTUP/Documents/maya/projects/PC_01_Hair/scenes/PC_01_Hair_v2_export.ma",
+  "output_abc": "C:/Users/SHIFTUP/Documents/maya/projects/PC_01_Hair/cache/PC_01_Hair_v2.abc",
+
+  "scalp_mesh": "scalp_mesh",
+  "scalp_uv_set": "map1",
+
+  "xgen": {
+    "convert_to_interactive": true,
+    "cache_export": {
+      "current_frame_only": true,
+      "write_final_width": true,
+      "cache_dir": "C:/Users/SHIFTUP/Documents/maya/projects/PC_01_Hair/cache/desc/"
+    },
+    "isolate_original_into_group": "_ORIG_DO_NOT_USE"
+  },
+
+  "guide_curves": {
+    "source": "xgGuide",
+    "rebuild_long_curves": {
+      "enabled": true,
+      "spans_threshold": 252,
+      "target_spans": 32
+    },
+    "split_spline_in_groups": true
+  },
+
+  "groups": [
+    {
+      "group_id": 0,
+      "new_desc_name": "Hero",
+      "desc_sources": ["desc_grp0_hero_cache"],
+      "guide_sources": ["GuideCrv_grp0_hero"],
+      "_note": "Size16, hero strand. UE 측 SubSteps=32 / Iter=100"
+    },
+    {
+      "group_id": 1,
+      "new_desc_name": "Size8",
+      "desc_sources": ["desc_grp1_size8_cache"],
+      "guide_sources": ["GuideCrv_grp1_size8"]
+    },
+    {
+      "group_id": 2,
+      "new_desc_name": "SimOFF",
+      "desc_sources": ["desc_grp2_simoff_cache"],
+      "guide_sources": [],
+      "_note": "UE에서 EnableSimulation=False. guide 없어도 OK."
+    },
+    {
+      "group_id": 3,
+      "new_desc_name": "Size4",
+      "desc_sources": ["desc_grp3_size4_cache"],
+      "guide_sources": ["GuideCrv_grp3_size4"]
+    },
+    {
+      "group_id": 4,
+      "new_desc_name": "Thick",
+      "desc_sources": ["desc_grp4_thick_cache"],
+      "guide_sources": ["GuideCrv_grp4_thick"],
+      "_note": "뒷머리 그룹. UE Gravity=-981 강제 (원본 -1 버그 금지)."
+    }
+  ],
+
+  "validation": {
+    "expect_unique_group_id": true,
+    "expect_unique_new_desc_name": true,
+    "allow_empty_guides_for_group_ids": [2],
+    "expect_root_uv_distribution": "non_corner_clustered"
+  },
+
+  "post_export_verify": {
+    "run_dump_groom_metadata": true,
+    "save_verify_json": "C:/Dev/Sanjuk-Unreal/dumps/maya_groom_verify_pc01_hair_v2.json"
+  }
+}
