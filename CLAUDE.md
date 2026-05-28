@@ -14,7 +14,8 @@ Sanjuk-Unreal/
 │   ├── AnimNext-Migration-Guide/  # AnimNext 마이그레이션 가이드 (13편)
 │   ├── UAF-Setup-Guide/          # UAF 셋업 가이드 (12편)
 │   ├── Chaos-Cloth-Guide/        # Chaos Cloth & Physics Asset 가이드 (10편)
-│   └── MayaMCP-Groom-Setup/      # Maya MCP + Groom 셋업 가이드
+│   ├── MayaMCP-Groom-Setup/      # Maya MCP + Groom 셋업 가이드
+│   └── PC01-Hair-Workflow/       # PC_01_Hair_01 신규 제작 워크플로우 (10편, Maya→UE 자동화 포함)
 ├── Briefing/                      # 데일리 브리핑 아카이브 (날짜별)
 ├── UE_bot/                        # 텔레그램 봇 + 브리핑 자동화 (briefing.py v2)
 ├── shared_config.py               # 봇 공통 설정 (Claude CLI, 환경변수 검증)
