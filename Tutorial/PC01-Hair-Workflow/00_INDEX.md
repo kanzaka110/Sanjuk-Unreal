@@ -32,6 +32,8 @@ Maya 원본 XGen 씬에서부터 UE5 Groom Asset + SB2 커스텀 Physics(SBStabl
 
 > 02~05 를 자동화하려면 09편 우선. 수동 절차는 그대로 02~04 따라가도 됨.
 
+> 📌 **사내 공식 SOP 요약본**: [Groom-Hair-Works-Process](Groom-Hair-Works-Process.md) — Confluence "Groom Hair Works Process"(채승호) 정리본. 6단계 한눈에 보기 + 메뉴 경로 빠른 참조.
+
 ## 산출물
 
 ```
