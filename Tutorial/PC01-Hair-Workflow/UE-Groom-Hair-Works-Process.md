@@ -63,7 +63,32 @@ Build. **Maya root_uv 계산에 쓴 UV Set 과 같은 UV 기준**이어야 뿌�
 | Collision | CollisionRadius / **ProjectCollision** | 관통방지 / head 캡슐 없으면 False |
 | Strands | StrandsSize / Density / Thickness | 디테일·질량·굵기 |
 
-**Component (SB2)**: bLocalSimulation=True / **LocalBone=head**(예민, 소수점 튜닝 필요 — 옛 "root" 폐기) / Linear·AngularVelocityScale(1.0, 낮추면 반응↓) / TeleportDistance(50) / WindScale.
+### 그룹별 시작값 (참고 — PC_01 5그룹, ⚠ 시작값)
+
+PC_01 베이스라인(2026-05-04 라이브) + 새 5그룹 + 덜덜림/최적화 보정 출발점. PIE 에서 한 변수씩 조정. 전 그룹 ProjectStretch=False / Gravity.Z=-981 / StretchStiffness=1000 / SolveStretch=True 공통.
+
+| 그룹 | Sim | SubSteps | Iter | BendStiff | BendDamp | AirDrag | StrandsSize |
+|---|---|---|---|---|---|---|---|
+| G0 Front | On | 6 | 12 | 0.040 | 0.015~0.018 | 0.015 | 8 |
+| G1 Back | On | 6 | 10 | 0.050 | 0.015~0.018 | 0.020 | 4 |
+| G2 Main | On | 4 | 6 | 0.060 | 0.015 | 0.020 | 4 |
+| G3 Sub | On | 5 | 6 | 0.040 | 0.015 | 0.020 | 4 |
+| G4 card | **Off** | — | — | — | — | — | — |
+
+ProjectCollision = head 캡슐 있으면 True. 비용 ≈ SubSteps×Iter 합(≈186, 베이스라인 32×100=3200 대비↓). 반응↑ 원하면 BendDamping↓(덜덜림↑ 상충), 차분하게면 0.020.
+
+### GroomComponent SB2 커스텀/주요 필드 (PC_01 실측)
+
+| 필드 | 값 | 비고 |
+|---|---|---|
+| bLocalSimulation | True | False 금지(튐) |
+| LocalBone | head | 예민, 소수점 튜닝(옛 root 폐기) |
+| Linear/AngularVelocityScale | 0~1 (1.0 최대) | 클램프. 반응 주 레버 |
+| TeleportDistance | 50 | 이상 이동 시 리셋 |
+| TeleportDetectionThreshold | 25 | SB2 커스텀(Hair 전용) |
+| bFirstTeleportDetection | True | SB2 커스텀(Hair 전용) |
+| WindScale | 0.4 | SB2 커스텀 바람 배율(과반응 시 0.2) |
+| PhysicsAsset | Evie_Body_PhysicsAsset | Hair. Fuzz=None |
 
 ## 6. SB2 시뮬 주의
 
