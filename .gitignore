@@ -54,3 +54,6 @@ scripts/*.json
 
 # Monolith dump 텍스트
 DevSanjuk-Unrealdump*.txt
+
+# 루트 레벨 일회성 작업 스크래치 (footclamp 등 PNG/JSON 덤프)
+/_sj*/
