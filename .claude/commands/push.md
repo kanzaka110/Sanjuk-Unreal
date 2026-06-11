@@ -63,8 +63,12 @@ gcloud compute ssh kanzaka110@sanjuk-project --zone=us-central1-b --command='
   sudo cp -f $S/*.md $D/ && sudo chown SHIFTUP:SHIFTUP $D/*.md && sudo chmod 644 $D/*.md;
   rm -rf ~/mem_sync_tmp; echo "반영 후 파일수:"; ls -1 $D/*.md | wc -l'
 ```
-- 반영 후 Hermes 는 **다음 정각 cron** (`/root/.hermes/sync-gcp.sh`) 에서 자동 수신. Hermes 호스트는 별도 머신(root)이라 여기서 rsync 강제 트리거 불가.
-- 참조: [[reference-hermes-gcp-sync]]
+- 반영 후 **즉시 트리거** (2026-06-11부터 SSH 키 등록으로 가능 — cron 대기 불필요):
+```
+ssh -i ~/.ssh/hermes_ed25519 root@187.77.157.93 "/root/.hermes/sync-gcp.sh 2>&1 | tail -3"
+```
+- SSH 실패 시 폴백: 다음 정각 cron (`/root/.hermes/sync-gcp.sh`) 자동 수신.
+- 참조: [[reference-hermes-gcp-sync]] [[reference-hermes-realtime-send]]
 
 #### 4c. 글로벌 룰 동기화 (변경 시에만, 실패 무시 가능)
 ```
