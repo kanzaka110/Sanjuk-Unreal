@@ -46,7 +46,7 @@ _load_env()
 from notion_client import Client
 
 from briefing_config import CATEGORIES, UE_VERSIONS
-from briefing_search import search_with_retry, results_to_text
+from briefing_search import search_with_retry, results_to_text, pick_source_link
 from briefing_analyze import map_reduce_extract, analyze_trends, cross_category_analysis
 from briefing_generate import generate_metadata, generate_body, make_fallback
 from briefing_notion import (
@@ -134,10 +134,18 @@ def fetch_content(
         )
         print(f"  📝 본문 생성 ({len(body_markdown)}자)")
 
+        # ── 소스 링크 선택: LLM이 고른 링크가 실제 검색 결과에 있으면 사용,
+        #    아니면 신뢰도 최상위 실제 URL, 그것도 없으면 일반 폴백 ──
+        source_link = pick_source_link(meta.get("소스_링크", ""), results)
+        if not source_link:
+            source_link = "https://dev.epicgames.com/documentation/ko-kr/unreal-engine"
+        else:
+            print(f"  🔗 소스 링크: {source_link}")
+
         return {
             "제목": meta.get("제목", f"{category} 브리핑 — {date.today().strftime('%Y.%m.%d')}"),
             "요약": meta.get("요약", "")[:2000],
-            "소스_링크": meta.get("소스_링크", "https://dev.epicgames.com/documentation/ko-kr/unreal-engine"),
+            "소스_링크": source_link,
             "난이도": meta.get("난이도", "중급"),
             "UE_버전": meta.get("UE_버전", "5.8"),
             "태그": meta.get("태그", []),

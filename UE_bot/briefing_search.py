@@ -466,6 +466,83 @@ def _get_trust_tier(domain: str) -> str:
     return _TRUST_TIERS.get(domain, "★☆☆ 일반")
 
 
+# 신뢰도 등급(별 개수) → 정렬 우선순위 (낮을수록 우선)
+_TIER_RANK: dict[str, int] = {"★★★": 0, "★★☆": 1, "★☆☆": 2}
+
+# 목록/브라우즈성 경로 패턴 (특정 글이 아닌 묶음 페이지 → 후순위)
+_LISTING_PATH_PATTERNS = (
+    "/tags/", "/tag/", "/c/", "/category/", "/categories/",
+    "/topics", "/forum", "/forums", "/community/", "/search",
+    "/latest", "/all", "/feed", "/rss", "/index",
+)
+
+
+# 검색/브라우즈를 의미하는 쿼리 파라미터 (특정 콘텐츠가 아닌 결과 페이지)
+_SEARCH_QUERY_KEYS = frozenset({"q", "s", "query", "search", "search_query", "page", "keyword"})
+
+
+def _is_listing_url(url: str) -> bool:
+    """목록/태그/카테고리/홈/검색 등 '특정 글이 아닌' URL이면 True."""
+    try:
+        from urllib.parse import urlparse, parse_qs
+        parsed = urlparse(url)
+    except Exception:
+        return False
+    lower = parsed.path.rstrip("/").lower()
+    # 특정 콘텐츠 신호 (쿼리스트링 유무와 무관하게 우선 판정)
+    #   - YouTube 영상(/watch), Discourse 스레드(/t/), Reddit 게시글(/comments/)
+    if lower.endswith("/watch") or "/t/" in lower or "/comments/" in lower:
+        return False
+    # 검색성 쿼리 파라미터가 있으면 브라우즈/검색 결과 페이지
+    if parsed.query:
+        keys = {k.lower() for k in parse_qs(parsed.query)}
+        if keys & _SEARCH_QUERY_KEYS:
+            return True
+    # 경로가 비었거나 '/'만 있으면 도메인 홈페이지
+    if not lower:
+        return True
+    # Reddit 서브레딧 루트(/r/<name>, 게시글 아님)는 목록
+    if lower.startswith("/r/") and lower.count("/") <= 2:
+        return True
+    return any(pat in lower + "/" for pat in _LISTING_PATH_PATTERNS)
+
+
+def _result_rank(r: SourcedResult) -> tuple[int, int]:
+    """검색 결과 정렬 키. (신뢰도 등급, 목록형 여부) — 낮을수록 우선.
+
+    1순위: 도메인 신뢰도 등급(★★★ > ★★☆ > ★☆☆)
+    2순위: 같은 등급 내에서 특정 글(0)을 목록/태그/홈 페이지(1)보다 우선
+    """
+    star = _get_trust_tier(r.domain).split()[0]
+    tier = _TIER_RANK.get(star, 3)
+    listing = 1 if _is_listing_url(r.url) else 0
+    return (tier, listing)
+
+
+def best_source_url(results: list[SourcedResult]) -> str:
+    """검색 결과에서 신뢰도가 가장 높은 실제 URL을 반환. 없으면 빈 문자열."""
+    candidates = [r for r in results if r.url]
+    if not candidates:
+        return ""
+    # 안정 정렬: 동일 등급+동일 목록성이면 검색 순서(DDGS→news→Claude) 유지
+    candidates.sort(key=_result_rank)
+    return candidates[0].url
+
+
+def pick_source_link(meta_url: str, results: list[SourcedResult]) -> str:
+    """메타데이터가 고른 소스 링크를 검증하고, 유효하지 않으면 실제 검색 URL로 대체.
+
+    - meta_url이 실제 검색 결과에 존재하는 URL이면 그대로 사용 (LLM의 관련성 판단 존중)
+    - 빈 값이거나 검색 결과에 없는 URL(환각/일반 폴백)이면 신뢰도 최상위 검색 URL 사용
+    - 검색 결과에 URL이 전혀 없으면 빈 문자열 반환 (호출 측에서 일반 폴백 처리)
+    """
+    valid_urls = {r.url for r in results if r.url}
+    cleaned = (meta_url or "").strip().rstrip(").,]")
+    if cleaned and cleaned in valid_urls:
+        return cleaned
+    return best_source_url(results)
+
+
 def results_to_text(results: list[SourcedResult]) -> str:
     """SourcedResult 리스트를 텍스트로 변환 (프롬프트용). 소스 신뢰도 태그 포함."""
     parts: list[str] = []
