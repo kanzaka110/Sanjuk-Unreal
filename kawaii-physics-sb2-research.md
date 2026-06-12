@@ -50,9 +50,10 @@
 
 | 항목 | 값 |
 |------|-----|
-| 설치 위치 | `E:\Perforce\SB2\Workspace\Internal\SB2\Plugins\KawaiiPhysics\` (프로젝트 플러그인, 소스 포함) |
+| 설치 위치 | `E:\Perforce\SB2\Workspace\Internal\SB2\Plugins\KawaiiPhysics\` — **바이너리 전용** (Binaries + .uplugin, Source 미포함. DLL 빌드 2026-06-10) |
 | **설치 버전** | **v1.19.0** (`KawaiiPhysics.uplugin` VersionName) |
-| 엔진 | SB2 custom UE 5.7.4 — UE 5.7 공식 지원은 v1.20.0부터이나, 소스 빌드라 1.19.0으로 정상 동작 중 |
+| 엔진 | SB2 custom UE 5.7.4 — UE 5.7 공식 지원은 v1.20.0부터이나, 엔진팀 빌드 바이너리로 정상 동작 중 |
+| 1.19.0 기능 (DLL 문자열 실측) | ✅ AdditionalRootBones / ExternalForces / BoneConstraints / WarmUpFrames / LimitsDataAsset / PhysicsAssetForLimits / DummyBoneLength · ❌ SyncBone / 공유충돌(v1.20 신기능) |
 
 ⚠ 업그레이드 검토 시: v1.20.0은 UE 5.7 정식 대응 + 샘플 크래시 수정. 단 P4 관리 에셋과 노드 직렬화 호환은 별도 확인 필요.
 
@@ -113,11 +114,17 @@ https://shiftupcorp.atlassian.net/wiki/spaces/~712020fe37626a375148458345b2dab4d
 
 ## 8. 운용 시 주의점
 
-1. **버전 갭**: 설치 1.19.0 vs 최신 1.20.0(UE5.7 정식). 현재 동작에 문제 없으면 유지가 안전
+1. **버전 갭**: 설치 1.19.0 vs 최신 1.20.0(UE5.7 정식). SyncBone/공유충돌은 1.19에 없음(DLL 실측). 현재 동작에 문제 없으면 유지가 안전
 2. **Crowd 본체 vs 파츠**: 본체 PostProcess에는 물리 없음 — 치마/헤어 파츠 ABP에만 있음. 군중 물리 이슈는 파츠 ABP부터 볼 것
 3. **PC_01 혼재**: SpringBone(레거시)과 KawaiiPhysics가 같은 부위 계열(breast, thigh/hip)에 공존 — 튜닝 시 양쪽 모두 확인 필요
-4. **충돌 미사용**: 실측 범위에서 LimitsDataAsset/WorldCollision 배선 확인 안 됨(치마 관통 방지는 CtrlRig + LimitAngle 의존으로 추정 ⚠ 가설)
+4. **충돌 부분 사용** (✅ 6/12 정정): PC_01은 Evie 폴더의 `arm_collision`(LimitsDataAsset) + `KawaiiPhysics_Curve_Dn01`(CurveFloat) 참조 확인. 군중/NPC/몬스터는 Limits 배선 미확인 — 치마 관통 방지는 CtrlRig leg-follow + LimitAngle 의존
 5. **runtime 제어**: `KawaiiPhysicsLibrary`로 런타임 파라미터 변경 가능하나 SB2 그래프는 모두 정적 Make 스트럭트 — 동적 제어 미사용
+
+## 8.5 개선 제안 (✅ 실측 기반 2026-06-12 — 상세는 Confluence "KawaiiPhysics" 페이지 §10/§11)
+
+**KawaiiPhysics**: ① PC_01의 Evie 크로스 참조 정리(높음) ② 군중 다수 인스턴스 비용 — bUpdatePhysicsSettingsInGame=false + AdditionalRootBones 노드 통합 8→1~2(높음) ③ 군중 충돌 미배선 — CapsuleLimit 공유 배선, 근본 해결 SyncBone은 v1.20 필요 ④ SpringBone 혼재 통일 ⑤ 치마 WorldDamping 2.0 의도 확인 ⑥ 프리셋 표준화 ⑦ ResetDynamics/WarmUp 운용 ⑧ 중력 -2000 표준화 ⑨ v1.20 업그레이드(엔진팀 빌드 필요)
+
+**ControlRig (Crowd_04_Skirt_CtrlRig 그래프 실측 — 203노드/262링크, 컨트롤 0, ForLoop/Array 0)**: 로직 = thigh 내적→Remap→TransformLerp→SetTransform의 leg-follow. ① 본별 복붙 8회 → For Each+Array 재구조화(~1/8) ② 본 이름 하드코딩 11개 → 네이밍 패턴 동적 수집으로 파츠 9종 공용 릭 1개화 ③ Base+Skirt 직렬 VM 2회 → 통합 또는 LOD Threshold ④ 회전만 반영(translation 미반영 → 관통 잔존 가능) ⑤ PC_01 측 Post/BtoB 릭 미분석(후속)
 
 ## 9. 참고 링크
 

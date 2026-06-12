@@ -25,6 +25,7 @@ Sanjuk-Unreal/
 ├── .claude/agents/                # 프로젝트 전용 에이전트 (animbp/sim × inspector/tuner + ue-root-cause-reviewer)
 ├── migration/                     # 환경 마이그레이션 패키지 (backup/restore + snapshot)
 ├── Monolith-Local-Setup-Guide.md  # Monolith 로컬 전용 설치법
+├── kawaii-physics-sb2-research.md # KawaiiPhysics 종합 리서치 + SB2 적용 분석/개선안
 ├── UE-Animation-Tech-Report-2026.md  # UE 애니메이션 최신 기술 보고서
 ├── UE5-AI-GitHub-Research-2026.md    # UE5 AI/GitHub 리서치
 └── Unreal_Briefing.md             # UE 애니메이션 데일리 브리핑 시스템
