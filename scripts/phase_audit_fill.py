@@ -61,6 +61,10 @@ def direct_bake(p: str, foot_syncs: list[tuple[str, float]]) -> int:
         else:
             keys.append({"time": round(t - 0.01, 4), "value": -1.0, "interp": "linear"})
             keys.append({"time": round(t, 4), "value": 1.0, "interp": "linear"})
+    try:
+        call("animation_query", "add_curve", {"asset_path": p, "curve_name": "phase"})
+    except Exception:
+        pass  # 이미 존재
     call("animation_query", "set_curve_keys",
          {"asset_path": p, "curve_name": "phase", "keys_json": json.dumps(keys)})
     return len(keys)

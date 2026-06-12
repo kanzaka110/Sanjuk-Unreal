@@ -130,6 +130,7 @@ https://shiftupcorp.atlassian.net/wiki/spaces/~712020fe37626a375148458345b2dab4d
 
 - 공식 위키: https://github.com/pafuhana1213/KawaiiPhysics/wiki/Home-en
 - v1.20.0 릴리스 노트: https://github.com/pafuhana1213/KawaiiPhysics/discussions/185
+- Confluence "공식 기능 정리" (기본 기능 + v1.0~v1.20 버전별 변경 전수 + v1.20 SB2 적용 제안, 2026-06-12): https://shiftupcorp.atlassian.net/wiki/spaces/SB2/pages/1627455523
 - FAQ: https://github.com/pafuhana1213/KawaiiPhysics/wiki/FAQ-en
 - DeepWiki(AI 생성 구조 분석): https://deepwiki.com/pafuhana1213/KawaiiPhysics
 - 로컬 소스 캐시: `~/.claude/projects/C--Dev-Sanjuk-Unreal/cache/kawaii_physics/` (18파일)
