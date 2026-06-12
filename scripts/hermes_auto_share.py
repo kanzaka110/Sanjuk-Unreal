@@ -4,7 +4,8 @@
 훅 stdin으로 {session_id, transcript_path, ...} JSON을 받는다 (Stop 훅 규약).
 
 스레드 구조:
-    챗방에는 세션당 부모 메시지 1개 ([LOCAL-CLAUDE] 세션 ... — <첫 요청 요약>)
+    챗방에는 세션당 부모 메시지 1개 ([LOCAL-CLAUDE] 세션 ... — <다이제스트 주제>)
+    주제는 첫 전송 다이제스트 본문에서 추출 (첫 헤딩 우선, 없으면 첫 줄).
     매 턴 다이제스트는 그 스레드의 답글로 들어감.
     세션→스레드 ts 매핑: scripts/_hermes_threads.json
 
@@ -73,20 +74,17 @@ def last_assistant_text(transcript_path: Path) -> str:
     return result
 
 
-def first_user_topic(transcript_path: Path) -> str:
-    """첫 사용자 메시지에서 세션 주제 추출 (한 줄, TOPIC_MAX자)."""
-    for entry in iter_entries(transcript_path):
-        if entry.get("type") != "user" or entry.get("isSidechain"):
+def topic_from_digest(text: str) -> str:
+    """다이제스트 본문의 첫 줄(리드 문장/헤딩)에서 주제 추출 — 마크업 제거 후 TOPIC_MAX자."""
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line:
             continue
-        content = entry.get("message", {}).get("content", "")
-        if isinstance(content, list):
-            content = " ".join(
-                b.get("text", "") for b in content if isinstance(b, dict) and b.get("type") == "text"
-            )
-        text = " ".join(str(content).split()).strip()
-        if not text or text.startswith("<"):  # 커맨드 확장/시스템 주입 스킵
+        line = line.lstrip("#").replace("**", "").replace("__", "").replace("`", "")
+        topic = " ".join(line.strip("*_- ").split())
+        if not topic:
             continue
-        return text[:TOPIC_MAX] + ("…" if len(text) > TOPIC_MAX else "")
+        return topic[:TOPIC_MAX] + ("…" if len(topic) > TOPIC_MAX else "")
     return "(주제 미상)"
 
 
@@ -100,7 +98,7 @@ def load_threads() -> dict:
 
 
 def get_session_thread(
-    session_id: str, transcript_path: Path, token: str, channel: str, post_message
+    session_id: str, digest_text: str, token: str, channel: str, post_message
 ) -> str:
     """세션의 부모 메시지 ts 반환 — 없으면 챗방에 부모 게시 후 기록."""
     threads = load_threads()
@@ -109,7 +107,7 @@ def get_session_thread(
         return ts
 
     stamp = datetime.datetime.now().strftime("%m-%d %H:%M")
-    topic = first_user_topic(transcript_path)
+    topic = topic_from_digest(digest_text)
     ts = post_message(token, channel, f"[LOCAL-CLAUDE] 세션 {stamp} — {topic}")
 
     threads[session_id] = ts
@@ -150,7 +148,7 @@ def main() -> None:
         token = require_env("SLACK_BOT_TOKEN")
         channel = require_env("HERMES_SLACK_CHANNEL")
 
-        thread_ts = get_session_thread(session_id, transcript_path, token, channel, post_message)
+        thread_ts = get_session_thread(session_id, text, token, channel, post_message)
 
         body = text[:MAX_BODY] + ("\n…(잘림)" if len(text) > MAX_BODY else "")
         stamp = datetime.datetime.now().strftime("%H:%M")
