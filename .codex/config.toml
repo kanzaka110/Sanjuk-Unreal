@@ -1,0 +1,28 @@
+[mcp_servers.context7]
+command = "npx"
+args = [
+    "-y",
+    "@upstash/context7-mcp",
+]
+
+[mcp_servers.maya]
+command = "C:/Dev/MayaMCP/.venv/Scripts/python.exe"
+args = ["C:/Dev/MayaMCP/src/maya_mcp_server.py"]
+
+[mcp_servers.monolith]
+url = "http://localhost:9316/mcp"
+
+[mcp_servers.unreal-mcp]
+command = "npx"
+args = [
+    "-y",
+    "@runreal/unreal-mcp",
+]
+
+[mcp_servers.unrealclaude-bridge]
+command = "node"
+args = ["D:/Perforce/SB2/Workspace/Internal/SB2/Plugins/UnrealClaude/Resources/mcp-bridge/index.js"]
+
+[mcp_servers.unrealclaude-bridge.env]
+UNREAL_MCP_URL = "http://localhost:3000"
+INJECT_CONTEXT = "true"
