@@ -14,6 +14,7 @@ UE5 작업 유형에 따라 최적의 에이전트를 자동 선택한다.
 | 보안 (시크릿, API키) | `security-reviewer` | 노출된 시크릿 감지 |
 | 문서/가이드 작성 | `doc-updater` | 튜토리얼, README 업데이트 |
 | 성능 최적화 | `code-reviewer` | 프로파일링 결과 기반 리뷰 |
+| SB2 에디터 TA 툴 제작 | `ta-tool-builder` | 우클릭 스크립트된 에셋 액션(tkinter) 툴 신규 제작. 레시피=메모리 `reference-sb2-ta-tool-creation` |
 
 ## UE C++ 작업 시 필수 체인
 

@@ -57,3 +57,7 @@ DevSanjuk-Unrealdump*.txt
 
 # 루트 레벨 일회성 작업 스크래치 (footclamp 등 PNG/JSON 덤프)
 /_sj*/
+
+# PerfMonitor 런타임 산출물
+perf_monitor/.live/
+perf_monitor/__pycache__/

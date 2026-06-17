@@ -22,7 +22,7 @@ Sanjuk-Unreal/
 ├── .claude/commands/              # 커스텀 슬래시 명령어 (10개, /hermes 포함)
 ├── .claude/hooks/                 # Pre/PostToolUse 훅 (MCP 점검 3개) + Stop 훅(Hermes 자동공유, .claude/settings.json)
 ├── .claude/rules/                 # UE5 전용 룰 (도메인, MCP, 코딩, 매크로, 에이전트, 버전)
-├── .claude/agents/                # 프로젝트 전용 에이전트 (animbp/sim × inspector/tuner + ue-root-cause-reviewer)
+├── .claude/agents/                # 프로젝트 전용 에이전트 (animbp/sim × inspector/tuner + ue-root-cause-reviewer + ta-tool-builder)
 ├── migration/                     # 환경 마이그레이션 패키지 (backup/restore + snapshot)
 ├── Monolith-Local-Setup-Guide.md  # Monolith 로컬 전용 설치법
 ├── kawaii-physics-sb2-research.md # KawaiiPhysics 종합 리서치 + SB2 적용 분석/개선안

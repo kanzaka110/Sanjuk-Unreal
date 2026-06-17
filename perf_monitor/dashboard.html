@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SB2 PerfMonitor</title>
+<style>
+  :root{
+    --bg:#0f1115; --card:#1a1d24; --line:#2a2e38; --text:#e6e8ec;
+    --muted:#8b909a; --ok:#3ecf8e; --warn:#e0a020; --crit:#e5484d; --na:#555b66;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font:14px/1.4 -apple-system,Segoe UI,Roboto,sans-serif}
+  header{display:flex;align-items:center;gap:12px;padding:12px 16px;
+    border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:2}
+  header h1{font-size:16px;margin:0;font-weight:600}
+  #conn{font-size:12px;color:var(--muted)}
+  #conn.live::before{content:"● ";color:var(--ok)}
+  #conn.down::before{content:"● ";color:var(--crit)}
+  #mon{font-size:12px}#mon.mon-on{color:var(--ok)}#mon.mon-off{color:var(--muted)}
+  #err{color:var(--crit);font-size:12px;padding:0 16px}#err:empty{display:none}
+  .btn{background:var(--card);color:var(--text);border:1px solid var(--line);
+    border-radius:6px;padding:6px 12px;cursor:pointer;font-size:13px}
+  .btn:hover{border-color:#3a3f4b}
+  .spacer{flex:1}
+  #file{font-size:11px;color:var(--muted);padding:6px 16px;
+    border-bottom:1px solid var(--line);word-break:break-all}
+  main{padding:16px;display:flex;flex-direction:column;gap:20px}
+  .group h2{font-size:12px;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--muted);margin:0 0 10px}
+  .grid{display:grid;gap:12px;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:14px;border-left:4px solid var(--na)}
+  .card.ok{border-left-color:var(--ok)}
+  .card.warn{border-left-color:var(--warn)}
+  .card.crit{border-left-color:var(--crit)}
+  .card .label{font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
+  .card .col{font-size:10px;color:var(--na)}
+  .card .val{font-size:30px;font-weight:700;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+  .card .val .unit{font-size:13px;color:var(--muted);font-weight:400;margin-left:4px}
+  .card.crit .val{color:var(--crit)} .card.warn .val{color:var(--warn)}
+  canvas{width:100%;height:40px;display:block;margin-top:8px}
+  #hint{color:var(--muted);font-size:12px;padding:0 16px 24px}
+  code{background:#000;padding:1px 5px;border-radius:4px}
+</style>
+</head>
+<body>
+<header>
+  <h1>SB2 PerfMonitor</h1>
+  <span id="conn" class="down">연결 대기</span>
+  <span id="mon" class="mon-off">● 정지됨</span>
+  <span class="spacer"></span>
+  <button class="btn" id="start">▶ 모니터링 시작</button>
+  <button class="btn" id="stop">■ 정지</button>
+</header>
+<div id="file">대기 중 — ▶ 로 모니터링을 시작하세요</div>
+<div id="err"></div>
+<main id="groups"></main>
+<div id="hint"></div>
+
+<script>
+const GROUP_NAMES = {frame:"프레임 / GPU", anim:"애니메이션", physics:"물리 / 시뮬", memory:"메모리", general:"기타"};
+let META = null;
+const buffers = {};   // key -> [values]
+const cards = {};     // key -> {el, valEl, canvas}
+
+async function init(){
+  META = await (await fetch("/meta")).json();
+  buildCards();
+  await primeHistory();
+  connectStream();
+}
+
+function buildCards(){
+  const groups = {};
+  for(const m of META.metrics){ (groups[m.group] ??= []).push(m); }
+  const root = document.getElementById("groups");
+  root.innerHTML = "";
+  for(const g of Object.keys(groups)){
+    const sec = document.createElement("section");
+    sec.className = "group";
+    sec.innerHTML = `<h2>${GROUP_NAMES[g]||g}</h2>`;
+    const grid = document.createElement("div"); grid.className="grid";
+    for(const m of groups[g]){
+      buffers[m.key] = [];
+      const card = document.createElement("div");
+      card.className = "card na";
+      card.innerHTML =
+        `<div class="label"><span>${m.label}</span><span class="col">${m.column||"미발견"}</span></div>`+
+        `<div class="val">—<span class="unit">${m.unit}</span></div>`+
+        `<canvas height="40"></canvas>`;
+      grid.appendChild(card);
+      cards[m.key] = {el:card, valEl:card.querySelector(".val"),
+        canvas:card.querySelector("canvas"), unit:m.unit};
+    }
+    sec.appendChild(grid); root.appendChild(sec);
+  }
+  updateHint();
+}
+
+function updateHint(){
+  const sec = META.poll_interval.toFixed(1);
+  document.getElementById("hint").innerHTML =
+    `갱신 주기 ≈ <b>${sec}초</b> (회전 캡처: UE 가 캡처 중 CSV 를 잠그므로 짧은 캡처를 반복). `+
+    `모니터링 중에는 에디터/PIE 가 매 사이클 잠깐 프로파일링됩니다. 미사용 시 ■ 로 정지하세요.`;
+}
+
+async function primeHistory(){
+  try{
+    const d = await (await fetch("/snapshot")).json();
+    for(const k in d.history){ buffers[k] = d.history[k].filter(v=>v!==null); }
+    render(d.snapshot);
+  }catch(e){}
+}
+
+function connectStream(){
+  const es = new EventSource("/stream");
+  const conn = document.getElementById("conn");
+  es.onopen = ()=>{ conn.className="live"; conn.textContent="실시간"; };
+  es.onerror = ()=>{ conn.className="down"; conn.textContent="재연결 중…"; };
+  es.onmessage = ev => { try{ render(JSON.parse(ev.data)); }catch(e){} };
+}
+
+function render(s){
+  const mon = document.getElementById("mon");
+  mon.className = s.monitoring ? "mon-on" : "mon-off";
+  mon.textContent = s.monitoring ? "● 모니터링 중" : "● 정지됨";
+  document.getElementById("file").textContent =
+    s.last_file ? ("CSV: " + s.last_file + "  (#" + s.t + ")")
+                : (s.monitoring ? "첫 캡처 대기 중…" : "정지됨 — ▶ 로 시작");
+  document.getElementById("err").textContent = s.error ? ("⚠ " + s.error) : "";
+  for(const m of META.metrics){
+    const c = cards[m.key]; if(!c) continue;
+    const v = s.values[m.key], st = s.status[m.key];
+    c.el.className = "card " + st;
+    c.valEl.innerHTML = (v==null ? "—" : fmt(v)) + `<span class="unit">${c.unit}</span>`;
+    if(v!=null){ const b=buffers[m.key]; b.push(v); if(b.length>META.history_len) b.shift(); }
+    drawSpark(c.canvas, buffers[m.key], st);
+  }
+}
+
+function fmt(v){ return Math.abs(v)>=1000 ? v.toFixed(0) : v.toFixed(2); }
+
+function drawSpark(canvas, data, status){
+  const dpr = window.devicePixelRatio||1;
+  const w = canvas.clientWidth||200, h = 40;
+  canvas.width = w*dpr; canvas.height = h*dpr;
+  const ctx = canvas.getContext("2d"); ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,w,h);
+  if(!data || data.length<2) return;
+  const min = Math.min(...data), max = Math.max(...data);
+  const range = (max-min)||1;
+  const col = getComputedStyle(document.documentElement)
+    .getPropertyValue("--"+(status==="na"?"muted":status)).trim()||"#3ecf8e";
+  ctx.strokeStyle = col; ctx.lineWidth = 1.5; ctx.beginPath();
+  data.forEach((v,i)=>{
+    const x = (i/(data.length-1))*w;
+    const y = h - 3 - ((v-min)/range)*(h-6);
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  });
+  ctx.stroke();
+}
+
+async function post(path, btn){
+  const old = btn.textContent; btn.textContent="…";
+  try{ await fetch(path,{method:"POST"}); }catch(e){}
+  setTimeout(()=>btn.textContent=old, 800);
+}
+document.getElementById("start").onclick = e=>post("/api/start", e.currentTarget);
+document.getElementById("stop").onclick  = e=>post("/api/stop", e.currentTarget);
+
+init();
+</script>
+</body>
+</html>
