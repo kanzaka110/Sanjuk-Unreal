@@ -90,6 +90,7 @@ cli.editor("run_console_command", command=cmd)
 | 메뉴 클릭마다 reload | 창 중복 생성 → 프로덕션 런처는 reload 제거, 싱글톤 |
 | 콘솔 `;` chaining | run_console_command 거부 → `py exec(open(...).read())` 파일 실행 |
 | 메뉴에 함수 안 뜸 | BP 컴파일 클린 후 표시. 안 보이면 에디터에서 재컴파일/재시작 |
+| **새 AAU가 메뉴에 영영 안 뜸** | Monolith `create_blueprint`(parent=AssetActionUtility)는 **일반 Blueprint** 생성 → Blutility 스캐너는 **EditorUtilityBlueprint 타입만** 읽음(재시작 무효). 진단=`get_asset_info` class 필드. **해결: `duplicate_blueprint(EU_TA_Action → 새AAU)`** 로 타입 상속 후 함수 교체. 기존 AAU에 add만 할 땐 무관 |
 
 ## 응답 형식
 
