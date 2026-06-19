@@ -6,31 +6,42 @@
 2. **UnrealClaude** (localhost:3000) — UE5 API 문서 컨텍스트, C++ 참조용
 3. **runreal** (stdio) — Python 스크립트 자동화, 배치 작업
 
-## Monolith 도메인 (v0.12.1, 893 액션 — 2026-05-18 measured)
+## Monolith 도메인 (v0.20.2, 1232 액션 / 26 네임스페이스 — 2026-06-19 measured)
 
 `monolith_discover()` 응답 기반 — 갱신은 `py scripts/save_discover_snapshot.py`.
 
-| 도메인 | 액션 수 | 용도 |
+| 네임스페이스 | 액션 수 | 용도 |
 |------|---:|------|
-| ai | 218 | BT, Blackboard, StateTree, EQS, Perception, Mass, Smart Object, navmesh |
-| mesh | 197 | 레벨 디자인, 공간 쿼리, 프로시저럴, blockout, prefab, LOD, navmesh |
-| animation | 116 | AnimSequence, Montage, BlendSpace, ABP, SM, PSD/PoseSearch, Control Rig |
-| niagara | 97 | 파티클, 이미터, 다이나믹 인풋, NPC, Effect Type |
-| blueprint | 88 | 그래프 편집, 변수, 노드, CDO, 컴파일 |
-| material | 57 | 머티리얼 그래프, 함수, 인스턴스 |
-| ui | 42 | 위젯 블루프린트, UI 템플릿, 접근성 |
-| editor | 25 | 빌드/로그/scene preview/console command/asset CRUD |
+| ai | 223 | BT, Blackboard, StateTree, EQS, Perception, Mass, Smart Object, navmesh, AIController |
+| mesh | 200 | 레벨 디자인, 공간 쿼리, 프로시저럴, blockout, prefab, LOD, navmesh |
+| animation | 185 | AnimSequence, Montage, BlendSpace, ABP, SM(생성·전이), PSD/PoseSearch, Control Rig, Chooser 노드, IK Retarget |
+| niagara | 129 | 파티클, 이미터, 다이나믹 인풋, NPC, Effect Type |
+| blueprint | 128 | 그래프 편집, 변수, 노드, 컴포넌트, 함수, CDO, 컴파일 |
+| ui | 72 | 위젯 블루프린트, UI 템플릿, 접근성 |
+| material | 64 | 머티리얼 그래프, 함수, 인스턴스 |
+| audio | 61 | (신규) 사운드/오디오 에셋 |
+| editor | 54 | 빌드/로그/scene preview/console command/asset CRUD/PIE 제어 |
+| source | 20 | UE 소스 read/find_references/callers/callees (SB2 라이선시 빌드는 차단 — 아래 참조) |
 | character | 15 | 캐릭터 데이터, MovementParams, stats table |
-| source | 11 | UE 소스 read/find_references/callers/callees |
+| project | 12 | search/find_references/dependencies |
+| chooser | 10 | (신규) Chooser Table row/column — ⚠ SB2 protected 실동작 미검증 |
+| level_sequence | 8 | (신규) 시퀀서 |
 | enhanced_input | 8 | InputAction, MappingContext, Trigger, Modifier |
-| config | 6 | INI 설정 resolve/explain/diff |
-| project | 6 | search/find_references/dependencies |
-| monolith | 4 | discover, status, update, reindex (메타) |
-| scripting | 3 | execute_script, history, cleanup |
+| config | 7 | INI 설정 resolve/explain/diff |
+| cppreflect | 6 | (신규) C++ 리플렉션 |
+| decision | 5 | (신규) |
+| risk | 5 | (신규) |
+| monolith | 5 | discover, status, update, reindex (메타) |
+| network | 4 | (신규) |
+| scripting | 3 | execute_script, history, cleanup (SB2 PythonScriptPlugin 비활성 — 차단) |
+| describe | 3 | (신규) |
+| pipeline | 2 | (신규) |
+| bulk_fill | 2 | (신규) |
+| reflect | 1 | (신규) |
 
-**Optional (not installed):** combograph (ComboGraph 플러그인 필요, Fab marketplace)
+**Optional (not installed):** gas (MonolithGAS, GameplayAbilities 플러그인 필요) / combograph (ComboGraph 플러그인 필요, Fab marketplace)
 
-**참고:** 이전 표의 MonolithGAS(130) / MonolithLogicDriver(66) 도메인은 v0.12.1 SB2 빌드에 **없음**.
+> ⚠ 신규/증가분 액션은 **discover 리스트로 존재만 확인**됨 — SB2 라이선시 빌드 실호출은 미검증. 특히 `chooser`·`animation`의 SM 생성/Chooser 편집은 기존 protected 한계가 풀렸는지 실호출 검증 필요.
 
 ## SB2 차단/주의 액션 (재시도 금지)
 

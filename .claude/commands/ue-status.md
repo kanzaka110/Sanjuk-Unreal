@@ -25,14 +25,14 @@ which npx 2>/dev/null && echo "OK" || echo "MISSING"
 
 `monolith_status` 응답으로 헬스 판정:
 1. `server_running == true` 확인
-2. `total_actions` 기대치(≈900) 비교 → 현저히 적으면 부분 로드/인덱싱 미완 의심
+2. `total_actions` 기대치(≈1232) 비교 → 현저히 적으면 부분 로드/인덱싱 미완 의심
 3. `project_name == "SB2"` 확인 (엉뚱한 프로젝트 연결 감지)
 4. ⚠ `monolith_discover` 전체 호출로 모듈 enumerate 하지 말 것 (토큰 폭발) — status 요약으로 충분
 
 ### 3단계: 한 줄 요약 출력
 
 ```
-🟢 Monolith v0.12.1 (900액션/15도메인, SB2) | 🟢 UnrealClaude | 🟢 runreal — 모든 MCP 정상
+🟢 Monolith v0.20.2 (1232액션/26네임스페이스, SB2) | 🟢 UnrealClaude | 🟢 runreal — 모든 MCP 정상
 ```
 
 또는
