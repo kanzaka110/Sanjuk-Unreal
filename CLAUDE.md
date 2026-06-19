@@ -115,4 +115,6 @@ GCP + 로컬 PC 두 세션 동시 운영. 모바일 claude.ai/code에서 접속.
 
 ## 세션 시작 시 필수 확인
 - `~/claude-sync/session-bridge.md` 를 읽어서 다른 세션의 최근 작업을 파악할 것
+- (회사 PC 한정) `C:/Users/SHIFTUP/.claude/shared-context/current-unreal.md` + `current-hermes-ops.md` 를 읽어 UE/SB2 작업 전제·Hermes 운영 컨텍스트 반영. 파일 없으면 멈추고 사용자 확인 (추측으로 다른 파일 대체 금지)
+- current-context는 최신 컨텍스트일 뿐 ground truth 아님 — UE/SB2는 실측/PIE/로그/Monolith dump 최종 우선
 - 관련 메모리에 최신 digest 충돌/stale 항목이 있으면 최신 ground truth 우선
