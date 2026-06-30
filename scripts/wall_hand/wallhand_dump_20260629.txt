@@ -1,0 +1,179 @@
+########## CR PC_01_CtrlRig_WallHandIK ##########
+=== nodes ===
+  RigUnit_BeginExecution
+  ToRig
+  GetHand_R
+  TwoBoneIK_R
+  VariableNode
+  ReachSub
+  PalmAim
+  RerouteNode
+  RerouteNode_1
+  RerouteNode_2
+  SpineRef
+  TgtXf
+  Rel
+  MulK
+  Yaw
+  Mul_spine_02
+  Quat_spine_02
+  Off_spine_02
+  VariableNode_3
+  Mul_spine_03
+  Quat_spine_03
+  Off_spine_03
+  VariableNode_4
+  Mul_neck_02
+  Quat_neck_02
+  Off_neck_02
+  VariableNode_5
+  Mul_head
+  Quat_head
+  Off_head
+  VariableNode_6
+  RerouteNode_3
+  RerouteNode_4
+  RerouteNode_5
+  RerouteNode_7
+  RerouteNode_8
+  RerouteNode_9
+  GetHand_L
+  TwoBoneIK_L
+  SelR
+  SelL
+  VariableNode_7
+  VariableNode_8
+  RerouteNode_10
+  RerouteNode_11
+  RerouteNode_12
+  PalmAim_1
+  SelL_1
+  SelR_1
+  VariableNode_11
+  VariableNode_10
+  VariableNode_1
+  VariableNode_2
+  PalmReachUnit_L
+  PalmReachLerp_L
+  RerouteNode_6
+  RerouteNode_13
+  SecAxisLerp
+  SecAxisLerp_2
+  ReachLen
+  ReachBlend
+  SecAxisLerp_1
+  SecAxisLerp_3
+  RerouteNode_16
+  RerouteNode_18
+  RerouteNode_19
+  PalmReachUnit_L_1
+  PalmReachLerp_L_1
+  PalmReleaseRemap
+  PalmReleaseRemap_1
+=== links ===
+  GetHand_R.Transform.Rotation -> TwoBoneIK_R.Effector.Rotation
+  VariableNode.Value -> ToRig.Value
+  ToRig.Global -> RerouteNode_1.Value
+  ToRig.Global -> TgtXf.Translation
+  SpineRef.Transform -> Rel.Parent
+  MulK.Result -> Yaw.Value
+  Yaw.Result -> Mul_spine_02.A
+  Mul_spine_02.Result -> Quat_spine_02.Angle
+  Quat_spine_02.Result -> Off_spine_02.OffsetTransform.Rotation
+  Mul_spine_03.Result -> Quat_spine_03.Angle
+  Quat_spine_03.Result -> Off_spine_03.OffsetTransform.Rotation
+  Off_spine_02.ExecutePin -> Off_spine_03.ExecutePin
+  Mul_neck_02.Result -> Quat_neck_02.Angle
+  Quat_neck_02.Result -> Off_neck_02.OffsetTransform.Rotation
+  Off_spine_03.ExecutePin -> Off_neck_02.ExecutePin
+  Mul_head.Result -> Quat_head.Angle
+  Quat_head.Result -> Off_head.OffsetTransform.Rotation
+  Off_neck_02.ExecutePin -> Off_head.ExecutePin
+  TgtXf.Result -> Rel.Global
+  RerouteNode_3.Value -> Mul_head.A
+  RerouteNode_4.Value -> RerouteNode_3.Value
+  RerouteNode_4.Value -> Mul_neck_02.A
+  RerouteNode_5.Value -> RerouteNode_4.Value
+  RerouteNode_5.Value -> Mul_spine_03.A
+  RerouteNode_7.Value -> RerouteNode_5.Value
+  Yaw.Result -> RerouteNode_7.Value
+  RerouteNode_9.Value -> RerouteNode_8.Value
+  SpineRef.Transform.Translation -> RerouteNode_9.Value
+  GetHand_L.Transform.Rotation -> TwoBoneIK_L.Effector.Rotation
+  VariableNode_7.Value -> SelR.Condition
+  VariableNode_8.Value -> SelL.Condition
+  RerouteNode_10.Value -> RerouteNode.Value
+  RerouteNode_1.Value -> RerouteNode_10.Value
+  RerouteNode_11.Value -> ReachSub.A
+  RerouteNode.Value -> RerouteNode_11.Value
+  RerouteNode_12.Value -> ReachSub.B
+  RerouteNode_8.Value -> RerouteNode_12.Value
+  PalmAim.ExecutePin -> PalmAim_1.ExecutePin
+  VariableNode_11.Value -> SelR_1.Condition
+  VariableNode_10.Value -> SelL_1.Condition
+  SelR_1.Result -> PalmAim.Weight
+  SelL_1.Result -> PalmAim_1.Weight
+  SelL.Result -> TwoBoneIK_L.Weight
+  RerouteNode_10.Value -> TwoBoneIK_R.Effector.Translation
+  SelR.Result -> TwoBoneIK_R.Weight
+  TwoBoneIK_R.ExecutePin -> TwoBoneIK_L.ExecutePin
+  TwoBoneIK_L.ExecutePin -> PalmAim.ExecutePin
+  RigUnit_BeginExecution.ExecutePin -> Off_spine_02.ExecutePin
+  Off_head.ExecutePin -> TwoBoneIK_R.ExecutePin
+  VariableNode_2.Value -> MulK.A
+  PalmReachLerp_L.Result -> PalmAim_1.Primary.Target
+  ReachSub.Result -> RerouteNode_6.Value
+  RerouteNode_13.Value -> PalmReachUnit_L.Value
+  RerouteNode_6.Value -> RerouteNode_13.Value
+  ReachSub.Result -> ReachLen.Value
+  ReachLen.Result -> ReachBlend.Value
+  SecAxisLerp_3.Result -> PalmAim_1.Primary.Axis
+  SecAxisLerp_1.Result -> PalmAim_1.Secondary.Axis
+  RerouteNode_18.Value -> SecAxisLerp.T
+  RerouteNode_19.Value -> SecAxisLerp_3.T
+  RerouteNode_16.Value -> RerouteNode_19.Value
+  RerouteNode_19.Value -> SecAxisLerp_1.T
+  RerouteNode.Value -> TwoBoneIK_L.Effector.Translation
+  SecAxisLerp.Result -> PalmAim.Secondary.Axis
+  ReachSub.Result -> PalmReachUnit_L_1.Value
+  ReachBlend.Result -> RerouteNode_18.Value
+  PalmReleaseRemap.Result -> PalmReachLerp_L_1.T
+  PalmReleaseRemap_1.Result -> PalmReachLerp_L.T
+  RerouteNode_18.Value -> SecAxisLerp_2.T
+  ReachBlend.Result -> RerouteNode_16.Value
+  VariableNode_3.Value -> PalmReleaseRemap.Value
+  VariableNode_3.Value -> PalmReleaseRemap_1.Value
+  PalmReleaseRemap_1.Result -> SelL_1.IfFalse
+  PalmReachUnit_L.Result -> PalmReachLerp_L.A
+  VariableNode_1.Value -> SelR_1.IfTrue
+  PalmReachUnit_L_1.Result -> PalmReachLerp_L_1.B
+=== key pin defaults ===
+  PalmAim.Weight = '1.000000'
+  PalmAim.Primary.Weight = '1.000000'
+  PalmAim.Secondary.Weight = '1.000000'
+  PalmAim.Primary.Kind = 'Direction'
+  PalmAim_1.Weight = '1.000000'
+  SelR.IfTrue = '1.000000'
+  SelR.IfFalse = '0.000000'
+  SelR_1.IfTrue = '1.0'
+  SelR_1.IfFalse = '0.000000'
+  SelL.IfTrue = '0.000000'
+  SelL.IfFalse = '1.000000'
+  SelL_1.IfTrue = '0.000000'
+  SelL_1.IfFalse = '1.000000'
+  PalmReleaseRemap.SourceMinimum = '0.700000'
+  PalmReleaseRemap.SourceMaximum = '0.990000'
+  ReachBlend.SourceMinimum = '40.000000'
+  ReachBlend.SourceMaximum = '80.000000'
+  SecAxisLerp_2.T = '0.0'
+  SecAxisLerp.T = '0.000000'
+  MulK.B = '0.500000'
+  TwoBoneIK_R.PrimaryAxis.X = '-1.000000'
+  TwoBoneIK_R.PoleVector.X = '-60.000000'
+  TwoBoneIK_R.PoleVector.Z = '-1.000000'
+  PalmReachLerp_L_1.A.X = '-1.000000'
+  PalmReachLerp_L_1.A.Z = '0.000000'
+
+########## AnimLayer LayeredBoneBlend_0 ##########
+blend_mode=<LayeredBoneBlendMode.BRANCH_FILTER: 0>
+  layer[0]: [(Name("index_metacarpal_r"), 0), (Name("middle_metacarpal_r"), 0), (Name("pinky_metacarpal_r"), 0), (Name("ring_metacarpal_r"), 0), (Name("thumb_01_r"), 1)]
