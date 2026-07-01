@@ -56,27 +56,47 @@ Write-Host "source : ${VM}:$RemoteBase  (zone $Zone)"
 Write-Host "target : $LocalRoot"
 Write-Host ("mode   : {0}" -f ($(if ($Mirror) { "MIRROR(/MIR, 로컬전용 삭제)" } else { "MERGE(추가/덮어쓰기)" })))
 
-# 매 실행 새로 비우는 staging 으로 받고, 검증 후 최종 미러로 반영
-$stamp   = Get-Date -Format "yyyyMMdd_HHmmss"
-$staging = Join-Path $env:TEMP "aicontext_pull_$stamp"
+# 매 실행 새로 비우는 staging 으로 받고, 검증 후 최종 미러로 반영.
+# 전송은 원격 tar czf → 단일 .tgz scp → 로컬 tar 해제 (파일 1000+개 per-file scp 는
+# 헤드리스에서 15분+ 걸려 스케줄 timeout 에 걸림. tarball 스트리밍은 ~수초).
+$stamp     = Get-Date -Format "yyyyMMdd_HHmmss"
+$staging   = Join-Path $env:TEMP "aicontext_pull_$stamp"
+$remoteTar = "/tmp/_aihub_pull_$stamp.tgz"
+$localTar  = Join-Path $staging "hub.tgz"
+$folderList = ($Folders -join ' ')
 
 if ($DryRun) {
   Write-Host "`n[DryRun] 실행 예정 명령:"
-  foreach ($f in $Folders) {
-    Write-Host "  & `"$gcloud`" compute scp --recurse --zone=$Zone `"${VM}:$RemoteBase/$f`" `"$staging`""
-  }
-  Write-Host "  robocopy `"$staging\<folder>`" `"$LocalRoot\<folder>`" $(if($Mirror){'/MIR'}else{'/E'}) ..."
+  Write-Host "  1) ssh: cd $RemoteBase && tar czf $remoteTar $folderList"
+  Write-Host "  2) scp: ${VM}:$remoteTar -> $localTar"
+  Write-Host "  3) ssh: rm -f $remoteTar   (원격 정리)"
+  Write-Host "  4) tar -xzf $localTar -C $staging"
+  Write-Host "  5) robocopy `"$staging\<folder>`" `"$LocalRoot\<folder>`" $(if($Mirror){'/E /PURGE'}else{'/E'}) ..."
   return
 }
 
 New-Item -ItemType Directory -Force -Path $staging | Out-Null
 $ok = $false
 try {
-  foreach ($f in $Folders) {
-    Write-Host "`n==> scp pull: $f"
-    & $gcloud compute scp --recurse --zone=$Zone "${VM}:$RemoteBase/$f" $staging
-    if ($LASTEXITCODE -ne 0) { throw "scp 실패 (exit $LASTEXITCODE): $f — gcloud 인증/네트워크/원격경로 확인" }
-  }
+  # 1) 원격에서 tarball 생성
+  Write-Host "`n==> 원격 tar: $folderList"
+  & $gcloud compute ssh $VM --zone=$Zone --command="cd $RemoteBase && tar czf $remoteTar $folderList && ls -l $remoteTar"
+  if ($LASTEXITCODE -ne 0) { throw "원격 tar 실패 (exit $LASTEXITCODE) — gcloud 인증/원격경로 확인" }
+
+  # 2) 단일 파일 scp
+  Write-Host "`n==> scp 단일 tarball -> $localTar"
+  & $gcloud compute scp --zone=$Zone "${VM}:$remoteTar" $localTar
+  $scpRc = $LASTEXITCODE
+  # 3) 원격 정리 (best-effort — 실패해도 진행)
+  & $gcloud compute ssh $VM --zone=$Zone --command="rm -f $remoteTar" 2>&1 | Out-Null
+  if ($scpRc -ne 0) { throw "scp 실패 (exit $scpRc): tarball 전송" }
+  if (-not (Test-Path $localTar)) { throw "tarball 미수신: $localTar" }
+
+  # 4) 로컬 해제
+  Write-Host "`n==> tar 해제 -> $staging"
+  & tar.exe -xzf $localTar -C $staging
+  if ($LASTEXITCODE -ne 0) { throw "tar 해제 실패 (exit $LASTEXITCODE)" }
+  Remove-Item -Force $localTar -ErrorAction SilentlyContinue
 
   New-Item -ItemType Directory -Force -Path $LocalRoot | Out-Null
   # /E=하위 포함, /PURGE(-Mirror)=dst 전용파일 삭제. 긴 경로/재실행 nesting 방지 위해 robocopy 사용.
