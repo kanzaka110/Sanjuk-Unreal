@@ -1,0 +1,5 @@
+WHSideRotWalkDeg: 12.0 -> 12.0
+WHSideRotJogDeg: 18.0 -> 18.0
+WHSideRotRunDeg: -90.0 -> 24.0
+WHSideRotSprintDeg: 90.0 -> 30.0
+save=True

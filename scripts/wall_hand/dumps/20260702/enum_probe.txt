@@ -1,0 +1,3 @@
+StateMachineMoveState: value=<SBStateMachineState.GROUND_IDLE: 0> type=SBStateMachineState typepath=builtins.SBStateMachineState
+MovementState: value=<E_SBMovementState.IDLE: 0> type=E_SBMovementState typepath=builtins.E_SBMovementState
+AnimStance: value=<SBCharacterStance.CHARACTER_STANCE_PEACEFUL: 1> type=SBCharacterStance typepath=builtins.SBCharacterStance

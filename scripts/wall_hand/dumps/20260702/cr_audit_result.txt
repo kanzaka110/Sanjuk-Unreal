@@ -1,0 +1,3 @@
+total=97 execlive=13 live=95 dead=2
+  DEAD VariableNode_5           Get Weight
+  DEAD VariableNode_6           Get Weight

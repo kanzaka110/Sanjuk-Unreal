@@ -1,0 +1,12 @@
+enum class: <class 'SBStateMachineState'>
+  EVENT_MOVING = 8
+  EVENT_TRANSIT = 9
+  FALLING = 5
+  GROUND_IDLE = 0
+  GROUND_MOVING = 1
+  MONTAGE = 6
+  SPLINE_MOVING = 7
+  TRANSIT_TO_FALLING = 4
+  TRANSIT_TO_GROUND_IDLE = 2
+  TRANSIT_TO_GROUND_MOVING = 3
+find_object: None

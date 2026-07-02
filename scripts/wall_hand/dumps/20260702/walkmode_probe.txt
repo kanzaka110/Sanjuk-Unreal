@@ -1,0 +1,8 @@
+== WalkMode ERR SBActorAnimInstance: Failed to find property 'WalkMode' for attribute 'WalkMode'
+== PendingWalkMode: SBWalkMode = <SBWalkMode.SB_WALK_IDLE: 0>
+   SB_WALK_IDLE = 0
+   SB_WALK_JOGGING = 2
+   SB_WALK_RUNNING = 3
+   SB_WALK_SPRINTING = 4
+   SB_WALK_WALKING = 1
+== CurrentWalkMode ERR SBActorAnimInstance: Failed to find property 'CurrentWalkMode' for attribute 'Cu

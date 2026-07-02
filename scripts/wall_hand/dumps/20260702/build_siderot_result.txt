@@ -1,0 +1,8 @@
+offset struct=/Script/ControlRig.RigUnit_OffsetTransformForItem
+select struct=/Script/RigVM.RigVMFunction_MathFloatSelectBool
+OffsetRotL exec tail=None
+spawned: ['SideRotR', 'SideRotL', 'SelSideR', 'SelSideL']
+defaults set
+value links ok
+exec chained
+save=True

@@ -1,0 +1,5 @@
+Weight CDO default: 1.0 -> 0.0
+spawned
+defaults set (Weight pin 0 안전핀)
+links ok
+save=True

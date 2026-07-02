@@ -1,0 +1,15 @@
+== MovementState: E_SBMovementState
+   IDLE = 0
+   MOVING = 1
+== CustomMoveState: SBCustomMovementMode
+   SB_MOVE_LADDER = 4
+   SB_MOVE_LEDGE = 3
+   SB_MOVE_SLOPE = 0
+   SB_MOVE_SPLINE_MOVE = 2
+   SB_MOVE_WALL_RUN = 1
+== OverlayPoseState: E_OverlayPose
+   CLOSE_QUATERS_COMBAT = 3
+   DEFAULT = 0
+   FEMININE = 1
+   GUARDING = 4
+   INJURED = 2

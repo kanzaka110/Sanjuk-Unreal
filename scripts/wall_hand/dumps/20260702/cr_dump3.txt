@@ -1,0 +1,655 @@
+# CR dump 2026-07-02T20:10:58.595433 asset=/Game/Art/Character/PC/PC_01/Rig/PC_01_CtrlRig_WallHandIK
+loaded: <Object '/Game/Art/Character/PC/PC_01/Rig/PC_01_CtrlRig_WallHandIK.PC_01_CtrlRig_WallHandIK' (0x000002193DD90000) Class 'ControlRigBlueprint'>
+
+=== MEMBER VARIABLES ===
+  <Struct 'RigVMGraphVariableDescription' (0x000002174DC5AE90) {name: "Bone", cpp_type: "FName", cpp_type_object: None, default_value: "", category: NSLOCTEXT("KismetSchema", "Default", "Default"), tooltip: "", exposed_on_spawn: False, expose_to_cinematics: False, public: False, private: True}>
+  <Struct 'RigVMGraphVariableDescription' (0x000002174DC59ED0) {name: "Weight", cpp_type: "double", cpp_type_object: None, default_value: "", category: NSLOCTEXT("KismetSchema", "Default", "Default"), tooltip: "", exposed_on_spawn: False, expose_to_cinematics: False, public: True, private: True}>
+  <Struct 'RigVMGraphVariableDescription' (0x000002174DC5A560) {name: "LookAtLocation", cpp_type: "FVector", cpp_type_object: "/Script/CoreUObject.ScriptStruct'/Script/CoreUObject.Vector'", default_value: "", category: NSLOCTEXT("KismetSchema", "Default", "Default"), tooltip: "", exposed_on_spawn: False, expose_to_cinematics: False, public: True, private: True}>
+  <Struct 'RigVMGraphVariableDescription' (0x000002174DC5AF70) {name: "LookAtSettings", cpp_type: "TArray<FUserDefinedStruct_6DED6A64455B52A32E016B8BDE2F9D4C>", cpp_type_object: "/Script/CoreUObject.UserDefinedStruct'/Game/Art/Character/PC/PC_01/Rig/S_AimSetting.S_AimSetting'", default_value: "", category: NSLOCTEXT("KismetSchema", "Default", "Default"), tooltip: "", exposed_on_spawn: False, expose_to_cinematics: False, public: True, private: True}>
+  <Struct 'RigVMGraphVariableDescription' (0x000002174DC5B4B0) {name: "bWallHandRight", cpp_type: "bool", cpp_type_object: None, default_value: "", category: NSLOCTEXT("KismetSchema", "Default", "Default"), tooltip: "", exposed_on_spawn: False, expose_to_cinematics: False, public: True, private: True}>
+  <Struct 'RigVMGraphVariableDescription' (0x000002174DC59300) {name: "bWallHandLeft", cpp_type: "bool", cpp_type_object: None, default_value: "", category: NSLOCTEXT("KismetSchema", "Default", "Default"), tooltip: "", exposed_on_spawn: False, expose_to_cinematics: False, public: True, private: True}>
+  <Struct 'RigVMGraphVariableDescription' (0x000002174DC5A640) {name: "WallHandSpineLean", cpp_type: "double", cpp_type_object: None, default_value: "", category: NSLOCTEXT("KismetSchema", "Default", "Default"), tooltip: "", exposed_on_spawn: False, expose_to_cinematics: False, public: True, private: True}>
+  <Struct 'RigVMGraphVariableDescription' (0x000002174DC5B280) {name: "bWallHandFront", cpp_type: "bool", cpp_type_object: None, default_value: "", category: NSLOCTEXT("KismetSchema", "Default", "Default"), tooltip: "", exposed_on_spawn: False, expose_to_cinematics: False, public: True, private: True}>
+  <Struct 'RigVMGraphVariableDescription' (0x000002174DC59E60) {name: "WallHandTargetL", cpp_type: "FVector", cpp_type_object: "/Script/CoreUObject.ScriptStruct'/Script/CoreUObject.Vector'", default_value: "", category: NSLOCTEXT("KismetSchema", "Default", "Default"), tooltip: "", exposed_on_spawn: False, expose_to_cinematics: False, public: True, private: True}>
+
+=== NODES (pins + defaults) ===
+
+[RigUnit_BeginExecution] Forwards Solve
+  ExecutePin [OUTPUT: 1>] = ()
+
+[ToRig] From World
+  Value [INPUT: 0>] = (X=0.000000,Y=0.000000,Z=0.000000)
+  Global [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[GetHand_R] Get Transform
+  Item [INPUT: 0>] = (Type=Bone,Name="hand_r")
+  Space [INPUT: 0>] = GlobalSpace
+  bInitial [INPUT: 0>] = false
+  Transform [OUTPUT: 1>] = (Rotation=(X=0.000000,Y=0.000000,Z=0.000000,W=1.000000),Translation=(X=0.000000,Y=0.000000,Z=0.000000),Scale3D=(X=1.000000,Y=1.000000,Z=1.000000))
+    Rotation (linked)
+  CachedIndex [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+
+[TwoBoneIK_R] Basic IK
+  ExecutePin [IO: 2>] = ()
+  ItemA [INPUT: 0>] = (Type=Bone,Name="upperarm_r")
+  ItemB [INPUT: 0>] = (Type=Bone,Name="lowerarm_r")
+  EffectorItem [INPUT: 0>] = (Type=Bone,Name="hand_r")
+  Effector [INPUT: 0>] = (Rotation=(X=0.000000,Y=0.000000,Z=0.000000,W=1.000000),Translation=(X=0.000000,Y=0.000000,Z=0.000000),Scale3D=(X=1.000000,Y=1.000000,Z=1.000000))
+    Rotation (linked)
+    Translation (linked)
+  PrimaryAxis [INPUT: 0>] = (X=-1.000000,Y=0.000000,Z=0.000000)
+  SecondaryAxis [INPUT: 0>] = (X=0.000000,Y=1.000000,Z=0.000000)
+  SecondaryAxisWeight [INPUT: 0>] = 1.000000
+  PoleVector [INPUT: 0>] = (X=-50.000000,Y=0.000000,Z=1.000000)
+  PoleVectorKind [INPUT: 0>] = Direction
+  PoleVectorSpace [INPUT: 0>] = (Type=Bone,Name="root")
+  bEnableStretch [INPUT: 0>] = False
+  StretchStartRatio [INPUT: 0>] = 0.750000
+  StretchMaximumRatio [INPUT: 0>] = 1.250000
+  Weight [INPUT: 0>] = 1.000000
+  ItemALength [INPUT: 0>] = 0.000000
+  ItemBLength [INPUT: 0>] = 0.000000
+  bPropagateToChildren [INPUT: 0>] = true
+  DebugSettings [INPUT: 0>] = (bEnabled=true,Scale=15.0,WorldOffset=(Rotation=(X=0.000000,Y=0.000000,Z=0.000000,W=1.000000),Translation=(X=0.000000,Y=0.000000,Z=0.000000),Scale3D=(X=1.000000,Y=1.000000,Z=1.000000)))
+  CachedItemAIndex [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+  CachedItemBIndex [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+  CachedEffectorItemIndex [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+  CachedPoleVectorSpaceIndex [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+
+[VariableNode] Get LookAtLocation
+  Variable [HIDDEN: 4>] = LookAtLocation
+  Value [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[ReachSub] Subtract
+  A [INPUT: 0>] = (X=0.000000,Y=0.000000,Z=0.000000)
+  B [INPUT: 0>] = (X=0.000000,Y=0.000000,Z=0.000000)
+  Result [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[PalmAim] Aim
+  ExecutePin [IO: 2>] = ()
+  Bone [INPUT: 0>] = hand_r
+  Primary [INPUT: 0>] = (Weight=1.000000,Axis=(X=0.0,Y=1.0,Z=0.0),Target=(X=1.000000,Y=0.000000,Z=0.000000),Kind=Direction,Space="None")
+    Axis (linked)
+    Target (linked)
+  Secondary [INPUT: 0>] = (Weight=1.000000,Axis=(X=0.000000,Y=-1.000000,Z=0.0),Target=(X=0.0,Y=0.0,Z=-1.000000),Kind=Location,Space="None")
+    Axis (linked)
+  Weight [INPUT: 0>] = 1.000000
+  bPropagateToChildren [INPUT: 0>] = true
+  DebugSettings [INPUT: 0>] = (bEnabled=True,Scale=15.000000,WorldOffset=(Rotation=(X=0.000000,Y=0.000000,Z=0.000000,W=1.000000),Translation=(X=0.000000,Y=0.000000,Z=0.000000),Scale3D=(X=1.000000,Y=1.000000,Z=1.000000)))
+  CachedBoneIndex [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+  PrimaryCachedSpace [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+  SecondaryCachedSpace [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+  bIsInitialized [HIDDEN: 4>] = False
+
+[SpineRef] Get Transform
+  Item [INPUT: 0>] = (Type=Bone,Name="spine_03")
+  Space [INPUT: 0>] = GlobalSpace
+  bInitial [INPUT: 0>] = False
+  Transform [OUTPUT: 1>] = (Rotation=(X=0.000000,Y=0.000000,Z=0.000000,W=1.000000),Translation=(X=0.000000,Y=0.000000,Z=0.000000),Scale3D=(X=1.000000,Y=1.000000,Z=1.000000))
+    Translation (linked)
+  CachedIndex [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+
+[MulK] Multiply
+  A [INPUT: 0>] = 1.000000
+  B [INPUT: 0>] = 0.500000
+  Result [OUTPUT: 1>] = 0.000000
+
+[Yaw] Clamp
+  Value [INPUT: 0>] = 0.000000
+  Minimum [INPUT: 0>] = -0.600000
+  Maximum [INPUT: 0>] = 0.600000
+  Result [OUTPUT: 1>] = 0.000000
+
+[Mul_spine_02] Multiply
+  A [INPUT: 0>] = 1.000000
+  B [INPUT: 0>] = 0.400000
+  Result [OUTPUT: 1>] = 0.000000
+
+[Quat_spine_02] From Axis And Angle
+  Axis [INPUT: 0>] = (X=1.000000,Y=0.000000,Z=0.000000)
+  Angle [INPUT: 0>] = 0.000000
+  Result [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000,W=1.000000)
+
+[Off_spine_02] Offset Transform
+  ExecutePin [IO: 2>] = ()
+  Item [INPUT: 0>] = (Type=Bone,Name="spine_02")
+  OffsetTransform [INPUT: 0>] = (Rotation=(X=0.000000,Y=0.000000,Z=0.000000,W=1.000000),Translation=(X=0.000000,Y=0.000000,Z=0.000000),Scale3D=(X=1.000000,Y=1.000000,Z=1.000000))
+    Rotation (linked)
+  Weight [INPUT: 0>] = 1.0
+  bPropagateToChildren [INPUT: 0>] = True
+  CachedIndex [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+
+[VariableNode_3] Get Weight
+  Variable [HIDDEN: 4>] = Weight
+  Value [OUTPUT: 1>]
+
+[Mul_spine_03] Multiply
+  A [INPUT: 0>] = 1.000000
+  B [INPUT: 0>] = 0.800000
+  Result [OUTPUT: 1>] = 0.000000
+
+[Quat_spine_03] From Axis And Angle
+  Axis [INPUT: 0>] = (X=1.000000,Y=0.000000,Z=0.000000)
+  Angle [INPUT: 0>] = 0.000000
+  Result [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000,W=1.000000)
+
+[Off_spine_03] Offset Transform
+  ExecutePin [IO: 2>] = ()
+  Item [INPUT: 0>] = (Type=Bone,Name="spine_03")
+  OffsetTransform [INPUT: 0>] = (Rotation=(X=0.000000,Y=0.000000,Z=0.000000,W=1.000000),Translation=(X=0.000000,Y=0.000000,Z=0.000000),Scale3D=(X=1.000000,Y=1.000000,Z=1.000000))
+    Rotation (linked)
+  Weight [INPUT: 0>] = 1.0
+  bPropagateToChildren [INPUT: 0>] = True
+  CachedIndex [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+
+[VariableNode_4] Get Weight
+  Variable [HIDDEN: 4>] = Weight
+  Value [OUTPUT: 1>]
+
+[Mul_neck_02] Multiply
+  A [INPUT: 0>] = 1.000000
+  B [INPUT: 0>] = -0.5
+  Result [OUTPUT: 1>] = 0.000000
+
+[Quat_neck_02] From Axis And Angle
+  Axis [INPUT: 0>] = (X=1.000000,Y=0.000000,Z=0.000000)
+  Angle [INPUT: 0>] = 0.000000
+  Result [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000,W=1.000000)
+
+[Off_neck_02] Offset Transform
+  ExecutePin [IO: 2>] = ()
+  Item [INPUT: 0>] = (Type=Bone,Name="neck_02")
+  OffsetTransform [INPUT: 0>] = (Rotation=(X=0.000000,Y=0.000000,Z=0.000000,W=1.000000),Translation=(X=0.000000,Y=0.000000,Z=0.000000),Scale3D=(X=1.000000,Y=1.000000,Z=1.000000))
+    Rotation (linked)
+  Weight [INPUT: 0>] = 1.0
+  bPropagateToChildren [INPUT: 0>] = True
+  CachedIndex [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+
+[Mul_head] Multiply
+  A [INPUT: 0>] = 1.000000
+  B [INPUT: 0>] = -0.7
+  Result [OUTPUT: 1>] = 0.000000
+
+[Quat_head] From Axis And Angle
+  Axis [INPUT: 0>] = (X=1.000000,Y=0.000000,Z=0.000000)
+  Angle [INPUT: 0>] = 0.000000
+  Result [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000,W=1.000000)
+
+[Off_head] Offset Transform
+  ExecutePin [IO: 2>] = ()
+  Item [INPUT: 0>] = (Type=Bone,Name="head")
+  OffsetTransform [INPUT: 0>] = (Rotation=(X=0.000000,Y=0.000000,Z=0.000000,W=1.000000),Translation=(X=0.000000,Y=0.000000,Z=0.000000),Scale3D=(X=1.000000,Y=1.000000,Z=1.000000))
+    Rotation (linked)
+  Weight [INPUT: 0>] = 1.0
+  bPropagateToChildren [INPUT: 0>] = True
+  CachedIndex [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+
+[RerouteNode_3] Double
+  Value [IO: 2>] = 1.000000
+
+[RerouteNode_4] Double
+  Value [IO: 2>] = 1.000000
+
+[RerouteNode_5] Double
+  Value [IO: 2>] = 1.000000
+
+[RerouteNode_7] Double
+  Value [IO: 2>] = 1.000000
+
+[GetHand_L] Get Transform
+  Item [INPUT: 0>] = (Type=Bone,Name="hand_l")
+  Space [INPUT: 0>] = GlobalSpace
+  bInitial [INPUT: 0>] = False
+  Transform [OUTPUT: 1>] = (Rotation=(X=0.000000,Y=0.000000,Z=0.000000,W=1.000000),Translation=(X=0.000000,Y=0.000000,Z=0.000000),Scale3D=(X=1.000000,Y=1.000000,Z=1.000000))
+    Rotation (linked)
+  CachedIndex [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+
+[TwoBoneIK_L] Basic IK
+  ExecutePin [IO: 2>] = ()
+  ItemA [INPUT: 0>] = (Type=Bone,Name="upperarm_l")
+  ItemB [INPUT: 0>] = (Type=Bone,Name="lowerarm_l")
+  EffectorItem [INPUT: 0>] = (Type=Bone,Name="hand_l")
+  Effector [INPUT: 0>] = (Rotation=(X=0.000000,Y=0.000000,Z=0.000000,W=1.000000),Translation=(X=0.000000,Y=0.000000,Z=0.000000),Scale3D=(X=1.000000,Y=1.000000,Z=1.000000))
+    Rotation (linked)
+    Translation (linked)
+  PrimaryAxis [INPUT: 0>] = (X=1.000000,Y=0.000000,Z=0.000000)
+  SecondaryAxis [INPUT: 0>] = (X=0.000000,Y=-1.000000,Z=0.000000)
+  SecondaryAxisWeight [INPUT: 0>] = 1.000000
+  PoleVector [INPUT: 0>] = (X=50.000000,Y=0.000000,Z=1.000000)
+  PoleVectorKind [INPUT: 0>] = Direction
+  PoleVectorSpace [INPUT: 0>] = (Type=Bone,Name="root")
+  bEnableStretch [INPUT: 0>] = False
+  StretchStartRatio [INPUT: 0>] = 0.750000
+  StretchMaximumRatio [INPUT: 0>] = 1.250000
+  Weight [INPUT: 0>] = 1.000000
+  ItemALength [INPUT: 0>] = 0.000000
+  ItemBLength [INPUT: 0>] = 0.000000
+  bPropagateToChildren [INPUT: 0>] = True
+  DebugSettings [INPUT: 0>] = (bEnabled=true,Scale=15.0,WorldOffset=(Rotation=(X=0.000000,Y=0.000000,Z=0.000000,W=1.000000),Translation=(X=0.000000,Y=0.000000,Z=0.000000),Scale3D=(X=1.000000,Y=1.000000,Z=1.000000)))
+  CachedItemAIndex [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+  CachedItemBIndex [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+  CachedEffectorItemIndex [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+  CachedPoleVectorSpaceIndex [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+
+[SelR] Select
+  Condition [INPUT: 0>] = false
+  IfTrue [INPUT: 0>] = 1.000000
+  IfFalse [INPUT: 0>] = 0.000000
+  Result [OUTPUT: 1>] = 0.000000
+
+[SelL] Select
+  Condition [INPUT: 0>] = False
+  IfTrue [INPUT: 0>] = 0.000000
+  IfFalse [INPUT: 0>] = 1.000000
+  Result [OUTPUT: 1>] = 0.000000
+
+[RerouteNode_10] 벡터
+  Value [IO: 2>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[RerouteNode_11] 벡터
+  Value [IO: 2>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[PalmAim_1] Aim
+  ExecutePin [IO: 2>] = ()
+  Bone [INPUT: 0>] = hand_l
+  Primary [INPUT: 0>] = (Weight=1.000000,Axis=(X=0.0,Y=1.0,Z=0.0),Target=(X=1.000000,Y=0.000000,Z=0.000000),Kind=Direction,Space="None")
+    Axis (linked)
+    Target (linked)
+  Secondary [INPUT: 0>] = (Weight=1.000000,Axis=(X=0.000000,Y=1.000000,Z=0.0),Target=(X=0.0,Y=0.0,Z=-1.000000),Kind=Location,Space="None")
+    Axis (linked)
+  Weight [INPUT: 0>] = 1.000000
+  bPropagateToChildren [INPUT: 0>] = true
+  DebugSettings [INPUT: 0>] = (bEnabled=True,Scale=15.000000,WorldOffset=(Rotation=(X=0.000000,Y=0.000000,Z=0.000000,W=1.000000),Translation=(X=0.000000,Y=0.000000,Z=0.000000),Scale3D=(X=1.000000,Y=1.000000,Z=1.000000)))
+  CachedBoneIndex [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+  PrimaryCachedSpace [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+  SecondaryCachedSpace [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+  bIsInitialized [HIDDEN: 4>] = False
+
+[SelL_1] Select
+  Condition [INPUT: 0>] = false
+  IfTrue [INPUT: 0>] = 0.000000
+  IfFalse [INPUT: 0>] = 1.000000
+  Result [OUTPUT: 1>] = 0.000000
+
+[SelR_1] Select
+  Condition [INPUT: 0>] = false
+  IfTrue [INPUT: 0>] = 1.000000
+  IfFalse [INPUT: 0>] = 0.000000
+  Result [OUTPUT: 1>] = 0.000000
+
+[PalmReachUnit_R] Unit
+  Value [INPUT: 0>] = (X=0.000000,Y=0.000000,Z=0.000000)
+  Result [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[PalmReachLerp_R] Interpolate
+  A [INPUT: 0>] = (X=0.0,Y=0.0,Z=-1.000000)
+  B [INPUT: 0>] = (X=1.000000,Y=1.000000,Z=1.000000)
+  T [INPUT: 0>] = 0.000000
+  Result [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[PalmReachUnit_L] Unit
+  Value [INPUT: 0>] = (X=0.000000,Y=0.000000,Z=0.000000)
+  Result [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[PalmReachLerp_L] Interpolate
+  A [INPUT: 0>] = (X=0.0,Y=0.0,Z=-1.000000)
+  B [INPUT: 0>] = (X=1.000000,Y=1.000000,Z=1.000000)
+  T [INPUT: 0>] = 0.000000
+  Result [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[RerouteNode_6] 벡터
+  Value [IO: 2>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[RerouteNode_13] 벡터
+  Value [IO: 2>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[PalmReleaseRemap] Remap
+  Value [INPUT: 0>] = 0.000000
+  SourceMinimum [INPUT: 0>] = 0.500000
+  SourceMaximum [INPUT: 0>] = 0.9
+  TargetMinimum [INPUT: 0>] = 0.0
+  TargetMaximum [INPUT: 0>] = 1.0
+  bClamp [INPUT: 0>] = true
+  Result [OUTPUT: 1>] = 0.000000
+
+[RerouteNode_14] Float
+  Value [IO: 2>] = 0.000000
+
+[RerouteNode_15] Float
+  Value [IO: 2>] = 0.000000
+
+[SecAxisLerp] Interpolate
+  A [INPUT: 0>] = (X=0.000000,Y=-1.000000,Z=0.0)
+  B [INPUT: 0>] = (X=1.000000,Y=0.000000,Z=0.000000)
+  T [INPUT: 0>] = 0.000000
+  Result [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[SecAxisLerp_2] Interpolate
+  A [INPUT: 0>] = (X=1.000000,Y=0.000000,Z=0.000000)
+  B [INPUT: 0>] = (X=0.000000,Y=1.000000,Z=0.0)
+  T [INPUT: 0>] = 0.000000
+  Result [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[ReachLen] Length
+  Value [INPUT: 0>] = (X=0.000000,Y=0.000000,Z=0.000000)
+  Result [OUTPUT: 1>] = 0.000000
+
+[ReachBlend] Remap
+  Value [INPUT: 0>] = 0.000000
+  SourceMinimum [INPUT: 0>] = 40.000000
+  SourceMaximum [INPUT: 0>] = 80.000000
+  TargetMinimum [INPUT: 0>] = 0.0
+  TargetMaximum [INPUT: 0>] = 1.0
+  bClamp [INPUT: 0>] = true
+  Result [OUTPUT: 1>] = 0.000000
+
+[SecAxisLerp_1] Interpolate
+  A [INPUT: 0>] = (X=0.0,Y=1.000000,Z=0.000000)
+  B [INPUT: 0>] = (X=-1.000000,Y=0.000000,Z=0.0)
+  T [INPUT: 0>] = 0.000000
+  Result [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[SecAxisLerp_3] Interpolate
+  A [INPUT: 0>] = (X=-1.000000,Y=0.000000,Z=0.000000)
+  B [INPUT: 0>] = (X=0.000000,Y=-1.000000,Z=0.0)
+  T [INPUT: 0>] = 0.000000
+  Result [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[RerouteNode_16] Float
+  Value [IO: 2>] = 0.000000
+
+[RerouteNode_18] Float
+  Value [IO: 2>] = 0.000000
+
+[RerouteNode_19] Float
+  Value [IO: 2>] = 0.000000
+
+[VariableNode_7] Get bWallHandRight
+  Variable [HIDDEN: 4>] = bWallHandRight
+  Value [OUTPUT: 1>]
+
+[VariableNode_8] Get bWallHandRight
+  Variable [HIDDEN: 4>] = bWallHandRight
+  Value [OUTPUT: 1>]
+
+[VariableNode_11] Get bWallHandRight
+  Variable [HIDDEN: 4>] = bWallHandRight
+  Value [OUTPUT: 1>]
+
+[VariableNode_10] Get bWallHandRight
+  Variable [HIDDEN: 4>] = bWallHandRight
+  Value [OUTPUT: 1>]
+
+[VariableNode_2] Get WallHandSpineLean
+  Variable [HIDDEN: 4>] = WallHandSpineLean
+  Value [OUTPUT: 1>]
+
+[ToRigL] From World
+  Value [INPUT: 0>] = (X=0.000000,Y=0.000000,Z=0.000000)
+  Global [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[fSel] Select
+  Condition [INPUT: 0>] = False
+  IfTrue [INPUT: 0>] = 1.000000
+  IfFalse [INPUT: 0>] = 0.000000
+  Result [OUTPUT: 1>] = 0.000000
+
+[VariableNode_9] Get bWallHandFront
+  Variable [HIDDEN: 4>] = bWallHandFront
+  Value [OUTPUT: 1>]
+
+[fSel_1] Select
+  Condition [INPUT: 0>] = False
+  IfTrue [INPUT: 0>] = 1.000000
+  IfFalse [INPUT: 0>] = 0.000000
+  Result [OUTPUT: 1>] = 0.000000
+
+[VariableNode_12] Get bWallHandFront
+  Variable [HIDDEN: 4>] = bWallHandFront
+  Value [OUTPUT: 1>]
+
+[fSel_2] Select
+  Condition [INPUT: 0>] = False
+  IfTrue [INPUT: 0>] = 1.000000
+  IfFalse [INPUT: 0>] = 0.000000
+  Result [OUTPUT: 1>] = 0.000000
+
+[VariableNode_13] Get bWallHandFront
+  Variable [HIDDEN: 4>] = bWallHandFront
+  Value [OUTPUT: 1>]
+
+[fSel_3] Select
+  Condition [INPUT: 0>] = False
+  IfTrue [INPUT: 0>] = 1.000000
+  IfFalse [INPUT: 0>] = 0.000000
+  Result [OUTPUT: 1>] = 0.000000
+
+[VariableNode_14] Get bWallHandFront
+  Variable [HIDDEN: 4>] = bWallHandFront
+  Value [OUTPUT: 1>]
+
+[PalmTgtL] Interpolate
+  A [INPUT: 0>] = (X=0.000000,Y=0.000000,Z=0.000000)
+  B [INPUT: 0>] = (X=1.000000,Y=1.000000,Z=1.000000)
+  T [INPUT: 0>] = 0.000000
+  Result [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[PalmDirUnit] Unit
+  Value [INPUT: 0>] = (X=0.000000,Y=0.000000,Z=0.000000)
+  Result [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[PalmTgtR] Interpolate
+  A [INPUT: 0>] = (X=0.000000,Y=0.000000,Z=0.000000)
+  B [INPUT: 0>] = (X=1.000000,Y=1.000000,Z=1.000000)
+  T [INPUT: 0>] = 0.000000
+  Result [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[PalmReachSum] Add
+  A [INPUT: 0>] = (X=0.000000,Y=0.000000,Z=0.000000)
+  B [INPUT: 0>] = (X=0.000000,Y=0.000000,Z=0.000000)
+  Result [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[PalmDirUnit_2] Unit
+  Value [INPUT: 0>] = (X=0.000000,Y=0.000000,Z=0.000000)
+  Result [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[PalmReachSum_1] Add
+  A [INPUT: 0>] = (X=0.000000,Y=0.000000,Z=0.000000)
+  B [INPUT: 0>] = (X=0.000000,Y=0.000000,Z=0.000000)
+  Result [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[RerouteNode_20] 벡터
+  Value [IO: 2>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[RerouteNode_21] 벡터
+  Value [IO: 2>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[RerouteNode_17] 벡터
+  Value [IO: 2>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[RerouteNode_22] 벡터
+  Value [IO: 2>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[RerouteNode_24] Float
+  Value [IO: 2>] = 0.000000
+
+[RerouteNode_25] Float
+  Value [IO: 2>] = 0.000000
+
+[RerouteNode_26] 벡터
+  Value [IO: 2>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[OffsetRotR] Offset Transform
+  ExecutePin [IO: 2>] = ()
+  Item [INPUT: 0>] = (Type=Bone,Name="hand_r")
+  OffsetTransform [INPUT: 0>] = (Rotation=(X=0.258819,Y=0.000000,Z=0.000000,W=0.965926),Translation=(X=0.000000,Y=0.000000,Z=0.000000),Scale3D=(X=1.000000,Y=1.000000,Z=1.000000))
+  Weight [INPUT: 0>] = 1.000000
+  bPropagateToChildren [INPUT: 0>] = True
+  CachedIndex [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+
+[OffsetRotL] Offset Transform
+  ExecutePin [IO: 2>] = ()
+  Item [INPUT: 0>] = (Type=Bone,Name="hand_l")
+  OffsetTransform [INPUT: 0>] = (Rotation=(X=0.258819,Y=0.000000,Z=0.000000,W=0.965926),Translation=(X=0.000000,Y=0.000000,Z=0.000000),Scale3D=(X=1.000000,Y=1.000000,Z=1.000000))
+  Weight [INPUT: 0>] = 1.000000
+  bPropagateToChildren [INPUT: 0>] = True
+  CachedIndex [HIDDEN: 4>] = (Key=(Type=None,Name="None"),Index=65535,ContainerVersion=-1)
+
+[fSel_4] Select
+  Condition [INPUT: 0>] = False
+  IfTrue [INPUT: 0>] = 1.000000
+  IfFalse [INPUT: 0>] = 0.000000
+  Result [OUTPUT: 1>] = 0.000000
+
+[VariableNode_15] Get bWallHandFront
+  Variable [HIDDEN: 4>] = bWallHandFront
+  Value [OUTPUT: 1>]
+
+[RerouteNode_2] Float
+  Value [IO: 2>] = 1.000000
+
+[RerouteNode] 벡터
+  Value [IO: 2>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+[WInterpR] Alpha Interpolate
+  Value [INPUT: 0>] = 1.000000
+  Scale [INPUT: 0>] = 1.000000
+  Bias [INPUT: 0>] = 0.000000
+  bMapRange [INPUT: 0>] = False
+  InRange [INPUT: 0>] = (Min=0.000000,Max=1.000000)
+  OutRange [INPUT: 0>] = (Min=0.000000,Max=1.000000)
+  bClampResult [INPUT: 0>] = False
+  ClampMin [INPUT: 0>] = 0.000000
+  ClampMax [INPUT: 0>] = 1.000000
+  bInterpResult [INPUT: 0>] = True
+  InterpSpeedIncreasing [INPUT: 0>] = 8.000000
+  InterpSpeedDecreasing [INPUT: 0>] = 4.000000
+  Result [OUTPUT: 1>] = 0.000000
+  ScaleBiasClamp [HIDDEN: 4>] = ()
+
+[WInterpL] Alpha Interpolate
+  Value [INPUT: 0>] = 1.000000
+  Scale [INPUT: 0>] = 1.000000
+  Bias [INPUT: 0>] = 0.000000
+  bMapRange [INPUT: 0>] = False
+  InRange [INPUT: 0>] = (Min=0.000000,Max=1.000000)
+  OutRange [INPUT: 0>] = (Min=0.000000,Max=1.000000)
+  bClampResult [INPUT: 0>] = False
+  ClampMin [INPUT: 0>] = 0.000000
+  ClampMax [INPUT: 0>] = 1.000000
+  bInterpResult [INPUT: 0>] = True
+  InterpSpeedIncreasing [INPUT: 0>] = 8.000000
+  InterpSpeedDecreasing [INPUT: 0>] = 4.000000
+  Result [OUTPUT: 1>] = 0.000000
+  ScaleBiasClamp [HIDDEN: 4>] = ()
+
+[VariableNode_1] Get WallHandTargetL
+  Variable [HIDDEN: 4>] = WallHandTargetL
+  Value [OUTPUT: 1>] = (X=0.000000,Y=0.000000,Z=0.000000)
+
+=== LINKS ===
+  GetHand_R.Transform.Rotation -> TwoBoneIK_R.Effector.Rotation
+  VariableNode.Value -> ToRig.Value
+  MulK.Result -> Yaw.Value
+  Yaw.Result -> Mul_spine_02.A
+  Mul_spine_02.Result -> Quat_spine_02.Angle
+  Quat_spine_02.Result -> Off_spine_02.OffsetTransform.Rotation
+  Mul_spine_03.Result -> Quat_spine_03.Angle
+  Quat_spine_03.Result -> Off_spine_03.OffsetTransform.Rotation
+  Off_spine_02.ExecutePin -> Off_spine_03.ExecutePin
+  Mul_neck_02.Result -> Quat_neck_02.Angle
+  Quat_neck_02.Result -> Off_neck_02.OffsetTransform.Rotation
+  Off_spine_03.ExecutePin -> Off_neck_02.ExecutePin
+  Mul_head.Result -> Quat_head.Angle
+  Quat_head.Result -> Off_head.OffsetTransform.Rotation
+  Off_neck_02.ExecutePin -> Off_head.ExecutePin
+  RerouteNode_3.Value -> Mul_head.A
+  RerouteNode_4.Value -> RerouteNode_3.Value
+  RerouteNode_4.Value -> Mul_neck_02.A
+  RerouteNode_5.Value -> RerouteNode_4.Value
+  RerouteNode_5.Value -> Mul_spine_03.A
+  RerouteNode_7.Value -> RerouteNode_5.Value
+  Yaw.Result -> RerouteNode_7.Value
+  GetHand_L.Transform.Rotation -> TwoBoneIK_L.Effector.Rotation
+  VariableNode_7.Value -> SelR.Condition
+  VariableNode_8.Value -> SelL.Condition
+  RerouteNode_11.Value -> ReachSub.A
+  PalmAim.ExecutePin -> PalmAim_1.ExecutePin
+  VariableNode_11.Value -> SelR_1.Condition
+  VariableNode_10.Value -> SelL_1.Condition
+  SelL_1.Result -> PalmAim_1.Weight
+  RigUnit_BeginExecution.ExecutePin -> Off_spine_02.ExecutePin
+  Off_head.ExecutePin -> TwoBoneIK_R.ExecutePin
+  VariableNode_2.Value -> MulK.A
+  PalmReachUnit_R.Result -> PalmReachLerp_R.B
+  PalmReachUnit_L.Result -> PalmReachLerp_L.B
+  ReachSub.Result -> RerouteNode_6.Value
+  RerouteNode_13.Value -> PalmReachUnit_L.Value
+  RerouteNode_6.Value -> RerouteNode_13.Value
+  PalmReleaseRemap.Result -> RerouteNode_14.Value
+  RerouteNode_14.Value -> RerouteNode_15.Value
+  ReachLen.Result -> ReachBlend.Value
+  RerouteNode_18.Value -> SecAxisLerp.T
+  RerouteNode_16.Value -> RerouteNode_19.Value
+  RerouteNode_19.Value -> SecAxisLerp_1.T
+  PalmReleaseRemap.Result -> PalmReachLerp_R.T
+  TwoBoneIK_R.ExecutePin -> TwoBoneIK_L.ExecutePin
+  RerouteNode_10.Value -> TwoBoneIK_R.Effector.Translation
+  SelR_1.Result -> PalmAim.Weight
+  RerouteNode_15.Value -> PalmReachLerp_L.T
+  TwoBoneIK_L.ExecutePin -> PalmAim.ExecutePin
+  SecAxisLerp.Result -> PalmAim.Secondary.Axis
+  SecAxisLerp_1.Result -> PalmAim_1.Secondary.Axis
+  ReachBlend.Result -> RerouteNode_18.Value
+  ReachBlend.Result -> RerouteNode_16.Value
+  RerouteNode_6.Value -> ReachLen.Value
+  fSel.Result -> SelL_1.IfTrue
+  VariableNode_9.Value -> fSel.Condition
+  VariableNode_12.Value -> fSel_1.Condition
+  fSel_1.Result -> SelR.IfFalse
+  VariableNode_13.Value -> fSel_2.Condition
+  fSel_2.Result -> SelL.IfTrue
+  VariableNode_14.Value -> fSel_3.Condition
+  fSel_3.Result -> SelR_1.IfFalse
+  ReachSub.Result -> PalmReachUnit_R.Value
+  ToRigL.Global -> TwoBoneIK_L.Effector.Translation
+  PalmReachLerp_L.Result -> PalmTgtL.A
+  fSel.Result -> PalmTgtL.T
+  SecAxisLerp_2.Result -> PalmAim.Primary.Axis
+  SecAxisLerp_3.Result -> PalmAim_1.Primary.Axis
+  PalmTgtL.Result -> PalmAim_1.Primary.Target
+  PalmDirUnit.Result -> PalmTgtR.B
+  PalmReachSum.Result -> PalmDirUnit.Value
+  PalmTgtR.Result -> PalmAim.Primary.Target
+  fSel_3.Result -> PalmTgtR.T
+  PalmReachSum_1.Result -> PalmDirUnit_2.Value
+  PalmReachLerp_L.Result -> PalmReachSum_1.B
+  PalmDirUnit_2.Result -> PalmTgtL.B
+  PalmReachLerp_L.Result -> RerouteNode_20.Value
+  RerouteNode_21.Value -> PalmReachSum.B
+  RerouteNode_20.Value -> RerouteNode_21.Value
+  PalmReachLerp_R.Result -> PalmReachSum.A
+  PalmReachLerp_R.Result -> RerouteNode_17.Value
+  RerouteNode_22.Value -> PalmReachSum_1.A
+  RerouteNode_17.Value -> RerouteNode_22.Value
+  RerouteNode_24.Value -> SecAxisLerp_3.T
+  RerouteNode_19.Value -> RerouteNode_24.Value
+  RerouteNode_25.Value -> SecAxisLerp_2.T
+  RerouteNode_18.Value -> RerouteNode_25.Value
+  RerouteNode_26.Value -> PalmTgtR.A
+  PalmReachLerp_R.Result -> RerouteNode_26.Value
+  OffsetRotR.ExecutePin -> OffsetRotL.ExecutePin
+  VariableNode_15.Value -> fSel_4.Condition
+  fSel_4.Result -> OffsetRotR.Weight
+  RerouteNode_2.Value -> OffsetRotL.Weight
+  fSel_4.Result -> RerouteNode_2.Value
+  SpineRef.Transform.Translation -> ReachSub.B
+  ToRig.Global -> RerouteNode_10.Value
+  RerouteNode_10.Value -> RerouteNode.Value
+  RerouteNode.Value -> RerouteNode_11.Value
+  SelR.Result -> WInterpR.Value
+  SelL.Result -> WInterpL.Value
+  VariableNode_1.Value -> ToRigL.Value
+  WInterpL.Result -> TwoBoneIK_L.Weight
+  WInterpR.Result -> TwoBoneIK_R.Weight
+  PalmAim_1.ExecutePin -> OffsetRotR.ExecutePin

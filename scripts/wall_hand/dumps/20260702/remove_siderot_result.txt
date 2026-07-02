@@ -1,0 +1,6 @@
+remove SideRotL -> True
+remove SideRotR -> True
+remove SelSideR -> True
+remove SelSideL -> True
+vars ok
+save=True
