@@ -1,0 +1,8 @@
+compiled OK
+  fSelRelR.Condition <- VariableNode_4.Value
+  fSelRelR.IfFalse <- SelR.Result
+  fSelRelR.Result -> WInterpR.Value
+  fSelRelL.Condition <- VariableNode_5.Value
+  fSelRelL.IfFalse <- SelL.Result
+  fSelRelL.Result -> WInterpL.Value
+DONE

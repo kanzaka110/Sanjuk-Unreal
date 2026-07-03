@@ -1,0 +1,130 @@
+
+######## bp (bk 181n/241L -> now 184n/239L)
+  nodes gone(3): K2Node_CallFunction_102, K2Node_Knot_3, K2Node_Knot_77
+  nodes new(2): K2Node_CallFunction_54, K2Node_Knot_46
+  links removed(12):
+    - K2Node_CallFunction_102.ReturnValue -> K2Node_Knot_33.InputPin
+    - K2Node_CallFunction_102.ReturnValue -> K2Node_Knot_36.InputPin
+    - K2Node_CallFunction_102.then -> K2Node_CallFunction_20.execute
+    - K2Node_CallFunction_25.ReturnValue -> K2Node_Knot_3.InputPin
+    - K2Node_CallFunction_25.ReturnValue -> K2Node_Knot_58.InputPin
+    - K2Node_DynamicCast_0.then -> K2Node_CallFunction_102.execute
+    - K2Node_Knot_23.OutputPin -> K2Node_CallFunction_102.self
+    - K2Node_Knot_3.OutputPin -> K2Node_CallFunction_3.A
+    - K2Node_Knot_3.OutputPin -> K2Node_Knot_2.InputPin
+    - K2Node_Knot_77.OutputPin -> K2Node_CallFunction_87.bPickA
+    - K2Node_Knot_77.OutputPin -> K2Node_Knot_41.InputPin
+    - K2Node_Knot_80.OutputPin -> K2Node_Knot_77.InputPin
+  links added(10):
+    + K2Node_CallFunction_25.ReturnValue -> K2Node_CallFunction_3.A
+    + K2Node_CallFunction_54.bRight -> K2Node_Knot_33.InputPin
+    + K2Node_CallFunction_54.bRight -> K2Node_Knot_36.InputPin
+    + K2Node_CallFunction_54.then -> K2Node_Knot_46.InputPin
+    + K2Node_DynamicCast_0.then -> K2Node_CallFunction_54.execute
+    + K2Node_Knot_23.OutputPin -> K2Node_CallFunction_54.self
+    + K2Node_Knot_41.OutputPin -> K2Node_CallFunction_87.bPickA
+    + K2Node_Knot_46.OutputPin -> K2Node_CallFunction_20.execute
+    + K2Node_Knot_5.OutputPin -> K2Node_Knot_58.InputPin
+    + K2Node_Knot_80.OutputPin -> K2Node_Knot_41.InputPin
+
+######## ik (bk 103n/96L -> now 103n/96L)
+  nodes gone(0): 
+  nodes new(0): 
+  links removed(0):
+  links added(0):
+
+######## leg (bk 54n/73L -> now 45n/55L)
+  nodes gone(10): K2Node_CallFunction_10, K2Node_CallFunction_11, K2Node_CallFunction_12, K2Node_CallFunction_13, K2Node_CallFunction_15, K2Node_CallFunction_7, K2Node_CallFunction_8, K2Node_CallFunction_9, K2Node_VariableSet_13, K2Node_VariableSet_14
+  nodes new(1): K2Node_CallFunction_14
+  links removed(34):
+    - K2Node_CallFunction_10.ReturnValue -> K2Node_VariableSet_7.bWallHandRight
+    - K2Node_CallFunction_10.then -> K2Node_VariableSet_7.execute
+    - K2Node_CallFunction_11.ReturnValue -> K2Node_VariableSet_8.WallHandSpineLean
+    - K2Node_CallFunction_11.then -> K2Node_VariableSet_8.execute
+    - K2Node_CallFunction_12.TargetL -> K2Node_VariableSet_10.WallHandTargetL
+    - K2Node_CallFunction_12.then -> K2Node_VariableSet_10.execute
+    - K2Node_CallFunction_13.FrontBlend -> K2Node_VariableSet_12.WHFrontBlend
+    - K2Node_CallFunction_13.then -> K2Node_VariableSet_12.execute
+    - K2Node_CallFunction_15.EngL -> K2Node_VariableSet_14.WHEngageL
+    - K2Node_CallFunction_15.EngR -> K2Node_VariableSet_13.WHEngageR
+    - K2Node_CallFunction_15.then -> K2Node_VariableSet_13.execute
+    - K2Node_CallFunction_7.ReturnValue -> K2Node_CallFunction_20.InVec
+    - K2Node_CallFunction_7.then -> K2Node_VariableSet_5.execute
+    - K2Node_CallFunction_8.ReturnValue -> K2Node_VariableSet_6.WallHandAlpha
+    - K2Node_CallFunction_8.then -> K2Node_VariableSet_6.execute
+    - K2Node_CallFunction_9.Front -> K2Node_VariableSet_9.bWallHandFront
+    - K2Node_CallFunction_9.then -> K2Node_VariableSet_9.execute
+    - K2Node_DynamicCast_2.AsPC 01 ABP -> K2Node_CallFunction_13.self
+    - K2Node_DynamicCast_2.AsPC 01 ABP -> K2Node_CallFunction_15.self
+    - K2Node_DynamicCast_2.AsPC 01 ABP -> K2Node_CallFunction_7.self
+    - K2Node_DynamicCast_2.then -> K2Node_CallFunction_7.execute
+    - K2Node_Knot_10.OutputPin -> K2Node_CallFunction_11.self
+    - K2Node_Knot_11.OutputPin -> K2Node_CallFunction_12.self
+    - K2Node_Knot_12.OutputPin -> K2Node_CallFunction_9.self
+    - K2Node_Knot_3.OutputPin -> K2Node_CallFunction_10.self
+    - K2Node_Knot_7.OutputPin -> K2Node_CallFunction_8.self
+    - K2Node_VariableSet_10.then -> K2Node_CallFunction_13.execute
+    - K2Node_VariableSet_12.then -> K2Node_CallFunction_15.execute
+    - K2Node_VariableSet_13.then -> K2Node_VariableSet_14.execute
+    - K2Node_VariableSet_5.then -> K2Node_CallFunction_8.execute
+    - K2Node_VariableSet_6.then -> K2Node_CallFunction_10.execute
+    - K2Node_VariableSet_7.then -> K2Node_CallFunction_11.execute
+    - K2Node_VariableSet_8.then -> K2Node_CallFunction_9.execute
+    - K2Node_VariableSet_9.then -> K2Node_CallFunction_12.execute
+  links added(16):
+    + K2Node_CallFunction_14.Alpha -> K2Node_VariableSet_6.WallHandAlpha
+    + K2Node_CallFunction_14.SpineLean -> K2Node_VariableSet_8.WallHandSpineLean
+    + K2Node_CallFunction_14.Target -> K2Node_CallFunction_20.InVec
+    + K2Node_CallFunction_14.TargetL -> K2Node_VariableSet_10.WallHandTargetL
+    + K2Node_CallFunction_14.WallYawRad -> K2Node_VariableSet_12.WHFrontBlend
+    + K2Node_CallFunction_14.bFront -> K2Node_VariableSet_9.bWallHandFront
+    + K2Node_CallFunction_14.bRight -> K2Node_VariableSet_7.bWallHandRight
+    + K2Node_CallFunction_14.then -> K2Node_VariableSet_5.execute
+    + K2Node_DynamicCast_2.AsPC 01 ABP -> K2Node_CallFunction_14.self
+    + K2Node_DynamicCast_2.then -> K2Node_CallFunction_14.execute
+    + K2Node_VariableSet_10.then -> K2Node_VariableSet_12.execute
+    + K2Node_VariableSet_5.then -> K2Node_VariableSet_6.execute
+    + K2Node_VariableSet_6.then -> K2Node_VariableSet_7.execute
+    + K2Node_VariableSet_7.then -> K2Node_VariableSet_8.execute
+    + K2Node_VariableSet_8.then -> K2Node_VariableSet_9.execute
+    + K2Node_VariableSet_9.then -> K2Node_VariableSet_10.execute
+
+######## alpha (bk 53n/62L -> now 52n/57L)
+  nodes gone(5): K2Node_CallFunction_18, K2Node_CallFunction_19, K2Node_Knot_2, K2Node_VariableGet_19, K2Node_VariableSet_4
+  nodes new(2): K2Node_Knot_3, K2Node_Knot_4
+  links removed(9):
+    - K2Node_CallFunction_15.ReturnValue -> K2Node_VariableSet_2.WHEngageL
+    - K2Node_CallFunction_18.ReturnValue -> K2Node_CallFunction_19.Target
+    - K2Node_CallFunction_19.ReturnValue -> K2Node_VariableSet_4.WHFrontBlend
+    - K2Node_Knot_2.OutputPin -> K2Node_CallFunction_18.bPickA
+    - K2Node_VariableGet_17.bWallHandFront -> K2Node_Knot_2.InputPin
+    - K2Node_VariableGet_19.WHFrontBlend -> K2Node_CallFunction_19.Current
+    - K2Node_VariableGet_23.Delta Time -> K2Node_CallFunction_19.DeltaTime
+    - K2Node_VariableSet_2.then -> K2Node_VariableSet_4.execute
+    - K2Node_VariableSet_4.then -> K2Node_VariableSet_5.execute
+  links added(4):
+    + K2Node_CallFunction_15.ReturnValue -> K2Node_Knot_4.InputPin
+    + K2Node_Knot_3.OutputPin -> K2Node_VariableSet_2.WHEngageL
+    + K2Node_Knot_4.OutputPin -> K2Node_Knot_3.InputPin
+    + K2Node_VariableSet_2.then -> K2Node_VariableSet_5.execute
+
+######## data (bk 59n/71L -> now 62n/72L)
+  nodes gone(0): 
+  nodes new(1): K2Node_Knot_7
+  links removed(1):
+    - K2Node_CallFunction_1.ReturnValue -> K2Node_CallFunction_18.B
+  links added(2):
+    + K2Node_CallFunction_1.ReturnValue -> K2Node_Knot_7.InputPin
+    + K2Node_Knot_7.OutputPin -> K2Node_CallFunction_18.B
+
+######## front (bk 37n/44L -> now 39n/44L)
+  nodes gone(0): 
+  nodes new(0): 
+  links removed(0):
+  links added(0):
+
+######## allow (bk 29n/29L -> now 31n/29L)
+  nodes gone(0): 
+  nodes new(0): 
+  links removed(0):
+  links added(0):

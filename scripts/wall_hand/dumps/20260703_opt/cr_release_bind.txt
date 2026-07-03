@@ -1,0 +1,3 @@
+bind fSelRelR OK
+bind fSelRelL OK
+DONE

@@ -1,0 +1,18 @@
+add fSelRelR OK
+bind FAIL RigVMController: Failed to convert parameter 'setup_undo_redo' when calling function 'RigVMController.BindPinToVariable' on 'RigVMModel_Controller'
+  TypeError: NativizeProperty: Cannot nativize 'Vector2D' as 'bSetupUndoRedo' (BoolProperty)
+    TypeError: Nativize: Cannot nativize 'Vector2D' as 'bool'
+fSelRelR.IfTrue=0
+link SelR.Result -> fSelRelR.IfFalse OK
+broke SelR.Result -> WInterpR.Value
+link fSelRelR.Result -> WInterpR.Value OK
+add fSelRelL OK
+bind FAIL RigVMController: Failed to convert parameter 'setup_undo_redo' when calling function 'RigVMController.BindPinToVariable' on 'RigVMModel_Controller'
+  TypeError: NativizeProperty: Cannot nativize 'Vector2D' as 'bSetupUndoRedo' (BoolProperty)
+    TypeError: Nativize: Cannot nativize 'Vector2D' as 'bool'
+fSelRelL.IfTrue=0
+link SelL.Result -> fSelRelL.IfFalse OK
+broke SelL.Result -> WInterpL.Value
+link fSelRelL.Result -> WInterpL.Value OK
+recompile_vm called: None
+DONE
