@@ -1,0 +1,4 @@
+round0: dead=41 removed=39
+총 제거 39: ReachSub, PalmAim, SpineRef, RerouteNode_11, PalmAim_1, PalmReachUnit_R, PalmReachLerp_R, PalmReachUnit_L, PalmReachLerp_L, RerouteNode_6, RerouteNode_13, PalmReleaseRemap, RerouteNode_14, RerouteNode_15, SecAxisLerp, SecAxisLerp_2, ReachLen, ReachBlend, SecAxisLerp_1, SecAxisLerp_3, RerouteNode_16, RerouteNode_18, RerouteNode_19, fSel, fSel_3, PalmTgtL, PalmDirUnit, PalmTgtR, PalmReachSum, PalmDirUnit_2, PalmReachSum_1, RerouteNode_20, RerouteNode_21, RerouteNode_17, RerouteNode_22, RerouteNode_24, RerouteNode_25, RerouteNode_26, RerouteNode
+남은 노드: 45
+save=True

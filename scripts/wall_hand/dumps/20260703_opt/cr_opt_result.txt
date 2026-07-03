@@ -1,0 +1,5 @@
+exec 절단: TwoBoneIK_L -x-> PalmAim
+총 제거: 0
+제거 목록: 
+남은 노드: 86
+save=True
