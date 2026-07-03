@@ -1,0 +1,3 @@
+alpha=1.00 bR=True bF=False n=(-1.000,0.000,0.000)
+offR_wall=(X=-0.705990,Y=0.039720,Z=0.705990,W=0.039720) 오차=0.000000
+QMulR.B 적용, save=True

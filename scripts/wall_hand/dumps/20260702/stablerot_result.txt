@@ -1,0 +1,6 @@
+현 Effector.Rotation ← GetHand_L.Transform.Rotation
+GetTransform struct=/Script/ControlRig.RigUnit_GetTransform
+GetRootTf ok
+QMulL ok (/Script/RigVM.RigVMFunction_MathQuaternionMul)
+wired
+save=True

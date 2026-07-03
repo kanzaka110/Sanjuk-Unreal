@@ -1,3 +1,5 @@
-total=97 execlive=13 live=95 dead=2
-  DEAD VariableNode_5           Get Weight
-  DEAD VariableNode_6           Get Weight
+total=100 execlive=9 live=96 dead=4
+  DEAD SelL_1                   Select
+  DEAD SelR_1                   Select
+  DEAD VariableNode_10          Get bWallHandRight
+  DEAD VariableNode_11          Get bWallHandRight

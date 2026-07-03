@@ -1,0 +1,8 @@
+CR remove SideRotL -> True
+CR remove SideRotR -> True
+CR remove SelSideR -> True
+CR remove SelSideL -> True
+CR remove VariableNode_3 -> True
+CR remove VariableNode_4 -> True
+CR remove GetRootTf -> True
+CR save=True

@@ -1,0 +1,7 @@
+remove SelL_1 -> True
+remove SelR_1 -> True
+Traceback (most recent call last):
+  File "C:/Dev/Sanjuk-Unreal/scripts/wall_hand/dumps/20260702/cr_final_clean.py", line 8, in <module>
+    ok = ctrl.remove_node_by_name(nm)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: RigVMController: /Game/Art/Character/PC/PC_01/Rig/PC_01_CtrlRig_WallHandIK : Cannot find node 'VariableNode_10'.

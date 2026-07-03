@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "C:/Dev/Sanjuk-Unreal/scripts/wall_hand/dumps/20260702/disable_offsetrot.py", line 10, in <module>
+    for p in nodes[nm].get_pins():
+             ~~~~~^^^^
+KeyError: 'OffsetRotR'

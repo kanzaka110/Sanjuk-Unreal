@@ -1,0 +1,3 @@
+R: Effector.Rotation ← QSelR 직결
+L: Effector.Rotation ← QSelL 직결
+save=True

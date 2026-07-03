@@ -1,4 +1,4 @@
 WHSideRotWalkDeg = 12.0
 WHSideRotJogDeg = 18.0
-WHSideRotRunDeg = 50.0
+WHSideRotRunDeg = -60.0
 WHSideRotSprintDeg = 30.0

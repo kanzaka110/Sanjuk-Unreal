@@ -1,0 +1,3 @@
+break SelL_1.Result -> PalmAim_1.Weight
+PalmAim_1.Weight=0
+save=True

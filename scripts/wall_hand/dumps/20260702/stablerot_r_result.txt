@@ -1,0 +1,5 @@
+현 소스: GetHand_R.Transform.Rotation
+effector wired
+break SelR_1.Result
+PalmAim.Weight=0
+save=True

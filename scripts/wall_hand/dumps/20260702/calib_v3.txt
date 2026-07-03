@@ -1,0 +1,3 @@
+alpha=1.00 bR=True bF=False WHWallYaw=78.5도
+offR=(X=0.053540,Y=-0.705077,Z=-0.053540,W=-0.705077)
+QMulR.B 적용, save=True

@@ -1,0 +1,16 @@
+offR_dir=(X=-0.527297,Y=-0.471124,Z=0.527297,W=-0.471124)
+offL_dir=(X=0.492772,Y=-0.507125,Z=0.492772,W=0.507125)
+R 연속회전 배선 ok
+L 연속회전 배선 ok
+remove QLerpR
+remove QLerpL
+remove TMulR
+remove TMulL
+remove TGate
+remove WallLen
+remove WallQ
+remove WallYaw
+remove WallDir
+remove WallDBias
+remove WallD
+save=True

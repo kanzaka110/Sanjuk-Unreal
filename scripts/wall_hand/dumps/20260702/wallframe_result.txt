@@ -1,0 +1,6 @@
+structs: sub=RigVMFunction_MathVectorSub unit=RigVMFunction_MathVectorUnit faa=RigVMFunction_MathQuaternionFromAxisAndAngle
+spawn ok
+wall frame wired
+R ok
+L ok
+save=True
