@@ -1,0 +1,4 @@
+loaded=<Object '/Game/Art/Character/PC/PC_01/Blueprint/WallHandIK/S_WallHandIKConfig.S_WallHandIKConfig' (0x000002613A13A500) Class 'UserDefinedStruct'>
+class=UserDefinedStruct
+EditorData: FAIL UserDefinedStruct: Property 'EditorData' for attribute 'EditorData' on 'UserDefinedStruct' is protected and cannot be read
+editor_data: FAIL UserDefinedStruct: Failed to find property 'editor_data' for attribute 'editor_data' on 'UserDefinedStruct'

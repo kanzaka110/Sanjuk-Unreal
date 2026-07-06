@@ -1,0 +1,4 @@
+ReleaseCurve eval 0.00:0.000 0.25:0.112 0.50:0.232 0.75:0.481 1.00:1.000
+DA.ReleaseCurve=C_WallHandRelease
+DA.AttachDuration=0.4000000059604645
+DA saved

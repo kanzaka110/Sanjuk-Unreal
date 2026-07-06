@@ -1,0 +1,7 @@
+curve LOAD FAIL
+FATAL
+Traceback (most recent call last):
+  File "C:/Dev/Sanjuk-Unreal/scripts/wall_hand/dt_config/verify_ease2.py", line 13, in <module>
+    da.modify()
+    ^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'modify'

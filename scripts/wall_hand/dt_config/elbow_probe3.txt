@@ -1,0 +1,6 @@
+FATAL
+Traceback (most recent call last):
+  File "C:/Dev/Sanjuk-Unreal/scripts/wall_hand/dt_config/elbow_probe3.py", line 22, in tick
+    rows.append(f"ABP.WHElbowRad = {abp.get_editor_property('WHElbowRad'):.4f}")
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Exception: SBActorAnimInstance: Failed to find property 'WHElbowRad' for attribute 'WHElbowRad' on 'PC_01_ABP_C'

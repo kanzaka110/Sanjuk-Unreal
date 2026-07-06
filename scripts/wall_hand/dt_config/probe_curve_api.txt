@@ -1,0 +1,6 @@
+== dir(CurveFloat) non-dunder ==
+acquire_editor_element_handle, call_method, cast, get_class, get_default_object, get_editor_property, get_float_value, get_fname, get_full_name, get_name, get_outer, get_outermost, get_package, get_path_name, get_time_range, get_typed_outer, get_value_range, get_world, is_editor_property_overridden, is_package_external, modify, rename, reset_editor_property, set_editor_properties, set_editor_property, static_class
+== editor properties? ==
+prop FloatCurve: FAIL CurveFloat: Property 'FloatCurve' for attribute 'FloatCurve' on 'CurveFloat' is protected and cannot be read
+prop float_curve: FAIL CurveFloat: Failed to find property 'float_curve' for attribute 'float_curve' on 'CurveFloat'
+prop Keys: FAIL CurveFloat: Failed to find property 'Keys' for attribute 'Keys' on 'CurveFloat'

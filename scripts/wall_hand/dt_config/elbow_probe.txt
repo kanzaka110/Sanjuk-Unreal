@@ -1,0 +1,5 @@
+DA read FAIL 'NoneType' object has no attribute 'get_editor_property'
+pawn.WallHandConfig = DA_WallHandIK
+pawn cfg FAIL PrimaryDataAsset: Failed to find property 'ElbowAngleDeg' for attribute 'ElbowAn
+ABP var FAIL SBActorAnimInstance: Failed to find property 'WHElbowRad' for attribute 'WHElbow
+layer FAIL SBCharacterSkeletalMeshComponent: Property 'LinkedInstances'

@@ -1,0 +1,1 @@
+variable fns: add_member_variable, bulk_remove_member_variables, change_member_variable_type, get_member_variables, remove_member_variable, rename_member_variable, set_blueprint_variable_expose_on_spawn, set_blueprint_variable_expose_to_cinematics, set_blueprint_variable_instance_editable

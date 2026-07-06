@@ -1,0 +1,7 @@
+imported=['/Game/Art/Character/PC/PC_01/Blueprint/WallHandIK/C_WallHandAttachEase.C_WallHandAttachEase']
+FATAL
+Traceback (most recent call last):
+  File "C:/Dev/Sanjuk-Unreal/scripts/wall_hand/dt_config/make_attach_ease2.py", line 22, in <module>
+    res.append(f"result={list(t.get_editor_property('result') or [])if hasattr(t,'result') else '?'}")
+                                                                       ^^^^^^^^^^^^^^^^^^^
+Exception: AssetImportTask: Property 'Result' for attribute 'result' on 'AssetImportTask' is protected and cannot be read

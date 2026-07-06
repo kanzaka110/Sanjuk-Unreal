@@ -1,0 +1,8 @@
+C_WallHandAttach: CreateCurveFromCSVString FAIL CurveFloat: Failed to find function 'CreateCurveFromCSVString' on 'CurveFloat'
+C_WallHandAttach: ImportFromJSONString FAIL CurveFloat: Failed to find function 'ImportFromJSONString' on 'CurveFloat'
+C_WallHandAttach: eval 0/0.5/1 = 0.000/0.000/0.000
+C_WallHandAttach: saved
+C_WallHandRelease: CreateCurveFromCSVString FAIL CurveFloat: Failed to find function 'CreateCurveFromCSVString' on 'CurveFloat'
+C_WallHandRelease: ImportFromJSONString FAIL CurveFloat: Failed to find function 'ImportFromJSONString' on 'CurveFloat'
+C_WallHandRelease: eval 0/0.5/1 = 0.000/0.000/0.000
+C_WallHandRelease: saved

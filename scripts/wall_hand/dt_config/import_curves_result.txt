@@ -1,0 +1,6 @@
+C_WallHandAttach: deleted empty=True
+C_WallHandAttach: imported=['/Game/Art/Character/PC/PC_01/Blueprint/WallHandIK/C_WallHandAttach.C_WallHandAttach']
+C_WallHandAttach: eval 0/0.5/1 = 0.000/0.500/1.000
+C_WallHandRelease: deleted empty=True
+C_WallHandRelease: imported=['/Game/Art/Character/PC/PC_01/Blueprint/WallHandIK/C_WallHandRelease.C_WallHandRelease']
+C_WallHandRelease: eval 0/0.5/1 = 0.000/0.500/1.000

@@ -1,0 +1,3 @@
+/Game/Art/Character/PC/PC_01/Blueprint/PC_01_ABP -> writable=True (E:/Perforce/SB2/Workspace/Internal/SB2/Content/Art/Character/PC/PC_01/Blueprint/PC_01_ABP.uasset)
+/Game/Art/Character/PC/PC_01/Blueprint/PC_01_BP -> writable=True (E:/Perforce/SB2/Workspace/Internal/SB2/Content/Art/Character/PC/PC_01/Blueprint/PC_01_BP.uasset)
+/Game/Art/Character/PC/PC_01/Blueprint/PC_01_AnimLayer_IK -> writable=True (E:/Perforce/SB2/Workspace/Internal/SB2/Content/Art/Character/PC/PC_01/Blueprint/PC_01_AnimLayer_IK.uasset)

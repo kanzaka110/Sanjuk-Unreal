@@ -1,0 +1,22 @@
+rm OrbArmR
+rm OrbHandR
+rm OrbArmL
+rm OrbHandL
+rm OrbShR
+rm OrbHaR
+rm OrbSubR
+rm OrbAxR
+rm OrbAngR
+rm OrbQR
+rm OrbQIR
+rm OrbShL
+rm OrbHaL
+rm OrbSubL
+rm OrbAxL
+rm OrbAngL
+rm OrbQL
+rm OrbQIL
+pole TwoBoneIK_R.PoleVector True
+pole TwoBoneIK_L.PoleVector True
+rm var ElbowAngle
+recompiled+saved

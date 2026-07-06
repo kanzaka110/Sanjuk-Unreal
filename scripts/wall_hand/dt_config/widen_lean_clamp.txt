@@ -1,0 +1,3 @@
+Yaw.Minimum = -1.570796 → OK
+Yaw.Maximum = 1.570796 → OK
+saved

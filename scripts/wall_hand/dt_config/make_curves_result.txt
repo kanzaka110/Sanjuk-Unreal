@@ -1,0 +1,10 @@
+C_WallHandAttach: created=True
+C_WallHandAttach: float_curve route FAIL CurveFloat: Failed to find property 'float_curve' for attribute 'float_curve' on 'CurveFloat'
+C_WallHandAttach: json route FAIL 'CurveFloat' object has no attribute 'import_from_json_string'
+C_WallHandAttach: add_key route FAIL 'CurveFloat' object has no attribute 'reset_curve'
+C_WallHandAttach: saved
+C_WallHandRelease: created=True
+C_WallHandRelease: float_curve route FAIL CurveFloat: Failed to find property 'float_curve' for attribute 'float_curve' on 'CurveFloat'
+C_WallHandRelease: json route FAIL 'CurveFloat' object has no attribute 'import_from_json_string'
+C_WallHandRelease: add_key route FAIL 'CurveFloat' object has no attribute 'reset_curve'
+C_WallHandRelease: saved

@@ -1,0 +1,1 @@
+NewVariables FAIL Blueprint: Property 'NewVariables' for attribute 'NewVariables' on 'Blueprint' is protected and cannot be read

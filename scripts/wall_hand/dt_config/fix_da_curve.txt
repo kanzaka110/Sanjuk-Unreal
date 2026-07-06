@@ -1,0 +1,2 @@
+FrontAttachCurve = <Object '/Game/Art/Character/PC/PC_01/Blueprint/WallHandIK/C_WallHandFrontAttach.C_WallHandFrontAttach' (0x00000263EF60C600) Class 'CurveFloat'>
+AttachCurve = <Object '/Game/Art/Character/PC/PC_01/Blueprint/WallHandIK/C_WallHandAttach.C_WallHandAttach' (0x0000025FF195F900) Class 'CurveFloat'>

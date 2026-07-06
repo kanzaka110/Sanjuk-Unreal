@@ -1,0 +1,15 @@
+IKStrengthMax FAIL
+AttachStartDist FAIL
+AttachFullDist FAIL
+AttachSpeedStart FAIL
+AttachSpeedEnd FAIL
+ReleaseSpeedSlow FAIL
+ReleaseSpeedFast FAIL
+TurnReleaseSpeed FAIL
+FrontHandHalfWidth FAIL
+FrontHandHeight FAIL
+RightHandHeight FAIL
+JogOffset FAIL
+RunOffset FAIL
+SprintOffset FAIL
+TurnBlockHold FAIL

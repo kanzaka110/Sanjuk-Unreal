@@ -1,0 +1,13 @@
+brk ElbNeg.Result->ElbDirR.X True
+brk ElbCos.Result->ElbDirL.X True
+brk ElbSin.Result->ElbDirR.Z True
+brk ElbSin.Result->ElbDirL.Z True
+brk ElbCos.Result->ElbNeg.A True
+lk ElbSin.Result->ElbNeg.A
+sp ElbDirR.X=0.000000 True
+sp ElbDirL.X=0.000000 True
+lk ElbNeg.Result->ElbDirR.Y
+lk ElbNeg.Result->ElbDirL.Y
+lk ElbCos.Result->ElbDirR.Z
+lk ElbCos.Result->ElbDirL.Z
+recompiled+saved

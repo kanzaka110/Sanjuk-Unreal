@@ -1,0 +1,3 @@
+compile fns: get_auto_vm_recompile, recompile_modular_rig, recompile_vm, recompile_vm_if_required, set_auto_vm_recompile, vm_compile_settings
+recompile_vm OK
+saved

@@ -1,0 +1,70 @@
+brk ElbDirR.Result True
+brk ElbDirL.Result True
+rm ElbCos
+rm ElbSin
+rm ElbNeg
+rm ElbDirR
+rm ElbDirL
+rm VariableNode_6 err RigVMController: /Game/Art/Character/PC/
+rm VariableNode_9 err RigVMController: /Game/Art/Character/PC/
+sp TwoBoneIK_R.PoleVector
+sp TwoBoneIK_L.PoleVector
+add OrbShR → OK
+sp OrbShR.Item
+sp OrbShR.Space
+add OrbHaR → OK
+sp OrbHaR.Item
+sp OrbHaR.Space
+add OrbSubR → OK
+add OrbAxR → OK
+add OrbAngR → OK
+add OrbQR → OK
+add OrbQIR → OK
+add OrbArmR → OK
+sp OrbArmR.Item
+sp OrbArmR.bPropagateToChildren
+add OrbHandR → OK
+sp OrbHandR.Item
+sp OrbHandR.bPropagateToChildren
+lk OrbHaR.Transform.Translation->OrbSubR.A
+lk OrbShR.Transform.Translation->OrbSubR.B
+lk OrbSubR.Result->OrbAxR.Value
+bind OrbAngR.A
+lk WInterpR.Result->OrbAngR.B
+lk OrbAxR.Result->OrbQR.Axis
+lk OrbAngR.Result->OrbQR.Angle
+lk OrbQR.Result->OrbQIR.Value
+lk OrbQR.Result->OrbArmR.OffsetTransform.Rotation
+lk OrbQIR.Result->OrbHandR.OffsetTransform.Rotation
+add OrbShL → OK
+sp OrbShL.Item
+sp OrbShL.Space
+add OrbHaL → OK
+sp OrbHaL.Item
+sp OrbHaL.Space
+add OrbSubL → OK
+add OrbAxL → OK
+add OrbAngL → OK
+add OrbQL → OK
+add OrbQIL → OK
+add OrbArmL → OK
+sp OrbArmL.Item
+sp OrbArmL.bPropagateToChildren
+add OrbHandL → OK
+sp OrbHandL.Item
+sp OrbHandL.bPropagateToChildren
+lk OrbHaL.Transform.Translation->OrbSubL.A
+lk OrbShL.Transform.Translation->OrbSubL.B
+lk OrbSubL.Result->OrbAxL.Value
+bind OrbAngL.A
+lk WInterpL.Result->OrbAngL.B
+lk OrbAxL.Result->OrbQL.Axis
+lk OrbAngL.Result->OrbQL.Angle
+lk OrbQL.Result->OrbQIL.Value
+lk OrbQL.Result->OrbArmL.OffsetTransform.Rotation
+lk OrbQIL.Result->OrbHandL.OffsetTransform.Rotation
+lk TwoBoneIK_L.ExecutePin->OrbArmR.ExecutePin
+lk OrbArmR.ExecutePin->OrbHandR.ExecutePin
+lk OrbHandR.ExecutePin->OrbArmL.ExecutePin
+lk OrbArmL.ExecutePin->OrbHandL.ExecutePin
+recompiled+saved

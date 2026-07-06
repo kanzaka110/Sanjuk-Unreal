@@ -1,0 +1,2 @@
+subobj=<Object '/Game/_WHScratch/S_TooltipTest2.S_TooltipTest2:UserDefinedStructEditorData_0' (0x00000264238727D0) Class 'UserDefinedStructEditorData'>
+VD FAIL Object: Property 'VariablesDescriptions' for attribute 'VariablesDescriptions' on 'UserDefinedStructEditorData' is protected and cannot be read

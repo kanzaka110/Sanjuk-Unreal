@@ -1,0 +1,3 @@
+cos in=-1.2 True
+sin in=-1.2 True
+→ dir=(0,+0.93,+0.36) 앞-위 방향. recompiled+saved
