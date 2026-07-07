@@ -1,0 +1,17 @@
+restore SAW R True
+restore SAW L True
+rm ElbDirR True
+rm ElbDirL True
+rm ElbNeg True
+rm ElbCos True
+rm ElbSin True
+pole X/Z restored
+add ElbTan ElbTan
+add ElbYScale ElbYScale
+sp ElbYScale.B=-50 True
+bind ElbTan.Value<-ElbowAngle True
+lk tan->scale True
+lk ->PoleR.Y True
+lk ->PoleL.Y True
+recompile_vm OK
+saved True

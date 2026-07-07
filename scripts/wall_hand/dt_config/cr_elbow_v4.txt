@@ -1,0 +1,13 @@
+rm ElbTan True
+rm ElbYScale True
+change type -> True
+add ElbTanF ElbTanF
+add ElbYScaleF ElbYScaleF
+sp B=-50 True
+BIND ERR RigVMController: Variable Node @@ is ill-formed (pin type doesn't matc
+FATAL
+Traceback (most recent call last):
+  File "C:/Dev/Sanjuk-Unreal/scripts/wall_hand/dt_config/cr_elbow_v4_float.py", line 51, in <module>
+    step(f"lk tan->mul {ctrl.add_link('ElbTanF.Result', 'ElbYScaleF.A')}")
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: RigVMController: Variable Node @@ is ill-formed (pin type doesn't match the variable type). Consider recreating the node.

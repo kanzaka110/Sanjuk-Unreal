@@ -1,0 +1,67 @@
+nodes=283 connections=444
+top-level keys=['format_version', 'asset_path', 'graph_name', 'graph_type', 'nodes', 'connections']
+
+== class histogram ==
+ 162  K2Node_CallFunction
+  98  K2Node_Knot
+   9  K2Node_BreakStruct
+   7  K2Node_VariableGet
+   3  K2Node_VariableSet
+   2  K2Node_Select
+   1  K2Node_FunctionEntry
+   1  K2Node_DynamicCast
+
+== CallFunction title histogram ==
+  43  Select Float
+  18  Break Vector 2D
+  16  vector + vector
+  10  vector * float
+   9  float * float
+   7  Select Vector
+   6  Make Vector
+   4  float + float
+   4  Select Name
+   3  Sphere Trace By Channel
+   3  Break Hit Result
+   3  Break Vector
+   2  vector - vector
+   2  Map Range Clamped
+   2  float < float
+   2  AND Boolean
+   2  Cross Product
+   2  Normalize
+   2  Get Socket Location
+타깃은 씬 컴포넌트
+   1  Get Actor Right Vector
+타깃은 액터
+   1  float <= float
+   1  Get Anim Instance
+타깃은 스켈레탈 메시 컴포넌트
+   1  Set Wall Hand Data
+타깃은 PC 01 ABP
+   1  Get Actor Location
+타깃은 액터
+   1  Get Velocity
+타깃은 액터
+   1  VInterp To
+   1  Dot Product
+   1  Absolute (Float)
+   1  Get Actor Forward Vector
+타깃은 액터
+   1  Min (Float)
+   1  Set Wall Hand Front
+타깃은 PC 01 ABP
+   1  Get Pending Walk Mode
+타깃은 SBCharacter
+   1  Vector Length XY
+   1  Get Wall Hand State
+타깃은 PC 01 ABP
+   1  Set Wall Hand Config
+타깃은 PC 01 ABP
+   1  float > float
+   1  FInterp To
+   1  float - float
+   1  float / float
+   1  Degrees To Radians
+   1  Get Config
+타깃은 PDA Wall Hand IKConfig

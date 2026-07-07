@@ -1,0 +1,20 @@
+add var ElbowAngle(public) -> ElbowAngle
+add ElbSin -> ElbSin
+add ElbCos -> ElbCos
+add ElbNeg -> ElbNeg
+sp ElbNeg.B=-1.000000
+add ElbDirR -> ElbDirR
+add ElbDirL -> ElbDirL
+sp ElbDirR.X=0.000000
+sp ElbDirL.X=0.000000
+bind ElbSin.Value
+bind ElbCos.Value
+lk ElbSin.Result->ElbNeg.A
+lk ElbNeg.Result->ElbDirR.Y
+lk ElbNeg.Result->ElbDirL.Y
+lk ElbCos.Result->ElbDirR.Z
+lk ElbCos.Result->ElbDirL.Z
+lk ElbDirR.Result->TwoBoneIK_R.PoleVector
+lk ElbDirL.Result->TwoBoneIK_L.PoleVector
+recompile_vm OK
+saved False

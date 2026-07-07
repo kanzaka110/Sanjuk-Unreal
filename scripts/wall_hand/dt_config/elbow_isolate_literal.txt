@@ -1,0 +1,6 @@
+unbind ElbSin.Value -> True
+unbind ElbCos.Value -> True
+sp ElbSin.Value=0.803 -> True
+sp ElbCos.Value=0.803 -> True
+recompile_vm OK
+saved True
