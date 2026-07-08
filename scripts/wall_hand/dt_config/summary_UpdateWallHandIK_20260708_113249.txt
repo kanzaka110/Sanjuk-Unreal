@@ -1,0 +1,66 @@
+nodes=323 connections=469
+top-level keys=['format_version', 'asset_path', 'graph_name', 'graph_type', 'nodes', 'connections']
+
+== class histogram ==
+ 150  K2Node_CallFunction
+ 148  K2Node_Knot
+   9  K2Node_BreakStruct
+   6  K2Node_VariableGet
+   4  EdGraphNode_Comment
+   2  K2Node_VariableSet
+   2  K2Node_Select
+   1  K2Node_FunctionEntry
+   1  K2Node_DynamicCast
+
+== CallFunction title histogram ==
+  42  Select Float
+  15  Break Vector 2D
+  14  vector + vector
+  10  vector * float
+   9  float * float
+   6  Select Vector
+   4  Make Vector
+   4  float + float
+   3  Sphere Trace By Channel
+   3  Break Hit Result
+   3  Break Vector
+   2  vector - vector
+   2  Map Range Clamped
+   2  Get Actor Location
+타깃은 액터
+   2  Dot Product
+   2  float < float
+   2  AND Boolean
+   2  Cross Product
+   2  Normalize
+   2  float - float
+   1  Get Actor Right Vector
+타깃은 액터
+   1  float <= float
+   1  Get Anim Instance
+타깃은 스켈레탈 메시 컴포넌트
+   1  Set Wall Hand Data
+타깃은 PC 01 ABP
+   1  Get Velocity
+타깃은 액터
+   1  VInterp To
+   1  Absolute (Float)
+   1  Get Actor Forward Vector
+타깃은 액터
+   1  Min (Float)
+   1  Set Wall Hand Front
+타깃은 PC 01 ABP
+   1  Get Pending Walk Mode
+타깃은 SBCharacter
+   1  Get Socket Location
+타깃은 씬 컴포넌트
+   1  Vector Length XY
+   1  Get Wall Hand State
+타깃은 PC 01 ABP
+   1  Get Config
+타깃은 PDA Wall Hand IKConfig
+   1  Set Wall Hand Config
+타깃은 PC 01 ABP
+   1  Degrees To Radians
+   1  float / float
+   1  float > float
