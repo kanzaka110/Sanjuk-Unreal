@@ -44,6 +44,28 @@
 - CR: HandZBiasL/R.B(Z), LatchLessL/R.B(0.9), PvClampLimit.B(무력화=200)
 - 모디파이어: FlightSpeedThreshold 140(MoveToIdle 4종=10), 램프 2/3
 
+## 좌/우 벌어짐 비대칭 수정 (7/14 저녁)
+- 증상: 우측 이동 시 손 벌어짐 과다 (좌측은 정상)
+- 원인: ShortR/ShortR_Wallless 커브가 좌측과 다른 시점/파라미터 베이크 잔재 — 애님 자체는 완전 미러(속도 프로파일 일치)인데 커브만 비대칭. ShortR(벽)은 R 릴리즈 0.033~0.633(거의 전체)+L 릴리즈가 0.4s 컷 뒤 → 이동 내내 L 구그립 동결+R 스윙 추적 = 벌어짐 최대. Wallless는 후행 L 플랜트 0.567(좌측은 0.467) → 컷 시점 미드플라이트(226cm/s)에 월드동결
+- 수정: `fix_shortr_mirror_curves.py` — 좌측(승인 기준) 커브를 우측 애님에 미러 이식. 좌측 에셋 무수정. 원본 키 백업 = `ledge_lr_compare.json`
+- 진단: `ledge_lr_compare.py` — Short/MoveToIdle 8종 커브+궤적+플랜트엣지 일괄 덤프
+- ⚠ 자동 재베이크 금지: 벽 변형은 플라이트 94~207 vs 드리프트 90~142가 겹쳐 문턱 140이 나이프엣지 — 미러가 깨진 근본 원인
+
+## v5 — IK 타깃 커브 구동 (7/14 밤)
+- 신규 커브 `ledge_hand_move_l/r`: **0=이동전 그립, 1=이동후 그립** — 타깃 위치를 애님 커브로 직접 안무 (팔꼬임 원인=1틱 타깃 스위치 해소)
+- ABP: 타깃 = VLerp(Anchor, Dest, 커브). Anchor/Dest 전부 무상태 (WorldNow ∓ 방향×진행/남은거리, 유닛무브 아니면 WorldNow)
+- 초기 베이크 = 플라이트 창 스무스텝 (`bake_move_curves.py`) — 에디터에서 키 수동 튜닝 전제
+- 알파는 별개 유지: bActive × ledge_hand_ik 커브 (릴리즈=IK off)
+- 모디파이어(`sb_ledge_hand_ik.py`)도 move 커브 베이크 지원 (창 없으면 상수 0) — ⚠ apply 시 ik 커브도 재베이크되므로 **수동 튜닝된 벽 Short 2종엔 apply 금지**
+
+## 그래프 위생 (v6)
+- `graph_reachability.py` — Ledge fn 도달성 분석 (exec체인+데이터 폐포, 로컬 HTTP·컨텍스트 무부담). dead 노드 목록 산출
+- `graph_cleanup.py` — 죽은노드 반복 제거+미사용변수 Set 스플라이스+GWDS 통합. ⚠ 연쇄 exec 제거는 매 제거 후 그래프 재조회 필수 (스테일 스냅샷 스플라이스 = 체인 절단 사고 이력, v6 복구 완료)
+- 2026-07-14 대청소: 375→304 노드, GetWorldDeltaSeconds 11→1, 변수 4종 삭제
+
+## 디버그 (v4 신규)
+- `debug_dest_preview.py` — 이동 시 손 도착지(Dest) 프리뷰 구체 (L=시안/R=마젠타 + 손→도착지 라인). LedgeDebug 토글 연동. ABP v4 래치와 동일 수식(Idle상수+평면방향×남은거리) 파이썬 재현 — 상수 변경 시 여기도 갱신
+
 ## 디버그 (v3 신규)
 - `probe_drift.py` — 양손 풀 프로브(커브/알파/타깃/손/갭/vel/fb/컴포넌트좌표) → ikdrift.log. 도착부 분석 표준
 - `probe_isolate.py` — CVar 자동 격리(base→RigidBody off→FootPlacement off→LegIK off→복원, 5s 페이즈) → ikiso.log. 범인 판정용

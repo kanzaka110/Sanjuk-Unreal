@@ -17,10 +17,11 @@ DEFAULTS = {
     "PelvisFallFrames": 6,          # 펠비스 스프링 커브 하강 스무딩 (상승은 즉시)
 }
 
-HANDS = (("hand_l", "ledge_hand_ik_l"), ("hand_r", "ledge_hand_ik_r"))
+HANDS = (("hand_l", "ledge_hand_ik_l", "ledge_hand_move_l"),
+         ("hand_r", "ledge_hand_ik_r", "ledge_hand_move_r"))
 PELVIS_BONE = "pelvis"
 PELVIS_CURVE = "ledge_pelvis_spring"
-ALL_CURVES = tuple(c for _, c in HANDS) + (PELVIS_CURVE,)
+ALL_CURVES = tuple(c for _, c, _ in HANDS) + tuple(m for _, _, m in HANDS) + (PELVIS_CURVE,)
 
 
 def _log(msg):
@@ -147,6 +148,34 @@ def _build_keys(windows, num_frames, fps, plant_ramp, release_ramp):
     return [f / fps for f in frames], [keys[f] for f in frames]
 
 
+def _build_move_keys(windows, num_frames, fps):
+    """플라이트 창 → IK 타깃 이동 커브 (0=이동전 그립, 1=이동후 그립, v5).
+
+    각 창에서 창길이 비례 누적분만큼 스무스텝 상승, 플랜트 구간 홀드.
+    창 없으면 상수 0 (Idle류 — 타깃 이동 없음). 프레임 dict 로 중복 차단.
+    """
+    if not windows:
+        return [0.0], [0.0]
+    total = float(sum(e - s + 1 for s, e in windows))
+    keys = {}
+
+    def put(frame, value):
+        keys[max(0, min(int(num_frames), int(frame)))] = round(value, 4)
+
+    put(0, 0.0)
+    v0 = 0.0
+    for s, e in windows:
+        v1 = v0 + (e - s + 1) / total
+        span = e - s
+        for f in range(int(s), int(e) + 1):
+            t = (f - s) / span if span > 0 else 1.0
+            sm = t * t * (3.0 - 2.0 * t)
+            put(f, v0 + (v1 - v0) * sm)
+        v0 = v1
+    frames = sorted(keys)
+    return [f / fps for f in frames], [keys[f] for f in frames]
+
+
 def apply(asset_path, overrides=None):
     """overrides: DEFAULTS 키 일부를 덮어쓰는 dict (배치/느린 재그립 애님용).
     에셋에 붙은 모디파이어 인스턴스 값보다 우선한다."""
@@ -164,29 +193,37 @@ def apply(asset_path, overrides=None):
         p = _read_params(seq)
         if overrides:
             p.update(overrides)
-        bones = [b for b, _ in HANDS] + [PELVIS_BONE]
+        bones = [b for b, _, _ in HANDS] + [PELVIS_BONE]
         positions = _sample_bone_positions(seq, num_frames, duration, bones)
 
-        for bone, curve in HANDS:
-            windows, _ = _flight_windows(
-                positions[bone], fps,
-                float(p["FlightSpeedThreshold"]), int(p["MinFlightFrames"]))
-            times, values = _build_keys(
-                windows, int(num_frames), fps,
-                int(p["PlantRampFrames"]), int(p["ReleaseRampFrames"]))
+        def _write_curve(curve, times, values):
             # 같은 프레임 키 2개 = SetCurveControlKey 어설션 크래시 — 절대 통과 금지
             fkeys = [int(round(t * fps)) for t in times]
             if len(set(fkeys)) != len(fkeys):
                 _log("SKIP %s %s: duplicate frame keys %s" % (seq.get_name(), curve, fkeys))
-                continue
+                return False
             try:
                 unreal.AnimationLibrary.remove_curve(seq, curve)
             except Exception:
                 pass
             unreal.AnimationLibrary.add_curve(seq, curve)
             unreal.AnimationLibrary.add_float_curve_keys(seq, curve, times, values)
-            _log("%s <- %s : windows=%s keys=%d" %
-                 (seq.get_name(), curve, windows, len(times)))
+            return True
+
+        for bone, curve, move_curve in HANDS:
+            windows, _ = _flight_windows(
+                positions[bone], fps,
+                float(p["FlightSpeedThreshold"]), int(p["MinFlightFrames"]))
+            times, values = _build_keys(
+                windows, int(num_frames), fps,
+                int(p["PlantRampFrames"]), int(p["ReleaseRampFrames"]))
+            if _write_curve(curve, times, values):
+                _log("%s <- %s : windows=%s keys=%d" %
+                     (seq.get_name(), curve, windows, len(times)))
+            # v5: IK 타깃 이동 커브 (0=이동전 그립, 1=이동후 그립)
+            mt, mv = _build_move_keys(windows, int(num_frames), fps)
+            if _write_curve(move_curve, mt, mv):
+                _log("%s <- %s : keys=%d" % (seq.get_name(), move_curve, len(mt)))
 
         # 펠비스 스프링 엔벨로프 — 프레임당 1키 (고유 프레임 보장)
         pv = _pelvis_spring_values(
