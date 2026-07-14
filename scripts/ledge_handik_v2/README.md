@@ -1,18 +1,35 @@
-# PC_01 렛지 핸드IK v2 스크립트 (2026-07-13 세션)
+# PC_01 렛지 핸드IK v2→v3 스크립트 (2026-07-13~14 세션)
 
-CR-내부 래치(FootLock 패턴) 기반 핸드IK 시스템의 빌드/튜닝/디버그 스크립트.
+핸드IK 시스템의 빌드/튜닝/디버그 스크립트.
 실행: 에디터 콘솔 `py "<경로>"` 또는 Monolith `editor_query run_console_command`.
 
-## 아키텍처 (상세: 메모리 project-pc01-ledge-dangle-cr)
+## 아키텍처 v3 — 2026-07-14 확정 (상세: 메모리 project-pc01-ledge-dangle-cr)
 
 ```
-[애님] ledge_hand_ik_l/r 커브 (166종, AM_SBLedgeHandIK 모디파이어로 베이크)
-[ABP]  GetCurveValue → 비대칭 FInterp(상승10/하강25) + 정착 디바운스(FInterp 8, >0.75)
-       + 양손 준정지 AND 결합 + 알파 래칫(min(현재,커브)) → LedgeHandIKAlphaL/R
-       LedgeMeshToWorld(월드변환), ledge_pelvis_spring → CharVelocity 게이트
-[CR]   PC_01_CtrlRig_LedgeDangle: 알파<0.9 → HandTarget:=월드(애님손) 추적 / ≥0.9 동결
-       Lerp.B=역변환(HandTarget), 폴벡터=애님 lowerarm 위치(Location), HandZBias 노브
+[애님]  ledge_hand_ik_l/r 커브 (166종, AM_SBLedgeHandIK 모디파이어)
+[타깃]  Idle 실측 상수(벽/봉 SelectVector, bPickA=LedgeFrontBlocked)
+        wall L=(5.23,-3.75,167.07) R=(-6.04,-3.14,166.67)
+        wallless L=(7.19,-1.85,166.34) R=(-7.59,-2.02,166.21)
+[래치]  ABP Ledge fn 월드래치 (LedgeHandWorldL/R):
+        릴리즈(생커브<0.5)      = 손소켓 월드 추적
+        플랜트+이동(vel≥15)     = 월드 동결 (그립 고정)
+        플랜트+정지(vel<15)     = WorldNow(M2W×상수)로 VInterp 15 수렴
+        → InverseTransformLocation → LedgeHandIdleCompL/R → CR 핀
+[알파]  커브 → FClamp → 비대칭 FInterp(상승7/하강15) → LedgeHandIKAlphaL/R
+[CR]    Lerp.B ← Get HandTargetL/R 직결 (구 내부래치 삭제됨)
+        이펙터 회전=애님 손 회전, 폴=애님 lowerarm Location
+[발IK]  FootPlacement 렛지 게이트 2중:
+        ①SetSmoothedFootIKWeight 함수 Lerp(곱,0,게이트)
+        ②Ledge fn 꼬리에서 SmoothedFootIKWeight(뒤 공백!) 직접 0
 ```
+
+### v3 핵심 실측 (재발 방지)
+- **FootPlacement가 "IK 미세 움직임" 주범** — CVar 격리로 gap 8.3→0.1cm. 렛지 중
+  UpdateVariables 스무딩 미호출 → SmoothedFootIKWeight 동결(잔값×거대보정=5~8cm 딥)
+- **LedgeCalcVelocity 스케일**: 이동 중 4~94(avg30) — 실캡슐속도 아님. 정지판정 15가 정답 (200=홀드 전멸)
+- **릴리즈 자가오염**: 알파 하강 느리면(8) 스윙 손을 IK가 끌고 추적이 그걸 따라감 → 재플랜트 31cm 오차. 하강 15~20
+- **플랜트 동결 1프레임 지연**(소켓=전프레임 포즈): 고속스윙 시 ~8cm 뒤 동결 — 정지수렴이 마스킹, 근본 해결은 CR 내부 캡처
+- **커브 무죄**: ShortL_Wallless 스태거 정상(L 0.067~0.37 / R 0.267~0.53). 0.4s 컷이 R 안무 절단 → 엔지니어 요청(Briefing/2026-07-14)
 
 ## 빌드 (신규 재적용 순서 — 크래시 등으로 CR 소실 시)
 1. `build_cr_latch.py` → `build_cr_latch2.py` — CR 래치 (수동 선행: 변수 MeshToWorld/Set노드 2개)
@@ -27,7 +44,15 @@ CR-내부 래치(FootLock 패턴) 기반 핸드IK 시스템의 빌드/튜닝/디
 - CR: HandZBiasL/R.B(Z), LatchLessL/R.B(0.9), PvClampLimit.B(무력화=200)
 - 모디파이어: FlightSpeedThreshold 140(MoveToIdle 4종=10), 램프 2/3
 
-## 디버그
+## 디버그 (v3 신규)
+- `probe_drift.py` — 양손 풀 프로브(커브/알파/타깃/손/갭/vel/fb/컴포넌트좌표) → ikdrift.log. 도착부 분석 표준
+- `probe_isolate.py` — CVar 자동 격리(base→RigidBody off→FootPlacement off→LegIK off→복원, 5s 페이즈) → ikiso.log. 범인 판정용
+- `measure_idle_hands.py` — Idle 애님 손위치 루프평균 실측 (타깃 상수 산출)
+- `curve_timeline.py` — 애님 커브 키 vs 손 궤적/속도 타임라인 대조 (커브 유죄/무죄 판정)
+- `cr_fix_right.py` — CR 오른손 이펙터 Lerp_1 경유 원복 (수동편집 오염 복구)
+- `cr_cleanup_latch.py` — CR 구 내부래치 클러스터 삭제 (v3 전환 청소)
+
+## 디버그 (v2 유물)
 - `handik_v2_debug.py` — 손 구체(빨강0↔초록1)+알파 텍스트 (토글)
 - `probe_ikv2.py` — 커브/알파/손변위 로그 → ikv2.log
 - `probe_pelvis_dip.py` — 펠비스 월드/캡슐/상대Z 분해 → pelvis_dip.log
