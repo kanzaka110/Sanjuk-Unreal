@@ -58,6 +58,35 @@
 - 알파는 별개 유지: bActive × ledge_hand_ik 커브 (릴리즈=IK off)
 - 모디파이어(`sb_ledge_hand_ik.py`)도 move 커브 베이크 지원 (창 없으면 상수 0) — ⚠ apply 시 ik 커브도 재베이크되므로 **수동 튜닝된 벽 Short 2종엔 apply 금지**
 
+## 모디파이어 v8 — 네이티브 노드 (2026-07-15, 파이썬 커맨드 폐기)
+- AM_SBLedgeHandIK = 순수 BP 62노드. **파라미터 템플릿 베이크** (자동 창검출 폐기)
+- 이름 3분류: `ToLadder/End/BackwardJump`→이탈(ik 1→0), `Idle`→정지(ik 1), 그 외→이동(ik 1 + move 램프)
+- 파라미터(인스턴스): MoveStartL/EndL/StartR/EndR (0.1/0.37), ExitHoldTime(0.05)/ExitFadeTime(0.1)
+- pelvis_spring 은 관할 제외 (샘플링 필요 — 파이썬 코어/기존값). ABL 핀명 함정: `AnimationSequenceBase`, Branch `then/else`
+
+## 함수 구조 (v7, 2026-07-15 함수화)
+```
+Ledge (오케스트레이터 30노드)
+├─ Ledge_CalcVelocity  — 속도/위상게인/스무딩 → LedgeCalcVelocity
+├─ Ledge_DangleAlpha   — 게이팅/디바운스/엔벨로프 → LedgeDangleAlpha/PhysAlpha
+├─ Ledge_HandAlpha     — 커브×bActive → LedgeHandIKAlphaL/R
+├─ (본체 잔류)          — LedgeMeshToWorld / LedgePelvisSpring
+├─ Ledge_HandTarget    — Anchor/Dest 래치+mc안무+신전클램프 → HandWorld/IdleComp
+│                        + 공유신호 캡처(v9.1): LedgeRelatch/Stopped/MoveOffset/PreOffset (VS_29 앞)
+├─ Ledge_FootTarget    — (v9) 발 벽짚기 미러: FootAnchor 래치+foot커브 안무+클램프76
+│                        → FootWorld/IdleComp/IKAlpha (알파=ledge_foot_ik×FrontBlocked, 파라미터 0)
+└─ Ledge_FootGate      — SmoothedFootIKWeight/FootIKScale/PrevWorldNowL
+```
+호출 순서 고정 (상류 변수 의존 — FootTarget은 HandTarget의 캡처 변수 소비). 노드 편집 시 해당 서브함수 그래프에서.
+
+## Foot IK (v9, 2026-07-15)
+- CR: `cr_foot_ik.py` (FootIK L/R TwoBoneIK thigh/calf/foot, 폴=무릎+바이어스, 클램프76, FootLerp 알파0=패스스루)
+- ABP: `refactor_foot_function.py` (Ledge_FootTarget 신설 — 최초 HandTarget 인라인 빌드 `build_foot_chain.py`를 함수 분리로 대체)
+- 커브: `bake_foot_curves.py` (초기 수동 베이크 — 이후 모디파이어 출력으로 대체)
+- 모디파이어: `mod_add_foot.py` — AM_SBLedgeHandIK에 발 4커브 통합, 파라미터 FootMoveStartL/EndL/StartR/EndR
+  (램프/Exit 타이밍은 손 파라미터 공유). 재적용 164애님. Short 실측: 선행 0.1~0.35(L)/0.4(R), 후행 0.15~0.5
+- 잔여: CR 변수 4개(FootTargetL/R, FootAlphaL/R) 수동 생성 → `cr_foot_wire.py`, AnimGraph 핀 노출 → 직결
+
 ## 그래프 위생 (v6)
 - `graph_reachability.py` — Ledge fn 도달성 분석 (exec체인+데이터 폐포, 로컬 HTTP·컨텍스트 무부담). dead 노드 목록 산출
 - `graph_cleanup.py` — 죽은노드 반복 제거+미사용변수 Set 스플라이스+GWDS 통합. ⚠ 연쇄 exec 제거는 매 제거 후 그래프 재조회 필수 (스테일 스냅샷 스플라이스 = 체인 절단 사고 이력, v6 복구 완료)

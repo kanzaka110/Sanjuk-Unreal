@@ -92,6 +92,9 @@ def _tick(dt, _st={"t0": time.time(), "n": 0, "ph": None, "pa": None}):
             rec["td"] = round(float(md.get_editor_property("UnitMoveTargetDistance")), 1)
             rec["sd"] = round(float(md.get_editor_property("UnitMoveStartDistance")), 1)
             rec["ip"] = 1 if bool(md.get_editor_property("bUnitMoveInProgress")) else 0
+            rec["ac"] = 1 if bool(md.get_editor_property("bActive")) else 0
+            rec["tr"] = 1 if bool(md.get_editor_property("bTransitingToNextLedge")) else 0
+            rec["tm"] = int(md.get_editor_property("PendingTransitMode"))
         except Exception:
             pass
         # v5/v6 체인 입력 (점프 원인 분해: mc커브 / Anchor / McBase)

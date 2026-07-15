@@ -196,44 +196,72 @@ def apply(asset_path, overrides=None):
         bones = [b for b, _, _ in HANDS] + [PELVIS_BONE]
         positions = _sample_bone_positions(seq, num_frames, duration, bones)
 
+        def _remove_if_exists(curve):
+            # 없는 커브 remove = "SmartName Container" 경고 → 모디파이어 오류창 승격. 존재 체크 필수
+            try:
+                if unreal.AnimationLibrary.does_curve_exist(
+                        seq, curve, unreal.RawCurveTrackTypes.RCT_FLOAT):
+                    unreal.AnimationLibrary.remove_curve(seq, curve)
+            except Exception:
+                pass
+
         def _write_curve(curve, times, values):
             # 같은 프레임 키 2개 = SetCurveControlKey 어설션 크래시 — 절대 통과 금지
             fkeys = [int(round(t * fps)) for t in times]
             if len(set(fkeys)) != len(fkeys):
                 _log("SKIP %s %s: duplicate frame keys %s" % (seq.get_name(), curve, fkeys))
                 return False
-            try:
-                unreal.AnimationLibrary.remove_curve(seq, curve)
-            except Exception:
-                pass
+            _remove_if_exists(curve)
             unreal.AnimationLibrary.add_curve(seq, curve)
             unreal.AnimationLibrary.add_float_curve_keys(seq, curve, times, values)
             return True
+
+        # v7.6 애님 분류 (이름 기반): 이탈=ik 1->0 + move 제거 / 정지=ik 1 + move 제거 / 이동=ik 1 + move 창
+        name = str(seq.get_name())
+        if any(tok in name for tok in ("ToLadder", "End", "BackwardJump")):
+            mode = "exit"
+        elif "Idle" in name:
+            mode = "idle"
+        else:
+            mode = "move"
 
         for bone, curve, move_curve in HANDS:
             windows, _ = _flight_windows(
                 positions[bone], fps,
                 float(p["FlightSpeedThreshold"]), int(p["MinFlightFrames"]))
-            times, values = _build_keys(
-                windows, int(num_frames), fps,
-                int(p["PlantRampFrames"]), int(p["ReleaseRampFrames"]))
-            if _write_curve(curve, times, values):
-                _log("%s <- %s : windows=%s keys=%d" %
-                     (seq.get_name(), curve, windows, len(times)))
-            # v5: IK 타깃 이동 커브 (0=이동전 그립, 1=이동후 그립)
-            mt, mv = _build_move_keys(windows, int(num_frames), fps)
-            if _write_curve(move_curve, mt, mv):
-                _log("%s <- %s : keys=%d" % (seq.get_name(), move_curve, len(mt)))
+            if mode == "exit":
+                # 이탈: 손별 첫 플라이트 시작에서 릴리즈, 재플랜트 없음 (이후 애님 지배)
+                if windows:
+                    s = windows[0][0]
+                    rel0 = max(0, s - 2)
+                    if rel0 <= 0:
+                        it, iv = [0.0, min(2, int(num_frames)) / fps], [1.0, 0.0]
+                    else:
+                        it, iv = [0.0, rel0 / fps, s / fps], [1.0, 1.0, 0.0]
+                else:
+                    it, iv = [0.0], [1.0]
+            else:
+                # 이동/정지: ik 상수 1 (IK 상시 — 손 위치는 move 커브 안무가 단일 지배, v7.3)
+                it, iv = [0.0], [1.0]
+            if _write_curve(curve, it, iv):
+                _log("%s <- %s : mode=%s keys=%d" % (name, curve, mode, len(it)))
+
+            if mode == "move":
+                # v5: IK 타깃 이동 커브 (0=이동전 그립, 1=이동후 그립) — 플라이트 창 기반
+                mt, mv = _build_move_keys(windows, int(num_frames), fps)
+                if _write_curve(move_curve, mt, mv):
+                    _log("%s <- %s : windows=%s keys=%d" % (name, move_curve, windows, len(mt)))
+            else:
+                # 이탈/정지: move 커브 잔존 시 재래치 오염 위험 — 제거
+                _remove_if_exists(move_curve)
+                _log("%s <- %s : removed (mode=%s)" % (name, move_curve, mode))
 
         # 펠비스 스프링 엔벨로프 — 프레임당 1키 (고유 프레임 보장)
         pv = _pelvis_spring_values(
             positions[PELVIS_BONE], fps,
             float(p["PelvisMinSpeed"]), int(p["PelvisFallFrames"]))
         pt = [f / fps for f in range(len(pv))]
-        try:
-            unreal.AnimationLibrary.remove_curve(seq, PELVIS_CURVE)
-        except Exception:
-            pass
+        _remove_if_exists(PELVIS_CURVE)
         unreal.AnimationLibrary.add_curve(seq, PELVIS_CURVE)
         unreal.AnimationLibrary.add_float_curve_keys(seq, PELVIS_CURVE, pt, pv)
         _log("%s <- %s : keys=%d peak=%.2f" %
@@ -250,7 +278,9 @@ def revert(asset_path):
             return
         for curve in ALL_CURVES:
             try:
-                unreal.AnimationLibrary.remove_curve(seq, curve)
+                if unreal.AnimationLibrary.does_curve_exist(
+                        seq, curve, unreal.RawCurveTrackTypes.RCT_FLOAT):
+                    unreal.AnimationLibrary.remove_curve(seq, curve)
             except Exception:
                 pass
         _log("reverted " + asset_path)
