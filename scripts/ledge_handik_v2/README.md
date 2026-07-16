@@ -60,9 +60,13 @@
 
 ## 모디파이어 v8 — 네이티브 노드 (2026-07-15, 파이썬 커맨드 폐기)
 - AM_SBLedgeHandIK = 순수 BP 62노드. **파라미터 템플릿 베이크** (자동 창검출 폐기)
-- 이름 3분류: `ToLadder/End/BackwardJump`→이탈(ik 1→0), `Idle`→정지(ik 1), 그 외→이동(ik 1 + move 램프)
-- 파라미터(인스턴스): MoveStartL/EndL/StartR/EndR (0.1/0.37), ExitHoldTime(0.05)/ExitFadeTime(0.1)
-- pelvis_spring 은 관할 제외 (샘플링 필요 — 파이썬 코어/기존값). ABL 핀명 함정: `AnimationSequenceBase`, Branch `then/else`
+- 이름 3분류: `ToLadder/End/BackwardJump`→이탈(ik 1→0), `Idle`→정지(ik 1), 그 외→이동(ik 창 + move 램프)
+- 파라미터(인스턴스): HandMoveStartL/EndL/StartR/EndR (⚠7/16 유저 rename: Move*→HandMove*), FootMoveStart/End ×4,
+  ReleaseRampTime(0.07)/PlantRampTime(0.1), ExitHoldTime(0.05)/ExitFadeTime(0.1), PelvisMinSpeed(60)/PelvisFallFrames(6)
+- **v9.10 함수화** (`mod_refactor_functions.py`): EventGraph=분류+콜 15노드. 함수 5개:
+  `RemoveLedgeCurves`(9커브, Apply전처리+Revert 공용) / `WriteExitCurves` / `WriteIdleCurves` / `WriteMoveCurves` / `BakePelvisSpring`
+- pelvis_spring 통합(v9.9, `mod_pelvis_rebuild.py`): 2패스 샘플링 엔벨로프 — **⚠ Kismet 배열 와일드카드 핀은 RPC 연결이 컴파일에서 정리됨** → 배열 금지, 프레임별 AddFloatCurveKey
+- ABL 핀명 함정: `AnimationSequenceBase`, Branch `then/else`, GetBonePose `BoneName`, ForEachLoop `Exec`
 
 ## 함수 구조 (v7, 2026-07-15 함수화)
 ```

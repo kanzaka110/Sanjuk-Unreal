@@ -97,6 +97,16 @@ def _tick(dt, _st={"t0": time.time(), "n": 0, "ph": None, "pa": None}):
             rec["tm"] = int(md.get_editor_property("PendingTransitMode"))
         except Exception:
             pass
+        try:
+            bsi = anim.get_editor_property("BlendStackInputs")
+            a = bsi.get_editor_property("Anim_3_CE8F6C8948855759C43A24A538203DDC")
+            rec["anim"] = str(a.get_name()) if a else "None"
+        except Exception as e:
+            rec["anim"] = "ERR:" + repr(e)[:40]
+        try:
+            rec["htr"] = 1 if bool(anim.get_editor_property("TransitingToNextLedge")) else 0
+        except Exception:
+            rec["htr"] = -1
         # v5/v6 체인 입력 (점프 원인 분해: mc커브 / Anchor / McBase)
         try:
             rec["mcL"] = round(float(anim.get_curve_value("ledge_hand_move_l")), 2)
