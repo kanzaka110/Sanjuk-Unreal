@@ -68,6 +68,95 @@
 - pelvis_spring 통합(v9.9, `mod_pelvis_rebuild.py`): 2패스 샘플링 엔벨로프 — **⚠ Kismet 배열 와일드카드 핀은 RPC 연결이 컴파일에서 정리됨** → 배열 금지, 프레임별 AddFloatCurveKey
 - ABL 핀명 함정: `AnimationSequenceBase`, Branch `then/else`, GetBonePose `BoneName`, ForEachLoop `Exec`
 
+## 펠비스 스프링 v3 — 템플릿 베이크 (2026-07-20)
+- 증상: 몸(펠비스)이 팔보다 0.2~0.4s 늦게 따라오고 도착 후 9cm 역행 진동 (`probe_body.py` 실측)
+- CR `PC_01_CtrlRig_LedgeDangle` SpringInterpVectorV2: **Strength 3.5→6.0, CriticalDamping 0.7→1.0** (원복값 pelvis_apply.json)
+- `ledge_pelvis_spring` 커브 재설계: 구 속도엔벨로프(시작부터 0.82~1.0)를 폐기 →
+  **(0,0)(0.40,0)(0.55,1)(0.90,1)(1.25,0)(dur,0)** — 이동구간 애님 100%, 도착 반동 구간만 스프링
+- ShortL/R_Wallless 2종 커브 직접 교체 완료 (백업 pelvis_curve_backup.json)
+- `mod_pelvis_template.py` — 모디파이어(**AM_SBLedgeIK**, 구명칭 AM_SBLedgeHandIK에서 rename) BakePelvisSpring을
+  템플릿 베이크로 교체. 파라미터(인스턴스): PelvisSpringStart 0.40/Full 0.55/HoldEnd 0.90/End 1.25
+  패스1 max속도+PelvisMinSpeed 가드 유지 (Idle/저속 애님=상수 0). 구 loop2 엔벨로프는 dead (exec 절단, 추후 graph_cleanup)
+- ⚠ 수동 튜닝 커브 있는 애님(벽 Short 2종, StartFalling 계열)엔 Apply 재실행 금지 유지
+
+## 골반 스프링 재설계 — 펠비스 기준 가산 (2026-07-20 저녁, v12)
+
+### ❌ 기존 구조의 근본 결함
+```
+Target = 펠비스(P) − 속도×게인 ;  Spring = SpringInterp(Target) ;  final = P + (Spring − P) = Spring
+```
+**최종 포즈가 스프링 결과로 치환된다.** 그래서 강성을 낮추면 애님이 뭉개지고, 높이면 효과가 사라진다 —
+어떤 값을 넣어도 "애님 그대로" 아니면 "애님 훼손" 둘 중 하나. 오늘 오래 헤맨 원인.
+
+### ✅ 현재 구조
+```
+Target = 펠비스(P)                     ← 속도 항 제거(게인 0). 애님의 펠비스 움직임 자체가 입력
+offset = (Spring − P) × 비율 × 커브     ← SpringCurveGate 신설, 커브가 세기 게이트
+final  = P + Clamp(offset)             ← 애님 100% + 스프링 일부 (가산)
+```
+- **비율** `MathVectorMul.B = (X 0, Y 0.9, Z 0.5)` — X=앞뒤 차단 / Y=좌우 / Z=상하. 1.0 = 애님 치환이므로 상한
+- **강성** 3.0 — 높을수록 지연↓ = 원본 유지. 낮추면 크게 밀리지만 애님이 뭉개짐
+- **감쇠** 0.25 — **스프링 체감은 여기서 확보한다** (진폭이 아니라 튕김이라 애님을 훼손하지 않음)
+- **클램프** 45 — 진짜 진폭 상한. 비율을 올려도 여기서 잘리면 변화가 없다
+- 커브 전달: ABP 가 `ledge_pelvis_spring` 을 `CharVelocity` 핀에 (c,c,c) 로 실어보냄 (속도 경로가 비어서 재활용)
+
+### 커브 스펙 (유저 확정)
+**펠비스 수직 정점부터 떨어지는 구간에서 강해진다.** `measure_pelvis_apex.py` 로 애님별 정점/최저점 실측 →
+`Start=정점 / Full=정점+0.08 / HoldEnd=최저점(정점+0.45 상한) / End=+0.25`.
+낙차 5cm 미만(31종)은 네 값 모두 `dur` → 모디파이어 가드가 키를 안 써서 스프링 off.
+예) ShortR 실측 정점 0.333 / 최저 0.667 — 유저 체감(정점 0.3, 반동 0.65~0.7)과 일치
+
+### ⚠ 오늘 겪은 함정
+- **`apply_anim_modifier(persist=True)` 는 인스턴스를 '추가'한다 (갱신 아님)** — 반복 적용 시 누적.
+  ShortL 에 9개까지 쌓여 커브가 마지막 것만 반영됐다 → `dedupe_modifier_stack.py` 를 **적용 직후 항상** 실행
+- **커브 × 속도 = 0 함정**: 커브가 켜지는 구간(이동 후)에 속도가 이미 0이라 곱이 0.
+  실측 결과 spring>0.3 인 398프레임의 입력 |v| 이 **전부 0.0**, 이동중 332프레임 중 spring>0.3 은 **0개**.
+  "스프링이 전혀 안 느껴진다" 의 진짜 원인 — 시간축이 겹치지 않는 두 신호를 곱하면 안 된다
+- **축 배정은 추측 금지** — 프로브(`probe_spring.py`)로 확인할 것. 전방벡터 (-1,0,0), 이동 성분은 **Y(좌우)**.
+  오늘 X/Y를 두 번 헛짚었다
+- `EditorAssetLibrary.list_assets(recursive=False)` 가 0을 반환하는 경우가 있다 → recursive=True + 목록 폴백
+
+## 모디파이어 v11 — 창 자동검출 네이티브화 (2026-07-20)
+- `DetectWindow(Seq, BoneName, Ratio, PadStart, PadEnd) → (OutStart, OutEnd)` — 순수 BP 81노드
+  - 패스1: 프레임 샘플 → 최대속도/피크시각/합·개수 / 패스2: `thr=base+Ratio*(max-base)` 경계 탐색
+  - **기준선 = 평균** (파이썬판은 중앙값). ⚠ 배열 금지(Kismet 와일드카드 RPC 함정)라 스트리밍 통계만 가능
+  - 가드: max<60 또는 스팬<25 → (0,0)=창없음 / 창길이<0.05 → (0,0)
+- `AutoDetectCurves(Seq)` — DetectWindow ×4(hand_l/r, ball_l/r) + PelvisSpring 4종(base=max 손End +0.05/0.20/0.55/0.90, dur 클램프)
+  - 노브는 호출 인자: 손 Ratio 0.18/Pad(-0.067,0.033) · 발 Ratio 0.32/Pad(-0.017,0.033)
+  - ⚠ `derive_windows2.py`(일괄용)와 노브를 같이 맞출 것
+- **OnApply 선두에서 AutoDetectCurves 호출** → "모디파이어 적용"만 눌러도 자동검출 후 커브 생성
+- ⚠ **ExecutePythonCommand 함정**: 콘솔 명령이 아니라 **파이썬 코드 문자열**을 받는다.
+  `py "경로"` 를 넣으면 SyntaxError 로 조용히 실패 (2026-07-20 로그 확인) → 네이티브 노드로 전환한 이유
+- ⚠ **RPC 배선 오결선 실사례**: `FMin(창끝, dur)` 의 B 핀이 `dur` 가 아니라 **`step`(=dur/프레임수, 0.033)** 에
+  물려서 창 끝이 항상 0.033 으로 잘렸다 → 길이 가드(0.05)에 탈락 → 전 부위 (0,0) → **`ledge_pelvis_spring` 커브만 생성**
+  되는 증상. `connect_pins` 는 "성공" 을 반환했고 컴파일도 통과 — **동일 값을 여러 노드가 소비하면 knot 경유로
+  엉뚱한 소스에 붙을 수 있다.** 배선 후 `deknot()` 로 실제 소스 노드까지 역추적 검증할 것
+- 검증법: `DetectWindow` 를 `unreal.new_object(AM_SBLedgeIK_C)` 로 직접 call_method 하고 스크래치 변수
+  (DwMax/DwPeakT/DwStart/DwEnd)를 같이 덤프 → 내부는 맞는데 출력만 0이면 출력 체인 오결선
+- 미구현: 2차 창(HandMove2*/FootMove2*) 네이티브 검출. WriteMoveCurves 는 이미 지원하므로
+  파라미터를 채우면 동작 — 현재는 파이썬 일괄 경로(`derive_windows2.py`)만 2차 창을 산출
+
+## 모디파이어 인스턴스 값 일괄 세팅 (2026-07-20)
+- `apply_mod_params.py` — LedgeClimbing 166종의 AM_SBLedgeIK **인스턴스 파라미터**를 시퀀스별로 세팅.
+  이제 모디파이어를 **일괄 Apply해도 각 애님의 현재 안무가 그대로 재생성**된다 (수동 튜닝 보존)
+- 인스턴스 접근 경로: `seq.asset_user_data → AnimationModifiersAssetUserData
+  → animation_modifier_instances → AM_SBLedgeIK_C` (set_editor_property로 읽기/쓰기 가능 ✅ 실측)
+- ❌ **1차 시도(커브 역산) 폐기 — 순환논리**: 커브가 이미 동일 템플릿(0.1/0.37)으로 일괄 베이크된 상태라
+  역산하면 그 템플릿이 그대로 돌아옴. 166종 전부 같은 값이 됐다. 커브는 여기선 ground truth가 아니다.
+- ✅ **2차(채택): 본 속도 실측 — 측정/판정 분리**
+  1. `measure_profiles.py` (에디터) — AnimPose 프레임 샘플 → 원시 속도 프로파일 `bone_profiles.json` (166종, 에러 0)
+  2. `derive_windows.py` (로컬) — 창 판정. **재측정 없이 판정식만 바꿔 초 단위 재튜닝** ← 이 분리가 핵심
+  3. `apply_measured_params.py` (에디터) — 인스턴스 기록. **set 110 / skip_class 17 / skip_nowindow 37 / preserved 2 / error 0**
+- ⚠ **속도 프로파일엔 3구간이 공존**: 스윙(~250) / 그립 중 드리프트(~110, in-place 애님) / 완전정지(~4).
+  루트모션 유무가 애님마다 달라 **전역 고정문턱은 원리적으로 불가** (v8 자동검출 폐기의 진짜 원인)
+- 판정식: 피크 ±0.5s **국소 중앙값**을 기준선 → `thr = base + 0.25*(peak-base)`, 피크에서 양방향 확장
+  - ⚠ 국소 **최소값**을 기준선으로 쓰면 정지구간(~4)이 반경에 들어올 때 문턱 붕괴 → 좌우 스윙이 한 덩어리로 뭉개짐 (실측 확인)
+  - 발 PAD `end +0.067` — 창 종료 후 IK 고정이라 짧으면 **"발이 오래 붙잡힌" 증상** (유저 리포트 2026-07-20)
+  - 검증: ShortL_Wallless 우손 시작 측정 0.267 vs 유저 튜닝 0.26 — 거의 일치
+- PelvisSpring 4종 = **⚠ 가설**: base(=max 손 플랜트) + 0.05/0.20/0.55/0.90 (검증값 델타 유지, dur 클램프)
+- `PRESERVE` = 벽없음 Short 2종 — 유저 PIE 검증값(L 0.15~0.32 / R 0.26~0.32, 스프링 0.40/0.55/0.90/1.25) 유지.
+  측정창(L 0.067~0.3 / R 0.267~0.633)과 불일치 — 측정은 스윙 전구간, 검증값은 타깃 lerp 구간이라 의미가 다름
+
 ## 함수 구조 (v7, 2026-07-15 함수화)
 ```
 Ledge (오케스트레이터 30노드)
@@ -96,8 +185,14 @@ Ledge (오케스트레이터 30노드)
 - `graph_cleanup.py` — 죽은노드 반복 제거+미사용변수 Set 스플라이스+GWDS 통합. ⚠ 연쇄 exec 제거는 매 제거 후 그래프 재조회 필수 (스테일 스냅샷 스플라이스 = 체인 절단 사고 이력, v6 복구 완료)
 - 2026-07-14 대청소: 375→304 노드, GetWorldDeltaSeconds 11→1, 변수 4종 삭제
 
-## 디버그 (v4 신규)
-- `debug_dest_preview.py` — 이동 시 손 도착지(Dest) 프리뷰 구체 (L=시안/R=마젠타 + 손→도착지 라인). LedgeDebug 토글 연동. ABP v4 래치와 동일 수식(Idle상수+평면방향×남은거리) 파이썬 재현 — 상수 변경 시 여기도 갱신
+## 디버그 (2026-07-20 LedgeDebugs 네이티브화 — 파이썬 드로어 폐기)
+- **LedgeDebugs(ABP) 노드가 단일 출처** (`build_ledgedebugs_v5.py`로 빌드):
+  - 구체 = LedgeHandWorldL/R(IK 구속점, CR 실소비값) — 밝음=α≥0.5 활성 / 어두움=비활성 (SelectColor)
+  - Anchor/Dest 박스 = bTransitMoving 중만 (Idle 스테일 래치 숨김)
+  - Dest 박스+경로 라인(Anchor→Dest, 두께 0.2) = |Dest-Anchor|>20cm (v14 게이트 통과=커밋) 시만
+- 스테일 소켓 구체 4개 제거 — GetSocketLocation을 업데이트 시점(평가 전=전프레임 포즈)에 읽던 오표시 원인
+- `debug_dest_preview.py`(파이썬 드로어)는 **폐기** — draw_debug가 다음 프레임 렌더라 움직이는 본에 1프레임 지연.
+  월드 고정값은 무관하지만 유저 결정으로 전부 LedgeDebugs 노드로 이관
 
 ## 디버그 (v3 신규)
 - `probe_drift.py` — 양손 풀 프로브(커브/알파/타깃/손/갭/vel/fb/컴포넌트좌표) → ikdrift.log. 도착부 분석 표준
