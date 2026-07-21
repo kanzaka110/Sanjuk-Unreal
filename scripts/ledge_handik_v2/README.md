@@ -215,3 +215,53 @@ Ledge (오케스트레이터 30노드)
 - CR 애님노드 노출 핀은 미연결이어도 디폴트를 매프레임 푸시 — 내부래치 변수(HandTargetL/R)는 핀 언체크 필수
 - K2Node ID는 에디터 재시작 간 불안정 — 배선 전 search_nodes 재탐색
 - 커브 같은 프레임 키 2개 = SetCurveControlKey 어설션 즉사
+
+## v15 — 발목 보존 2패스 + 창 캘리브레이션 + 모디파이어 재분류 (2026-07-21)
+
+### 발목 꺾임 근본해결 (CR)
+- 원인: FootMake.Rotation=애님 글로벌 고정 → IK가 calf 돌리면 발목 로컬로 흡수 (실측 최대 65도)
+- 1패스: IK 전 `Rel=Inv(calf)×foot` 캡처(AnkleRelL/R, Set/Get 수동생성) → IK 후 `SetRotation(calf_now×Rel, propagate)`
+- 2패스(`cr_ankle_pass2.py`): 회전보존↔ball접지 트레이드오프(보존ON ball 5cm 밀림) → 패스1 후 실제 ball 오차만큼
+  이펙터 보정 재IK+재보존. 최종: 발목 0.7도 + ball 0.68cm 동시 달성
+- `toggle_ankle_preserve.py` = AnkSetRot Weight 0/1 A/B 스위치
+- 검증: `measure_ankle_range.py`(원본 22,490프레임 최근접 대조) + `probe_ankle.py`(bgap=ball↔타깃이 실지표,
+  footgap은 발길이 14.95 만큼 뜨는 게 정상 — FootTarget은 ball 도달점)
+- ⚠ RigUnit_SetRotation 회전입력 핀명은 `Value` — "Rotation"으로 add_link해도 리다이렉트로 "성공" 반환됨
+
+### 창 파라미터 캘리브레이션 (유저 수작업 33종 = ground truth)
+- 손: 단순 절대문턱이 정답 — thr110/min0.05/gap병합0.20/pad(0,+0.033) → 유저값 대비 2프레임내 74%, 실패 0
+  (복잡한 판정식·부호프로파일·hold기준 등 5방식 비교에서 승리. 잡은손 속도 중앙 2.9 vs 놓은손 204 — 92% 분리)
+- 발: 자동화 원리적 불가 (5신호 전부 2프레임내 ~50%) — 유저 창은 측정 아닌 안무의도(end가 dur의 65~93%)
+- 벽조합 규칙(예외 0): WalllessToWallless→발0~0 / WalllessTo*→발시작0 / *ToWallless→발끝=dur
+- 적용: TARGET 98종(손157+발규칙118) + ToLadder 7종. `plan_target_windows.py`→`apply_target_windows.py`
+
+### 모디파이어 재분류/정리 (AM_SBLedgeIK)
+- 분류 변경: 정지=Contains(Idle|LedgeSeeking) / 이탈=End|BackwardJump / ToLadder→이동(창 사용)
+- WriteIdleCurves `_Wallless` 분기: 벽없음=손만 IK1, 벽=손발 IK1 (SelectFloat)
+- End_* 8종 모디파이어+커브 완전 제거 / 변수 삭제: PelvisFallFrames, HandMove2*4, FootMove2*4(유저 직접)
+- dead 정리: BakePelvisSpring 139→90(구 loop2), WriteMoveCurves 240→147(2차창 로직, 유저 직접)
+- ⚠ apply_anim_modifier는 CDO값 적용 — 인스턴스값 보존하려면 properties 인자 필수(`bake_all_current.py`)
+- ⚠ save_asset이 False 반환해도 실패 아닐 수 있음 → `editor_query save_packages`가 정본 경로
+
+### 재발방지 함정 (오늘 사고 2건)
+- **도달성 분석**: knot IO 핀은 입력 취급 필수 + exec/데이터 링크 구분 + 서브핀 링크 포함 +
+  후보수가 예상과 다르면 중단 + 삭제 직전 개별 재조회. (CR 왼손 절단 → 바인딩/Get노드 복구,
+  WriteMoveCurves 240→48 → reload_packages로 복구 — 저장 전이었음)
+- **본 트랙 편집**: get_bone_pose_for_frame = 트랙+트랜스폼커브 '합성값'. set_bone_track_keys는 트랙만 씀
+  → 합성값을 트랙에 쓰면 커브 이중적용. MoveToIdle_Wallless pelvis에서 발생 → 커브 제거로 베이크 수습
+- **외삽 이식 실패**: 발 lead(K0.8/10cm)를 손에 그대로 → 도착 감속 구간에서 오버슈트 증폭. 측정 없이 이식 금지.
+  잔존물: Ledge_HandTarget lead 노드 16개 K=0 불활성 / LedgeHandWorldPredL/R가 CR 핀 소스(=World)
+
+### 기타
+- 발 알파 상승 22→10 (손과 동일, Ledge_FootTarget SelectFloat A핀)
+- Wallless 피직스 분기(Ledge_DangleAlpha, FBLatch Select): Hold 0.9/Fade 2.2/Fall 0.45 (벽=기존 변수값)
+- MoveToIdle_Wallless_L/R pelvis 트랙 정합: 시작 82.7(Short끝)~끝 84.89(Idle), 단차 0
+- 후행손 순간 오버슈트 = 애님 스윙스루(릴리즈 중 IK 무관여) — 깔때기(타깃 선도착+점진램프) 후 유저 최종 튜닝
+- CR: MeshToWorld/HandPinAlpha 변수 삭제 + ABP 죽은 푸시 제거, 코멘트 박스 7개(`cr_add_comments.py`)
+- 왼손 복구: bind_pin_to_variable(노드 없이 핀-변수 직결) 가능 확인 → 이후 유저가 Get노드로 정리
+
+### ⚠ Apply 재실행 금지 목록 (수동 튜닝 커브 — Apply가 덮어씀)
+- 벽 Short 2종 (기존) / StartFalling 계열 (기존)
+- Move_ShortL/R_Wallless (스프링 피크 2.0 부스트 + ShortL R손 깔때기 + 유저 튜닝)
+- 2차 발창 커브 잔존 3종: Corner_Far_90L_WallToWallless / Crossing_Far_135_WallToWall /
+  Crossing_Far_315_WallToWallless (FootMove2 변수 삭제로 파라미터는 소실, 커브만 살아있음)
