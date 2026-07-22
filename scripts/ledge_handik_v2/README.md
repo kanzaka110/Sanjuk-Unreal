@@ -260,6 +260,37 @@ Ledge (오케스트레이터 30노드)
 - CR: MeshToWorld/HandPinAlpha 변수 삭제 + ABP 죽은 푸시 제거, 코멘트 박스 7개(`cr_add_comments.py`)
 - 왼손 복구: bind_pin_to_variable(노드 없이 핀-변수 직결) 가능 확인 → 이후 유저가 Get노드로 정리
 
+## v15.1 — 발 WallToWall 2회 짚기 규칙 (2026-07-22)
+
+유저 규칙 확정: **발이 벽을 2번 짚는 모션은 '뒤(최종) 정지 시점'이 FootMoveEnd** — 중간 정지에 플랜트하지
+않고 창 하나로 더블스윙 전체를 덮는다 (릴리즈 Start → 최종 정지에 플랜트, move 커브는 전장 슬라이드).
+
+- 판정 (bone_profiles.json 로컬 분석, **네이밍 무관 — ball 본 움직임으로 전 166종 스캔**, 유저 지시):
+  ball 속도 thr 30 세그먼트 → 유의 스윙 2개(2차 pk≥100 또는 피크비 ≥0.25) + 중간 정지 ≥0.1s +
+  최종 정지 트레일 존재. 노이즈 제외: Near_180 L(시작 블립) / Near_315 R·L(피크비 미달) / Corner_90R L·
+  Far_45 WalllessToWall R·Far_270 WalllessToWall L(중간 정지 1프레임)
+- **Wallless 로 끝나는 이중스윙(Far_0/Far_180/Near_0 계열, ToBar, Start_Falling)은 제외** — 트레일 피크
+  36~59(매달림 스웨이)로 실플랜트(트레일 ≤24)와 구분됨. 최종이 벽 짚기가 아니므로 발끝=dur/창0 규칙 유지
+- 적용 23건/19종 (End 변경, 백업 `mod_params_BACKUP_0722_footw2w.json`):
+  - WallToWall 10건/9종: Corner_Far_90L R 0.8→1.333 / Corner_Far_90R L 0.79→1.333 / Crossing_Far_225 R
+    0.53→1.1 / **Crossing_Far_270 R 0.13→1.2 (비활성 창 활성화)** / Crossing_Far_315 R 0.597→1.267 /
+    Crossing_Far_45 L 0.563→1.267 / Crossing_Far_90 L 0.497→1.133 · R 0.53→1.233 /
+    Crossing_Near_135 L 0.23→0.9 / Crossing_Near_225 R 0.4→0.9
+  - WalllessToWall 12건/9종: Corner_Far_90L R 0.79→1.333 / Corner_Far_90R L 1.4→1.333 /
+    Crossing_Far_135 L 0.55→1.1 · R 1.0→1.1 / Crossing_Far_225 L 0.55→1.133 / Crossing_Far_270 R 0.4→1.133 /
+    Crossing_Far_315 R 0.597→1.267 / Crossing_Far_90 L 0.13→1.167 · R 0.497→1.233 /
+    Crossing_Near_135 L 0.4→0.9 · R 0.263→0.933 / Crossing_Near_225 R 0.4→0.9
+  - 스캔 신규 발견 1종: **Start_Ground L 0.4→0.833 · R 0.4→0.933** (첫 pk1846 버스트=진입 스냅,
+    실스윙 0.23~0.80/0.37~0.90인데 구 End 0.4가 스윙 한중간이었음)
+- 이미 규칙 일치(무변경): Corner_Far_90L L(양변형) / Crossing_Far_225 L·R / Crossing_Near_135 WallToWall R
+- **Crossing_Far_135_WallToWall 만 규칙 미적용 잔여** — Apply 금지(수동 2차창 커브, 스캔상 L 1.0→1.1
+  R 0.83→1.067 DIFF). 전환하려면 수동 커브 포기 결정 필요
+- End_* 3건 히트는 모디파이어 제거 클래스(이탈)라 해당 없음
+- 절차: dump_mod_params → 덤프 패치 → `bake_all_current.py <대상>` → dedupe(자동저장) → 커브 실측 검증
+- End+PlantRamp(0.1) 가 dur 넘는 2건(Far_270 R, Far_90 R)은 플랜트 키가 dur 밖(1.3/1.333) —
+  Wallless 발끝=dur 규칙과 동일하게 어설션 없음, 다음 스테이트 블렌드 중 플랜트 완료
+- ⚠ PIE 검증 전
+
 ### ⚠ Apply 재실행 금지 목록 (수동 튜닝 커브 — Apply가 덮어씀)
 - 벽 Short 2종 (기존) / StartFalling 계열 (기존)
 - Move_ShortL/R_Wallless (스프링 피크 2.0 부스트 + ShortL R손 깔때기 + 유저 튜닝)
