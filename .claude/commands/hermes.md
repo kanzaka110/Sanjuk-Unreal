@@ -33,7 +33,30 @@
 
 - `/hermes` 단독 → 현재 세션 전체 맥락 다이제스트
 - `/hermes <주제>` → 해당 주제에 한정한 다이제스트
-- `/hermes 질문: ...` → 다이제스트 + 질문 줄 포함 (검증 요청)
+- `/hermes 질문:<본문>` → **역방향 검토 브리지** (mode=question, 아래 절 참조)
+- `/hermes 검증:<본문>` → **역방향 검토 브리지** (mode=verify, 아래 절 참조)
+
+## 역방향 검토 브리지 (질문:/검증: 전용)
+
+`질문:`/`검증:` 접두 요청은 단방향 다이제스트가 아니라 **응답을 기다리는 왕복 요청**이다.
+전송·회수는 `scripts/hermes_bridge.py`가 수행:
+
+1. 본문을 `scripts/_hermes_req.txt` 에 utf-8 저장 후:
+   ```
+   py scripts/hermes_bridge.py --mode question --file scripts/_hermes_req.txt   # 질문:
+   py scripts/hermes_bridge.py --mode verify --file scripts/_hermes_req.txt    # 검증:
+   ```
+   (인라인 문자열 인자 금지 — 한글/멀티라인 이스케이프 깨짐 방지)
+2. 브리지 동작 (스크립트가 자동 수행):
+   - 매 요청마다 새 `hreq_` task ID 생성
+   - `[HERMES-REQUEST v1]` 고정 포맷(task_id/mode/domain: ue-sb2/reply_required: true/body)
+     top-level 메시지를 `chat.postMessage`로 전송, ts 저장
+   - 같은 스레드를 `conversations.replies`로 3초 간격, 최대 180초 폴링
+   - `[HERMES-RESPONSE v1]` + 원 task ID **정확 일치** 응답의 body만 stdout 반환
+     (다른 스레드·다른 task ID·일반 봇 메시지는 무시)
+3. stdout으로 받은 응답 body를 세션에 보고. **Hermes 응답은 ground truth 아님** — 실측 재확인 후 채택/기각.
+4. timeout/API 오류 시 **같은 task ID 자동 재전송 금지** — 스크립트가 출력한 BLOCK/HOLD + 실패 단계를 그대로 보고하고 사용자 판단 대기.
+5. 채널은 `.env`의 `HERMES_SLACK_CHANNEL`만 사용 (채널 ID 추측·하드코딩 금지). 토큰·원시 Slack 응답·전체 transcript는 출력/저장 금지.
 
 ## 보안 원칙 (evidence.md와 동일)
 

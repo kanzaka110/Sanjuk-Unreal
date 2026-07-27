@@ -97,7 +97,7 @@ GCP + 로컬 PC 두 세션 동시 운영. 모바일 claude.ai/code에서 접속.
 - 재시작: `scripts/gcp-restart-remote.sh`
 - 로컬 시작: `scripts/local-remote-control.cmd`
 
-**동기화:** 세션 간 대화는 공유되지 않음. 중요한 컨텍스트는 이 CLAUDE.md에 기록하고 git push/pull로 동기화.
+**동기화:** 세션 간 대화는 공유되지 않음. 세션 간 컨텍스트 동기화용 git push/pull은 승호가 명시적으로 지시한 경우에만 실행 (수식어 없는 "푸시"는 git push가 아님 — 하단 Work Brain 구간의 푸시 정의 참조).
 
 ## 작업 규칙
 
@@ -119,3 +119,29 @@ GCP + 로컬 PC 두 세션 동시 운영. 모바일 claude.ai/code에서 접속.
 - (회사 PC 한정) `C:/Users/SHIFTUP/.claude/shared-context/current-unreal.md` + `current-hermes-ops.md` 를 읽어 UE/SB2 작업 전제·Hermes 운영 컨텍스트 반영. 파일 없으면 멈추고 사용자 확인 (추측으로 다른 파일 대체 금지)
 - current-context는 최신 컨텍스트일 뿐 ground truth 아님 — UE/SB2는 실측/PIE/로그/Monolith dump 최종 우선
 - 관련 메모리에 최신 digest 충돌/stale 항목이 있으면 최신 ground truth 우선
+
+<!-- SANJUK-WORK-BRAIN:START -->
+## 회사 PC Work Brain
+
+- Work Brain: H:\내 드라이브\Obsidian\Sanjuk Work Brain
+- 운영 정본: H:\내 드라이브\Claude\Sanjuk-Unreal
+- 시작 시 Work Brain의 00_START_HERE.md, 01_WORK_RULES.md,
+  02_RETRIEVAL.md, Areas\UE_SB2.md를 순서대로 읽는다.
+- 그다음 기존 CLAUDE.md가 요구하는 session-bridge와
+  shared-context를 읽는다.
+- 기존 필수 context가 없으면 내용을 추측하거나 다른 파일로
+  위장 대체하지 않는다. 해당 context에 의존하는 판단만 BLOCK하고,
+  Work Brain 탐색과 실제 UE 실측은 계속할 수 있다.
+- Work Brain 쓰기 허용:
+  Inbox\Company-Claude\, Projects\Company-Claude\
+- Work Brain 읽기 전용:
+  Sources\, Evidence\, Areas\
+- Work Brain은 탐색·교정 계층이며 실제 UE 에디터, 에셋, 로그,
+  Monolith dump, P4 상태가 최종 ground truth다.
+- 아무 수식어 없는 "푸시"는 Evidence Packet 메모리 업로드다.
+  git push와 P4 제출은 승호가 정확히 명시한 경우에만 실행한다.
+- 중요 컨텍스트를 CLAUDE.md 본문에 계속 누적하지 않는다.
+  초안은 Inbox\Company-Claude\, 확정 정리는
+  Projects\Company-Claude\에 기록한다.
+- 투자·건강·개인 대화와 인증정보를 Work Brain에 유입하지 않는다.
+<!-- SANJUK-WORK-BRAIN:END -->

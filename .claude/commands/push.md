@@ -78,7 +78,25 @@ gcloud compute scp --zone=us-central1-b \
 ```
 - 동기화 실패 시 오류 보고 (네트워크 / VM 꺼짐 / 권한)
 
-### 5단계: 결과 요약
+### 5단계: Work Brain 저장 & Knowledge-Library 갱신
+
+> 기존 GCP Evidence Packet 업로드(1·4단계)는 그대로 유지한다. 이 단계는 **4단계 업로드 성공 후**에만 수행하며, 이 단계가 실패해도 GCP 업로드 롤백 / git push / P4 제출은 하지 않는다.
+
+1. **회사 UE/SB2 업무 내용만** Markdown으로 저장:
+   - Vault: `H:\내 드라이브\Obsidian\Sanjuk Work Brain`
+   - 확정 기록: `Projects\Company-Claude\[YYYY-MM-DD]한글 주제.md`
+   - 미확정 기록: `Inbox\Company-Claude\[YYYY-MM-DD]한글 주제.md`
+   - 내용은 **요약·결정·검증 증거·남은 위험만**. 금지: token/API key/password, raw 로그 전체, 개인 Telegram 식별자, 투자·건강·생활 자료
+   - 동일 작업의 같은 날짜·주제 파일이 있으면 **새 복제본 금지** — 해당 문서를 갱신
+2. 저장 후 refresh 실행:
+   ```
+   & "H:\내 드라이브\Obsidian\Sanjuk Work Brain\Projects\Company-Claude\Tools\refresh-display-library.ps1"
+   ```
+   - 마지막 줄이 `PASS: Work Brain Knowledge-Library refreshed at Projects\Knowledge-Library.` 인지 확인
+3. `Projects\Knowledge-Library\00_한눈에 보기.md`의 `새 Company-Claude 문서` 섹션에 방금 저장한 문서 링크가 존재하는지 확인
+4. 성공 조건 3가지: ① GCP Evidence Packet 업로드 성공 ② Work Brain 문서 존재 ③ refresh PASS. **일부만 성공하면 성공으로 축약하지 말고 단계별 PASS/HOLD로 보고**
+
+### 6단계: 결과 요약
 변경사항과 동기화 상태를 테이블로 요약:
 
 | 항목 | 상태 |
@@ -89,3 +107,5 @@ gcloud compute scp --zone=us-central1-b \
 | GCP Git | 동기화됨/실패(충돌 시 보고)/변경없음 |
 | Hermes 메모리 (claude-sync/memory-unreal) | 동기화됨(N개)/실패 — 다음 정각 cron 으로 Hermes 반영 |
 | 글로벌 룰 | 동기화됨/실패/변경없음 |
+| Work Brain 문서 | 저장됨(경로)/갱신됨/HOLD |
+| Knowledge-Library refresh | PASS/HOLD(에러 요약) |

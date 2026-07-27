@@ -61,3 +61,6 @@ DevSanjuk-Unrealdump*.txt
 # PerfMonitor 런타임 산출물
 perf_monitor/.live/
 perf_monitor/__pycache__/
+
+# transcript-vault Tier1 암호문 백업 (git 추적 금지 — 로컬 정본 C:\Users\SHIFTUP\.claude\transcript-vault)
+/.transcript-vault-backup/
