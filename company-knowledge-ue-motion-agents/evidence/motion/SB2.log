@@ -1,0 +1,3 @@
+LogBlueprintUserMessages: [ANIM_REC] "f"=1000,"sms"=1,"clip"=Jog_F,"trd"=90
+LogBlueprintUserMessages: [ANIM_REC] "f"=1002,"sms"=1,"clip"=Jog_L,"trd"=90
+LogBlueprintUserMessages: [ANIM_REC] "f"=1004,"sms"=1,"clip"=Jog_F,"trd"=90

@@ -1,0 +1,16 @@
+{
+  "captured_at": "2026-07-29T09:00:00+09:00",
+  "group_id": "ckg_20260729_confluence_1608679894_015eb53ee428",
+  "group_sha256": "015eb53ee4286bd8ec32676b38279a40cb573b976b8a8ad658f53c31f752e299",
+  "merge_targets": [
+    "샘플 케이스.md"
+  ],
+  "promotion": "HOLD_HUMAN_REVIEW",
+  "schema_version": 1,
+  "source_id": "1608679894",
+  "source_updated_at": "2026-05-29T10:35:04+09:00",
+  "source_version": "8",
+  "staging_note": "STAGING.md",
+  "staging_note_bytes": 2339,
+  "staging_note_sha256": "f05e95be5e284b6727983f71820f085febfd8ccfe38144f9fa132986fc2ea108"
+}

@@ -1,0 +1,11 @@
+{
+  "artifact": "company-knowledge-ue-motion-agents-20260729T001545Z",
+  "auto_apply": false,
+  "company_knowledge_local": "PASS",
+  "company_source_e2e": "HOLD_COMPANY_PC",
+  "focused_regression": "18/18 PASS",
+  "motion_alignment_local": "PASS",
+  "motion_real_case": "HOLD_INPUTS_MISSING",
+  "promotion": "HOLD_HUMAN_REVIEW",
+  "schema_version": 1
+}

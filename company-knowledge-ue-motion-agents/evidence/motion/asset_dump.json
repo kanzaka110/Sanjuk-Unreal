@@ -1,0 +1,9 @@
+{
+  "animation_blueprint": {"asset": "/Game/PC01/PC_01_ABP", "compile_status": "synthetic-readonly-fixture"},
+  "capture_method": "ue_readonly_dump",
+  "captured_at": "2026-07-29T09:11:00+09:00",
+  "chooser_rows": [{"asset": "/Game/PC01/GroundMoving", "row": "LockOn-Left"}],
+  "pose_search_databases": [{"asset": "/Game/PC01/PSD_GroundMoving", "continuing_pose_cost_bias": -0.01}],
+  "project_revision": "synthetic-readonly-fixture",
+  "schema_version": 1
+}

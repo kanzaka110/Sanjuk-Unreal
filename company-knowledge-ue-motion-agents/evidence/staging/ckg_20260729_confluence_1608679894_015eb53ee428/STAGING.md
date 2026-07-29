@@ -1,0 +1,77 @@
+---
+type: company-knowledge-review-staging
+group_id: ckg_20260729_confluence_1608679894_015eb53ee428
+source_kind: confluence
+source_id: 1608679894
+source_version: 8
+source_updated_at: 2026-05-29T10:35:04+09:00
+captured_at: 2026-07-29T09:00:00+09:00
+group_sha256: 015eb53ee4286bd8ec32676b38279a40cb573b976b8a8ad658f53c31f752e299
+promotion: HOLD_HUMAN_REVIEW
+---
+
+# 샘플 페이지 — 검토 staging
+
+> 검토 전 운영 truth로 사용 금지. 기존 케이스 위키를 자동 수정하지 않는다.
+
+## 제안 병합 대상
+- `샘플 케이스.md`
+
+## 정본 packet body
+
+## [SOURCE]
+- source kind: `confluence`
+- source ID: `1608679894`
+- title: 샘플 페이지
+- URL: https://shiftupcorp.atlassian.net/wiki/spaces/SB2/pages/1608679894/example
+- version: `8`
+- updated at: `2026-05-29T10:35:04+09:00`
+- captured at: `2026-07-29T09:00:00+09:00`
+- capture mode: `read-only`
+- capture method: `confluence_mcp`
+
+## [CONTENT]
+## 샘플 섹션
+| 변수 | 값 |
+| --- | --- |
+| ContinuingPoseCostBias | -0.01 |
+```text
+[ANIM_REC] f=1002 clip=Jog_L
+```
+- image attachment_id: `att-sample`
+- filename: `sample.png`
+- caption: 그래프 캡션
+- context: 본문 인접 문맥
+- attachment `sample.png` (id `att-sample`, type `image/png`, bytes `12`, sha256 `c9da6ac892c00c4a7b8ac147474e39e222d504916a215f69089da97e27386b9d`)
+
+### Revision lineage
+- version `8` at `2026-05-29T10:35:04+09:00` by `[REDACTED]`: 샘플 revision
+
+### Evidence-class claims
+- evidence_class: `CURRENT_MEASUREMENT`
+  - claim: 현재 에셋 dump에서 직접 읽은 값이다.
+  - source_ref: `ue-dump-sample`
+  - observed_at: `2026-07-29T09:00:00+09:00`
+  - artifact_sha256: `658597935154f9327d06d4317d20e26cf76a51a3b5b091ecaa20c77aa624e200`
+- evidence_class: `HISTORICAL_NOTE`
+  - claim: 과거 노트에 기록된 값이다.
+  - source_ref: `historical-row-sample`
+  - observed_at: `2026-05-29T10:35:04+09:00`
+  - artifact_sha256: `658597935154f9327d06d4317d20e26cf76a51a3b5b091ecaa20c77aa624e200`
+
+## [CONFLICT]
+- 현재 실측과 과거 노트는 자동 덮어쓰지 않는다.
+
+## [UNRESOLVED]
+- 댓글 API 미노출 여부 확인 필요
+
+## [HERMES-MERGE]
+- 샘플 케이스.md
+
+## [EVIDENCE]
+- capture method: `confluence_mcp`
+- block count: `5`
+- revision count: `1`
+- claim count: `2`
+- credential scrub markers: `1`
+- promotion status: `HOLD_HUMAN_REVIEW`

@@ -1,0 +1,13 @@
+{
+  "bytes": 1662,
+  "capture_method": "screen_recording_readonly",
+  "captured_at": "2026-07-29T09:10:00+09:00",
+  "expected_fps": 30,
+  "observations": [
+    {"caption": "이동 루프", "frame": 0},
+    {"caption": "시각적 덜컥", "frame": 1},
+    {"caption": "이동 루프 복귀", "frame": 2}
+  ],
+  "schema_version": 1,
+  "sha256": "12d6202b6ec7bf0a2e3030220bda594f8ce4fd4f9209e7cb589e9f0da23f142b"
+}

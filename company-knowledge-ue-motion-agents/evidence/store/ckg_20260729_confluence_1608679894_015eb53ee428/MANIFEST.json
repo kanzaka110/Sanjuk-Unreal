@@ -1,0 +1,26 @@
+{
+  "captured_at": "2026-07-29T09:00:00+09:00",
+  "group_bytes": 1763,
+  "group_id": "ckg_20260729_confluence_1608679894_015eb53ee428",
+  "group_sha256": "015eb53ee4286bd8ec32676b38279a40cb573b976b8a8ad658f53c31f752e299",
+  "packet_count": 1,
+  "part_count": 1,
+  "parts": [
+    {
+      "bytes": 1763,
+      "packet_id": "ckp_20260729_confluence_1608679894_015eb53ee428_p001",
+      "part_index": 1,
+      "sha256": "015eb53ee4286bd8ec32676b38279a40cb573b976b8a8ad658f53c31f752e299"
+    }
+  ],
+  "read_only": true,
+  "redaction_count": 1,
+  "schema_version": 1,
+  "source_id": "1608679894",
+  "source_kind": "confluence",
+  "source_title": "샘플 페이지",
+  "source_updated_at": "2026-05-29T10:35:04+09:00",
+  "source_url": "https://shiftupcorp.atlassian.net/wiki/spaces/SB2/pages/1608679894/example",
+  "source_version": "8",
+  "status": "PASS"
+}

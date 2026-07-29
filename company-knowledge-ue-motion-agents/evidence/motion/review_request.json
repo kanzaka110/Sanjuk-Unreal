@@ -1,0 +1,17 @@
+{
+  "anchors": [
+    {"anim_frame": 1000, "video_frame": 0},
+    {"anim_frame": 1004, "video_frame": 2}
+  ],
+  "counterarguments": [
+    "영상 덜컥이 카메라 움직임일 수 있다.",
+    "로그 clip 필드가 최종 포즈를 뜻하지 않을 수 있다."
+  ],
+  "historical_notes": [
+    {"claim": "과거에도 경계각에서 1프레임 플리커가 있었다.", "source_ref": "historical-note-fixture"}
+  ],
+  "hypothesis": {"id": "H1", "statement": "1프레임 이웃 클립 선택이 덜컥 원인이다."},
+  "missing_candidates": ["포스트 프로세스 애니메이션 블루프린트", "루트 모션 보정"],
+  "schema_version": 1,
+  "single_variable_check": {"baseline": -0.01, "candidate": -0.1, "variable": "ContinuingPoseCostBias"}
+}

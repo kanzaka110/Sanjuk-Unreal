@@ -1,0 +1,14 @@
+{
+  "confluence": {
+    "spaces": [
+      "SB2"
+    ]
+  },
+  "drive": {
+    "folder_ids": []
+  },
+  "merge_targets": [
+    "샘플 케이스.md"
+  ],
+  "schema_version": 1
+}
