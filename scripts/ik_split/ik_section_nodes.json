@@ -1,0 +1,547 @@
+{
+ "AnimGraphNode_ControlRig_4": {
+  "id": "AnimGraphNode_ControlRig_4",
+  "class": "AnimGraphNode_ControlRig",
+  "title": "컨트롤 릭",
+  "pos": [
+   4000,
+   16
+  ],
+  "pins": [
+   {
+    "id": "AD25201C49B23A7010ACB6ADCECFE7F9",
+    "name": "Source",
+    "direction": "input",
+    "type": "struct:PoseLink",
+    "default_value": "(LinkID=-1,SourceLinkID=-1)",
+    "connected_to": [
+     "AnimGraphNode_UseCachedPose_2.Pose"
+    ]
+   },
+   {
+    "id": "46BCBA504B4392DFA4603397DBCF5212",
+    "name": "Alpha",
+    "direction": "input",
+    "type": "float",
+    "default_value": "1.000000",
+    "connected_to": [
+     "K2Node_VariableGet_23.WallHandAlpha"
+    ]
+   },
+   {
+    "id": "3934DCDA448E0B0EE3EBC1A6E561269C",
+    "name": "Pose",
+    "direction": "output",
+    "type": "struct:PoseLink",
+    "connected_to": [
+     "AnimGraphNode_LayeredBoneBlend_0.BasePose"
+    ]
+   },
+   {
+    "id": "8841074B4D780B47911BFB8ED6D76EC7",
+    "name": "Weight",
+    "direction": "input",
+    "type": "double",
+    "default_value": "1.000000",
+    "connected_to": [
+     "K2Node_VariableGet_11.WHFrontBlend"
+    ]
+   },
+   {
+    "id": "A843D3B24FC68E6919B38C9671004C14",
+    "name": "LookAtLocation",
+    "direction": "input",
+    "type": "struct:Vector",
+    "default_value": "0.000000,50.000000,100.000000",
+    "connected_to": [
+     "K2Node_VariableGet_35.WallHandTarget"
+    ]
+   },
+   {
+    "id": "D402BE9143F0873B37E3C3B1084B2AF1",
+    "name": "bWallHandRight",
+    "direction": "input",
+    "type": "bool",
+    "default_value": "false",
+    "connected_to": [
+     "K2Node_VariableGet_27.bWallHandRight"
+    ]
+   },
+   {
+    "id": "715772BA479DA741DAB06EB5E1E30904",
+    "name": "WallHandSpineLean",
+    "direction": "input",
+    "type": "double",
+    "default_value": "1.000000",
+    "connected_to": [
+     "K2Node_VariableGet_25.WallHandSpineLean"
+    ]
+   },
+   {
+    "id": "6DA0ABFE4E62D53AFF463AA002BDE681",
+    "name": "bWallHandFront",
+    "direction": "input",
+    "type": "bool",
+    "default_value": "false",
+    "connected_to": [
+     "K2Node_VariableGet_29.bWallHandFront"
+    ]
+   },
+   {
+    "id": "6752B65B428A53A6D618C9A515B027BF",
+    "name": "WallHandTargetL",
+    "direction": "input",
+    "type": "struct:Vector",
+    "default_value": "0, 0, 0",
+    "connected_to": [
+     "K2Node_VariableGet_34.WallHandTargetL"
+    ]
+   },
+   {
+    "id": "2CE784F84CDCA7025738A78AED4AA88B",
+    "name": "ElbowAngle",
+    "direction": "input",
+    "type": "float",
+    "default_value": "0.0",
+    "connected_to": [
+     "K2Node_VariableGet_33.WHElbowRad"
+    ]
+   }
+  ]
+ },
+ "AnimGraphNode_LayeredBoneBlend_0": {
+  "id": "AnimGraphNode_LayeredBoneBlend_0",
+  "class": "AnimGraphNode_LayeredBoneBlend",
+  "title": "본 별로 레이어드 블렌딩",
+  "pos": [
+   4592,
+   16
+  ],
+  "pins": [
+   {
+    "id": "9594684640B38D0EBEB360AFC67965CD",
+    "name": "BasePose",
+    "direction": "input",
+    "type": "struct:PoseLink",
+    "default_value": "(LinkID=-1,SourceLinkID=-1)",
+    "connected_to": [
+     "AnimGraphNode_ControlRig_4.Pose"
+    ]
+   },
+   {
+    "id": "425A639B4D15A2BDA4767DBD2B3DD525",
+    "name": "BlendPoses_0",
+    "direction": "input",
+    "type": "struct:PoseLink",
+    "default_value": "(LinkID=-1,SourceLinkID=-1)",
+    "connected_to": [
+     "AnimGraphNode_SequencePlayer_1.Pose"
+    ]
+   },
+   {
+    "id": "5E2BA94341C3B195ABCC59A35A035B74",
+    "name": "BlendPoses_1",
+    "direction": "input",
+    "type": "struct:PoseLink",
+    "connected_to": [
+     "AnimGraphNode_SequencePlayer_2.Pose"
+    ]
+   },
+   {
+    "id": "F2600A1A48C7135E4B53CE81F049DC81",
+    "name": "BlendWeights_0",
+    "direction": "input",
+    "type": "float",
+    "default_value": "1.000000",
+    "connected_to": [
+     "K2Node_CallFunction_5.ReturnValue"
+    ]
+   },
+   {
+    "id": "5EE49DCB4876F55FC59556864E1FD966",
+    "name": "BlendWeights_1",
+    "direction": "input",
+    "type": "float",
+    "default_value": "0.0",
+    "connected_to": [
+     "K2Node_CallFunction_6.ReturnValue"
+    ]
+   },
+   {
+    "id": "3C913889487F88F5F3296385693140AB",
+    "name": "Pose",
+    "direction": "output",
+    "type": "struct:PoseLink",
+    "connected_to": [
+     "AnimGraphNode_SaveCachedPose_2.Pose"
+    ]
+   }
+  ]
+ },
+ "AnimGraphNode_SequencePlayer_1": {
+  "id": "AnimGraphNode_SequencePlayer_1",
+  "class": "AnimGraphNode_SequencePlayer",
+  "title": "PC_01_wall_hand\n시퀀스 플레이어",
+  "pos": [
+   4320,
+   64
+  ],
+  "pins": [
+   {
+    "id": "5480341042709D8A108933A1156D4058",
+    "name": "Pose",
+    "direction": "output",
+    "type": "struct:PoseLink",
+    "connected_to": [
+     "AnimGraphNode_LayeredBoneBlend_0.BlendPoses_0"
+    ]
+   }
+  ]
+ },
+ "AnimGraphNode_SequencePlayer_2": {
+  "id": "AnimGraphNode_SequencePlayer_2",
+  "class": "AnimGraphNode_SequencePlayer",
+  "title": "PC_01_wall_hand\n시퀀스 플레이어",
+  "pos": [
+   4320,
+   160
+  ],
+  "pins": [
+   {
+    "id": "5480341042709D8A108933A1156D4058",
+    "name": "Pose",
+    "direction": "output",
+    "type": "struct:PoseLink",
+    "connected_to": [
+     "AnimGraphNode_LayeredBoneBlend_0.BlendPoses_1"
+    ]
+   }
+  ]
+ },
+ "AnimGraphNode_ControlRig_11": {
+  "id": "AnimGraphNode_ControlRig_11",
+  "class": "AnimGraphNode_ControlRig",
+  "title": "컨트롤 릭",
+  "pos": [
+   4480,
+   816
+  ],
+  "pins": [
+   {
+    "id": "2DC2F82547C45095DC502F893CEA8B02",
+    "name": "Source",
+    "direction": "input",
+    "type": "struct:PoseLink",
+    "default_value": "(LinkID=-1,SourceLinkID=-1)",
+    "connected_to": [
+     "AnimGraphNode_UseCachedPose_11.Pose"
+    ]
+   },
+   {
+    "id": "FD512B6245D045D9CB147596936BF2F4",
+    "name": "Alpha",
+    "direction": "input",
+    "type": "float",
+    "default_value": "1.000000",
+    "connected_to": [
+     "K2Node_CallFunction_1.ReturnValue"
+    ]
+   },
+   {
+    "id": "934FCE904BB4ECBE383930ABE776FDD7",
+    "name": "Pose",
+    "direction": "output",
+    "type": "struct:PoseLink",
+    "connected_to": [
+     "AnimGraphNode_SaveCachedPose_6.Pose"
+    ]
+   },
+   {
+    "id": "51BA60A9492DEB268B12EE80AD0C72F3",
+    "name": "CharVelocity",
+    "direction": "input",
+    "type": "struct:Vector",
+    "default_value": "0, 0, 0",
+    "connected_to": [
+     "K2Node_CallFunction_7.ReturnValue"
+    ]
+   },
+   {
+    "id": "563AB6EC4BF5D513E28EA98B8CB742C7",
+    "name": "HandTargetL",
+    "direction": "input",
+    "type": "struct:Vector",
+    "default_value": "0, 0, 0",
+    "connected_to": [
+     "K2Node_VariableGet_12.LedgeHandWorldPredL"
+    ]
+   },
+   {
+    "id": "1408B7014F5DE115E4577194B563E4D6",
+    "name": "HandTargetR",
+    "direction": "input",
+    "type": "struct:Vector",
+    "default_value": "0, 0, 0",
+    "connected_to": [
+     "K2Node_VariableGet_19.LedgeHandWorldPredR"
+    ]
+   },
+   {
+    "id": "D3841940436A84D678EDA3A0355AD061",
+    "name": "HandPinAlphaL",
+    "direction": "input",
+    "type": "double",
+    "default_value": "0.0",
+    "connected_to": [
+     "K2Node_VariableGet_7.LedgeHandIKAlphaL"
+    ]
+   },
+   {
+    "id": "610AC9E54135EA337924489A7334D034",
+    "name": "HandPinAlphaR",
+    "direction": "input",
+    "type": "double",
+    "default_value": "0.0",
+    "connected_to": [
+     "K2Node_VariableGet_8.LedgeHandIKAlphaR"
+    ]
+   },
+   {
+    "id": "B9DD94D24264B873E22D08B70268AD9C",
+    "name": "FootTargetR",
+    "direction": "input",
+    "type": "struct:Vector",
+    "default_value": "0, 0, 0",
+    "connected_to": [
+     "K2Node_VariableGet_14.LedgeFootIdleCompR"
+    ]
+   },
+   {
+    "id": "4A26A77B44035C7BAF6126998CF22EE7",
+    "name": "FootTargetL",
+    "direction": "input",
+    "type": "struct:Vector",
+    "default_value": "0, 0, 0",
+    "connected_to": [
+     "K2Node_VariableGet_13.LedgeFootIdleCompL"
+    ]
+   },
+   {
+    "id": "6BF0997D4B0EBAF4190A30BCC2BDA55D",
+    "name": "FootAlphaL",
+    "direction": "input",
+    "type": "double",
+    "default_value": "0.0",
+    "connected_to": [
+     "K2Node_VariableGet_15.LedgeFootIKAlphaL"
+    ]
+   },
+   {
+    "id": "0EA3CE024E8500BD16B884865E892D61",
+    "name": "FootAlphaR",
+    "direction": "input",
+    "type": "double",
+    "default_value": "0.0",
+    "connected_to": [
+     "K2Node_VariableGet_16.LedgeFootIKAlphaR"
+    ]
+   },
+   {
+    "id": "12E095DE43039BF0A74C0FAD8B65350A",
+    "name": "PelvisSlopeLift",
+    "direction": "input",
+    "type": "double",
+    "default_value": "0.0",
+    "connected_to": [
+     "K2Node_VariableGet_4.LedgeSlopeDzBody"
+    ]
+   }
+  ]
+ },
+ "AnimGraphNode_ControlRig_8": {
+  "id": "AnimGraphNode_ControlRig_8",
+  "class": "AnimGraphNode_ControlRig",
+  "title": "컨트롤 릭",
+  "pos": [
+   4000,
+   1360
+  ],
+  "pins": [
+   {
+    "id": "F08F586C46ECD57E088ED28B99CE11F4",
+    "name": "Source",
+    "direction": "input",
+    "type": "struct:PoseLink",
+    "default_value": "(LinkID=-1,SourceLinkID=-1)",
+    "connected_to": [
+     "AnimGraphNode_UseCachedPose_15.Pose"
+    ]
+   },
+   {
+    "id": "9EECB4014C8C1A1E06297AA06D53465F",
+    "name": "Alpha",
+    "direction": "input",
+    "type": "float",
+    "default_value": "1.000000",
+    "connected_to": [
+     "K2Node_VariableGet_42.WRIKMasterAlpha"
+    ]
+   },
+   {
+    "id": "7658C2D144EF36E4AABEFA91B96B96F0",
+    "name": "Pose",
+    "direction": "output",
+    "type": "struct:PoseLink",
+    "connected_to": [
+     "AnimGraphNode_SaveCachedPose_7.Pose"
+    ]
+   },
+   {
+    "id": "EEAF4B854026DC4E123DE18E7702321A",
+    "name": "WallPlanePoint",
+    "direction": "input",
+    "type": "struct:Vector",
+    "default_value": "0, 0, 0",
+    "connected_to": [
+     "K2Node_VariableGet_40.WRIKPlanePointCS"
+    ]
+   },
+   {
+    "id": "825C1C5448731141E3224F8BF8E4BA2F",
+    "name": "WallNormal",
+    "direction": "input",
+    "type": "struct:Vector",
+    "default_value": "0, 0, 0",
+    "connected_to": [
+     "K2Node_VariableGet_41.WRIKNormalCS"
+    ]
+   }
+  ]
+ },
+ "AnimGraphNode_ControlRig_10": {
+  "id": "AnimGraphNode_ControlRig_10",
+  "class": "AnimGraphNode_ControlRig",
+  "title": "컨트롤 릭",
+  "pos": [
+   4032,
+   1680
+  ],
+  "pins": [
+   {
+    "id": "F9659B8346DB351213E50399B2E1425D",
+    "name": "Source",
+    "direction": "input",
+    "type": "struct:PoseLink",
+    "default_value": "(LinkID=-1,SourceLinkID=-1)",
+    "connected_to": [
+     "AnimGraphNode_UseCachedPose_9.Pose"
+    ]
+   },
+   {
+    "id": "3ADC75CE4B94B25C096413A84066F42D",
+    "name": "Alpha",
+    "direction": "input",
+    "type": "float",
+    "default_value": "1.000000",
+    "connected_to": []
+   },
+   {
+    "id": "168999B6442BE2C1549311B74059B72C",
+    "name": "Pose",
+    "direction": "output",
+    "type": "struct:PoseLink",
+    "connected_to": [
+     "AnimGraphNode_SaveCachedPose_8.Pose"
+    ]
+   },
+   {
+    "id": "7775B59F4E2F9F615153EE982F529D66",
+    "name": "LadderHandTargetL",
+    "direction": "input",
+    "type": "struct:Vector",
+    "default_value": "0, 0, 0",
+    "connected_to": [
+     "K2Node_VariableGet_44.LadderHandTargetL"
+    ]
+   },
+   {
+    "id": "07B24F5D4E04B13117BC1CAF45F7221B",
+    "name": "LadderHandTargetR",
+    "direction": "input",
+    "type": "struct:Vector",
+    "default_value": "0, 0, 0",
+    "connected_to": [
+     "K2Node_VariableGet_45.LadderHandTargetR"
+    ]
+   },
+   {
+    "id": "4CBF357349B30B3851D5EE81CF153E4E",
+    "name": "LadderFootTargetL",
+    "direction": "input",
+    "type": "struct:Vector",
+    "default_value": "0, 0, 0",
+    "connected_to": [
+     "K2Node_VariableGet_48.LadderFootTargetL"
+    ]
+   },
+   {
+    "id": "9E646EA547E190B3264AF0AC628A1AFF",
+    "name": "LadderFootTargetR",
+    "direction": "input",
+    "type": "struct:Vector",
+    "default_value": "0, 0, 0",
+    "connected_to": [
+     "K2Node_VariableGet_49.LadderFootTargetR"
+    ]
+   },
+   {
+    "id": "D431CD03498A221397032B9C126B4CB6",
+    "name": "LadderPelvisTarget",
+    "direction": "input",
+    "type": "struct:Vector",
+    "default_value": "0, 0, 0",
+    "connected_to": []
+   },
+   {
+    "id": "923554B24CC1CFF43118CC94D5844E4C",
+    "name": "LadderHandAlphaL",
+    "direction": "input",
+    "type": "float",
+    "default_value": "1.000000",
+    "connected_to": [
+     "K2Node_VariableGet_46.LadderHandAlphaL"
+    ]
+   },
+   {
+    "id": "E441B4404FB6392FDEADEE82FECB7443",
+    "name": "LadderHandAlphaR",
+    "direction": "input",
+    "type": "float",
+    "default_value": "1.000000",
+    "connected_to": [
+     "K2Node_VariableGet_47.LadderHandAlphaR"
+    ]
+   },
+   {
+    "id": "44CD5E1B4445439D95564D955C9E03C7",
+    "name": "LadderFootAlphaL",
+    "direction": "input",
+    "type": "float",
+    "default_value": "1.000000",
+    "connected_to": [
+     "K2Node_VariableGet_50.LadderFootAlphaL"
+    ]
+   },
+   {
+    "id": "39279CF841719472F9888497BCCB9B13",
+    "name": "LadderFootAlphaR",
+    "direction": "input",
+    "type": "float",
+    "default_value": "1.000000",
+    "connected_to": [
+     "K2Node_VariableGet_51.LadderFootAlphaR"
+    ]
+   }
+  ]
+ }
+}
