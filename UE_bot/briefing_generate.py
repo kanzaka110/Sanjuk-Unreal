@@ -11,7 +11,7 @@ from pathlib import Path
 from briefing_config import CATEGORIES, VALID_TAGS
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from shared_config import claude_cli
+from model_router import route_current
 
 
 def extract_json(text: str) -> dict | None:
@@ -59,7 +59,7 @@ def generate_metadata(category: str, facts: str) -> dict:
 ```
 태그는 다음 중 1~3개만: {tag_list}"""
 
-    result = claude_cli(prompt, model="haiku", timeout=120, effort="max")
+    result = route_current("METADATA", prompt)
     return extract_json(result) or {}
 
 
@@ -155,7 +155,7 @@ STEP 1~4+. 각 단계에 UE5 에디터 UI 경로 포함 (예: Edit > Project Set
 규칙: 한국어, **굵게**, `코드`, 마크다운 테이블 활용. 🆕는 1주 내 신규만.
 ⚠️ 핵심 사실에 없는 URL을 절대 만들지 말 것. 없으면 해당 섹션을 비워두세요."""
 
-    raw_body = claude_cli(prompt, model="sonnet", timeout=300, effort="max") or ""
+    raw_body = route_current("BODY_GENERATION", prompt) or ""
 
     # ⑧ 생성 후 URL 검증: 입력 facts에 없는 URL 제거
     if raw_body:

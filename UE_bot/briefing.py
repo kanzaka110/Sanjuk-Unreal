@@ -161,7 +161,7 @@ def fetch_content(
 
 # ─── 메인 로직 ────────────────────────────────────────────────────────────────
 
-def run_briefing(
+def _run_briefing(
     categories: list[str],
     *,
     force: bool = False,
@@ -302,6 +302,19 @@ def run_briefing(
 
     if failed > 0 and success == 0 and skipped == 0:
         sys.exit(1)
+
+
+def run_briefing(
+    categories: list[str],
+    *,
+    force: bool = False,
+    per_version: bool = False,
+) -> None:
+    """Run one UE briefing inside the central model-routing session."""
+    from model_router import briefing_model_session
+
+    with briefing_model_session("UE_SCHEDULED"):
+        _run_briefing(categories, force=force, per_version=per_version)
 
 
 def main() -> None:

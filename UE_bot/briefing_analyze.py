@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from shared_config import claude_cli
+from model_router import route_current
 
 
 # ─── STEP 3: Map-Reduce (데이터 절삭 해결) ────────────────────────────────────
@@ -56,7 +56,7 @@ def extract_facts(chunk: str, category: str) -> list[str]:
 
 FACT:로 시작하는 줄만 출력하세요."""
 
-    result = claude_cli(prompt, model="haiku", timeout=60)
+    result = route_current("FACT_EXTRACTION", prompt)
     if not result:
         return []
 
@@ -162,7 +162,7 @@ def analyze_trends(
 
 간결하게 불릿 포인트로 작성. 한국어로."""
 
-    result = claude_cli(prompt, model="sonnet", timeout=120)
+    result = route_current("TREND_ANALYSIS", prompt)
     return result or "(트렌드 분석 실패)"
 
 
@@ -190,5 +190,5 @@ def cross_category_analysis(all_category_facts: dict[str, str]) -> str:
 
 간결하게 불릿 포인트로 작성. 한국어로."""
 
-    result = claude_cli(prompt, model="sonnet", timeout=120)
+    result = route_current("CROSS_ANALYSIS", prompt)
     return result or ""

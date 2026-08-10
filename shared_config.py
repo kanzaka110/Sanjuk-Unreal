@@ -13,12 +13,35 @@ import logging
 import os
 import subprocess
 import sys
+from contextvars import ContextVar
 from datetime import timedelta, timezone
 from typing import NamedTuple
 
 from dotenv import load_dotenv
 
 log = logging.getLogger(__name__)
+_LAST_FAILURE_REASON: ContextVar[str] = ContextVar(
+    "ue_claude_cli_last_failure_reason", default="",
+)
+
+
+def get_last_failure_reason() -> str:
+    """Return the sanitized reason code for the current context's last call."""
+    return _LAST_FAILURE_REASON.get()
+
+
+def _classify_failure(stderr: str) -> str:
+    text = (stderr or "").lower()
+    if any(marker in text for marker in (
+        "weekly limit", "usage limit", "quota", "rate limit", "too many requests",
+    )):
+        return "quota"
+    if any(marker in text for marker in (
+        "service unavailable", "temporarily unavailable", "overloaded",
+        "model unavailable", "model is unavailable",
+    )):
+        return "unavailable"
+    return "cli_error"
 
 
 # ─── 타임존 ─────────────────────────────────────────────
@@ -96,6 +119,7 @@ def claude_cli(
     Returns:
         CLI 응답 텍스트. 실패 시 빈 문자열.
     """
+    _LAST_FAILURE_REASON.set("")
     cmd = [CLAUDE_CLI, "-p", prompt, "--model", model]
     if system_prompt:
         cmd += ["--system-prompt", system_prompt]
@@ -113,17 +137,21 @@ def claude_cli(
         )
         if result.returncode == 0 and result.stdout.strip():
             return result.stdout.strip()
+        _LAST_FAILURE_REASON.set(_classify_failure(result.stderr))
         log.warning("Claude CLI 실패: returncode=%d, stderr=%s",
                     result.returncode, result.stderr[:200] if result.stderr else "")
         return ""
     except subprocess.TimeoutExpired:
         log.warning("Claude CLI 타임아웃 (%d초)", timeout)
+        _LAST_FAILURE_REASON.set("timeout")
         return ""
     except FileNotFoundError:
         log.error("Claude CLI를 찾을 수 없습니다: %s", CLAUDE_CLI)
+        _LAST_FAILURE_REASON.set("unavailable")
         return ""
     except Exception as e:
         log.warning("Claude CLI 오류: %s", e)
+        _LAST_FAILURE_REASON.set("cli_error")
         return ""
 
 

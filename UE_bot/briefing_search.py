@@ -20,7 +20,7 @@ _UE_RELEVANCE_TERMS = frozenset({
 })
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from shared_config import claude_cli
+from model_router import route_current
 
 try:
     from ddgs import DDGS
@@ -112,7 +112,7 @@ RESULT_END
 {one_week_ago} 이후 게시된 콘텐츠 우선. 한국어+영어 모두 포함.
 검색 결과에서 확인된 실제 URL만 포함. URL을 추측하지 말 것."""
 
-    raw = claude_cli(search_prompt, model="sonnet", web_search=True, timeout=300)
+    raw = route_current("PUBLIC_RESEARCH", search_prompt, web_search=True)
     return _parse_claude_results(raw)
 
 
