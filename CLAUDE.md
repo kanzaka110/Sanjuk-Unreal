@@ -1,147 +1,60 @@
-# CLAUDE.md
+# CLAUDE.md — 코어 라우팅 (토큰 최적화 v2, 2026-08-10)
 
-## 프로젝트 개요
+UE5 애니메이션 튜토리얼/리서치 + SB2 작업 보조 리포. 상세 규칙은 상시 로딩하지 않는다 —
+아래 라우팅 표의 도메인 파일을 **해당 작업을 시작할 때 Read** 한다.
 
-UE5 애니메이션 관련 튜토리얼, 가이드, 리서치 자료 모음 리포지토리.
+## 도메인 라우팅 (작업 전 필독)
 
-## 구조
+| 작업 | 먼저 Read |
+|------|-----------|
+| UE/SB2 에디터 제어, Monolith RPC | `.claude/rules-domain/mcp-workflow.md` |
+| ABP/애니메이션 분석·튜닝·진단 | `.claude/rules-domain/ue-accuracy.md` (+`ue-domain.md`) |
+| Monolith 멀티스텝 시퀀스 | `.claude/rules-domain/monolith-macros.md` |
+| 에이전트(inspector/tuner) 위임 | `.claude/rules-domain/agent-triggers.md`, `ue-agents.md` |
+| UE C++/BP 코드 작성 | `.claude/rules-domain/ue-coding.md` |
+| UE 버전 차이, Chaos Cloth/PhysAsset 파라미터 | `.claude/rules-domain/ue-versions.md` |
+| 리포 구조, 관련 프로젝트, 리모트/GCP 세션 | `.claude/rules-domain/repo-map.md` |
 
-```
-Sanjuk-Unreal/
-├── Tutorial/                      # 튜토리얼 및 가이드 모음
-│   ├── Monolith-MCP-Tutorial/     # Monolith MCP 튜토리얼 (10편)
-│   ├── runreal-MCP-Tutorial/      # runreal MCP 튜토리얼 (12편)
-│   ├── AnimNext-Migration-Guide/  # AnimNext 마이그레이션 가이드 (13편)
-│   ├── UAF-Setup-Guide/          # UAF 셋업 가이드 (12편)
-│   ├── Chaos-Cloth-Guide/        # Chaos Cloth & Physics Asset 가이드 (10편)
-│   ├── MayaMCP-Groom-Setup/      # Maya MCP + Groom 셋업 가이드
-│   └── PC01-Hair-Workflow/       # PC_01_Hair_01 신규 제작 워크플로우 (10편, Maya→UE 자동화 포함)
-├── Briefing/                      # 데일리 브리핑 아카이브 (날짜별)
-├── UE_bot/                        # 텔레그램 봇 + 브리핑 자동화 (briefing.py v2)
-├── shared_config.py               # 봇 공통 설정 (Claude CLI, 환경변수 검증)
-├── .claude/commands/              # 커스텀 슬래시 명령어 (10개, /hermes 포함)
-├── .claude/hooks/                 # Pre/PostToolUse 훅 (MCP 점검 3개) + Stop 훅(Hermes 자동공유, .claude/settings.json)
-├── .claude/rules/                 # UE5 전용 룰 (도메인, MCP, 코딩, 매크로, 에이전트, 버전)
-├── .claude/agents/                # 프로젝트 전용 에이전트 (animbp/sim × inspector/tuner + ue-root-cause-reviewer + ta-tool-builder)
-├── migration/                     # 환경 마이그레이션 패키지 (backup/restore + snapshot)
-├── Monolith-Local-Setup-Guide.md  # Monolith 로컬 전용 설치법
-├── drone-npc100-proxy-transform-request.md # NPC_100 드론 프록시 transform 협의 요청 (프로그래밍팀 전달용)
-├── kawaii-physics-sb2-research.md # KawaiiPhysics 종합 리서치 + SB2 적용 분석/개선안
-├── UE-Animation-Tech-Report-2026.md  # UE 애니메이션 최신 기술 보고서
-├── UE5-AI-GitHub-Research-2026.md    # UE5 AI/GitHub 리서치
-└── Unreal_Briefing.md             # UE 애니메이션 데일리 브리핑 시스템
-```
+## 안전 계약 (항상 적용 — 원문은 rules-domain)
 
-### UE5 프로젝트 (별도 관리, 이 레포에 포함하지 않음)
-- **SB2** — SHIFTUP SB2 메인 프로젝트 (커스텀 UE 5.7.4)
-  - 경로: `E:\Perforce\SB2\Workspace\Internal\SB2\SB2.uproject`
-  - Monolith v0.20.3 (1230 액션 / 26 네임스페이스, 2026-07-02 measured) + UnrealClaude (포트 3000)
-- **GameAnimationSample (GASP)** — Epic 공식 MM 샘플 + DynamicAdditiveOverlay 예제
-  - 경로: `C:\Users\SHIFTUP\Documents\Unreal Projects\GameAnimationSample`
+- **SB2 크래시/차단**: `//Game/...` 이중 슬래시 인풋 = read-only 호출도 에디터 즉시 fatal crash.
+  `source.*`·`scripting python` 호출 금지(licensee 빌드 실패 확정). `monolith_discover` 전체·`getall` 100+ 금지 — 항상 targeted query.
+- **write 액션**(`create_*/add_*/remove_*/set_*/connect_*/save_asset` 등)은 **사용자 승인 전 실행 금지**. Inspector=read-only, 변경=Tuner.
+- **비가역 변경(Tier 2) 직전에만** `/evidence` 패킷 + 필요시 ue-root-cause-reviewer. Tier 0~1 일상 진단엔 검수 블록 자동 생성 금지 (`ue-accuracy.md` §0/§10).
+- 수식어 없는 **"푸시" = Evidence Packet 메모리 업로드**. git push / P4 제출은 승호가 정확히 명시한 경우에만.
+- 검증된 새 사실은 메모리 기록 + 신뢰도 태그 (✅실측 날짜 / ⚠가설·미적용 / 📄외부 / ❌폐기).
 
-## 관련 프로젝트
+## UE5 프로젝트 경로
 
-| 프로젝트 | 용도 |
-|---------|------|
-| [desktop-tutorial](https://github.com/kanzaka110/desktop-tutorial) | UE 애니메이션 데일리 브리핑 코드 (private) |
-| [Sanjuk-Claude-Code](https://github.com/kanzaka110/Sanjuk-Claude-Code) | Claude Code 플러그인 (원본 리포) |
+- SB2 (커스텀 UE 5.7.4): `E:\Perforce\SB2\Workspace\Internal\SB2\SB2.uproject`
+  — Monolith v0.20.3 (HTTP localhost:9316), UnrealClaude (localhost:3000)
+- GASP: `C:\Users\SHIFTUP\Documents\Unreal Projects\GameAnimationSample`
+- 에셋 경로는 `/Game/...` 단일 슬래시, 에디터 Copy Reference로 취득
 
-## UE5 프로젝트 환경
+## MCP / 실행 프로필
 
-- UE 프로젝트 경로: `C:\Users\ohmil\OneDrive\문서\Unreal Projects\`
-- 현재 프로젝트: SB2 (5.7.4 커스텀), GameAnimationSample (GASP)
-- Monolith 사용 시 UE 5.7 필요
+- 우선순위: **Monolith(9316) 최우선** > unrealclaude-bridge(3000) > unreal-mcp(runreal). 실패 시 `/recover`.
+- 기본 세션은 **monolith만** 연결. 다른 조합은 `scripts/claude-profiles/` 런처 사용:
+  `claude-read`(조회, MCP 없음) / `claude-code`(구현, MCP 없음) / `claude-ue`(UE MCP 3종) / `claude-review`(읽기 전용 리뷰) / `claude-full`(전체 6종: maya·confluence·context7 포함)
 
-## MCP 도구 우선순위
+## 토큰 규칙
 
-**Monolith가 최우선.** 에디터 제어가 필요한 모든 작업은 Monolith를 먼저 사용.
+- 작업 단위로 `/clear`. 대량 enumerate 금지. `get_graph_summary` 풀 dump 대신 `get_node_details`.
+- 5,000tok+ 파일은 offset/limit read. 간단 작업은 Sonnet, Opus는 복잡 분석만.
 
-### UE 직접 제어 (3개)
+## 세션 시작 확인
 
-| 우선순위 | 도구 | 포트/방식 | 용도 |
-|---------|------|----------|------|
-| 1 (메인) | **Monolith** | HTTP `localhost:9316` | 에디터 제어 전체 (v0.20.3 — 1230 액션 / 26 네임스페이스, 2026-07-02 measured) |
-| 2 (보조) | **unrealclaude-bridge** (UnrealClaude v1.4.1) | Node bridge + `localhost:3000` | UE5.7 API 문서 컨텍스트 (11개), C++ 코딩 어시스턴트 |
-| 3 (확장) | **unreal-mcp** (runreal) | `npx @runreal/unreal-mcp` | Python 스크립트 자동화, UAF 대비 |
+1. Work Brain(`H:\내 드라이브\Obsidian\Sanjuk Work Brain`): `00_START_HERE.md` → `01_WORK_RULES.md` → `02_RETRIEVAL.md` → `Areas\UE_SB2.md` 순서로 읽기
+2. `~/claude-sync/session-bridge.md` + (회사 PC) `C:/Users/SHIFTUP/.claude/shared-context/current-unreal.md`, `current-hermes-ops.md`
+   — 없으면 추측/다른 파일 대체 금지. 해당 컨텍스트에 의존하는 판단만 BLOCK, 탐색·실측은 계속.
+3. current-context/메모리는 ground truth 아님 — 실측/PIE/로그/Monolith dump/P4 상태 최종 우선.
 
-### 보조 MCP (3개)
+## Work Brain 경계
 
-| 도구 | 방식 | 용도 |
-|------|------|------|
-| **context7** | `npx @upstash/context7-mcp` | 외부 라이브러리/프레임워크 docs (UE 외부) |
-| **maya** | local Python (`C:/Dev/MayaMCP/`) | Maya 제어 (Groom 셋업) |
-| **confluence** | `npx @aashari/mcp-server-atlassian-confluence` | 회사 위키 (shiftupcorp.atlassian.net) |
+- 쓰기 허용: `Inbox\Company-Claude\`, `Projects\Company-Claude\` / 읽기 전용: `Sources\`, `Evidence\`, `Areas\`
+- 투자·건강·개인 대화·인증정보 유입 금지. 중요 컨텍스트를 CLAUDE.md 본문에 누적하지 않는다 (초안=Inbox, 확정=Projects).
 
-## 통합 작업 환경
+## 문서 규칙
 
-Claude Code 실행 위치: `C:\dev\Sanjuk-Unreal` (루트)
-
-- `.mcp.json` — MCP 서버 6개 등록 (monolith, unreal-mcp, unrealclaude-bridge, context7, maya, confluence)
-- `.claude/settings.local.json` — Claude Code 로컬 설정
-- `.gitignore` — UE5 바이너리/임시 파일 제외
-
-SB2 프로젝트는 `E:\Perforce\SB2\Workspace\Internal\SB2`에 위치.
-MCP 서버들이 절대 경로/HTTP로 설정되어 있어 루트에서 Claude Code를 실행해도 UE 제어 가능.
-
-## 리모트 세션 (모바일 접속)
-
-GCP + 로컬 PC 두 세션 동시 운영. 모바일 claude.ai/code에서 접속.
-
-| 세션 | 환경 | 용도 | PC 꺼도 접근 |
-|------|------|------|-------------|
-| Sanjuk-Unreal (Local) | 로컬 PC | 문서 + Monolith/UE 제어 | X |
-| Sanjuk-Unreal (GCP) | GCP VM (sanjuk-project) | 문서 작업 전용 | O |
-
-- GCP 레포: `/home/kanzaka110/Sanjuk-Unreal/` (SSH 시 `kanzaka110@sanjuk-project` 유저 필수, ohmil 유저로 접근 불가)
-- GCP tmux: `tmux attach -t unreal`
-- 재시작: `scripts/gcp-restart-remote.sh`
-- 로컬 시작: `scripts/local-remote-control.cmd`
-
-**동기화:** 세션 간 대화는 공유되지 않음. 세션 간 컨텍스트 동기화용 git push/pull은 승호가 명시적으로 지시한 경우에만 실행 (수식어 없는 "푸시"는 git push가 아님 — 하단 Work Brain 구간의 푸시 정의 참조).
-
-## 작업 규칙
-
-- 문서는 한국어로 작성
-- 마크다운 파일명은 소문자와 하이픈 또는 숫자 접두사 사용
-- 새 튜토리얼/가이드 추가 시 해당 폴더의 README.md 또는 00_INDEX.md 업데이트
-- UE5 프로젝트 파일(Binaries, Intermediate, Saved, DerivedDataCache)은 커밋 금지
-
-## 토큰 효율 (Max plan 한도 절약)
-
-- **작업 단위로 `/clear`** — 한 세션 안에서 큰 dump가 누적되면 매 메시지 cache_read 비대. 작업 완료 후 새 세션
-- **대량 enumerate 자제** — Monolith `getall AnimInstance` (100+ entries), `monolith_discover()` 전체 등은 컨텍스트 폭발. 필요 부분만 query
-- **MCP 응답 필터링** — `get_graph_summary` (195 노드 풀 dump) 대신 `get_node_details` 로 노드 ID 명시 조회
-- **거대 메모리 Read 시 offset/limit** — 5,000 tok 이상 파일은 offset 지정으로 부분 read
-- **간단 작업은 Sonnet** — `/model claude-sonnet-4-6` 또는 명시. Opus는 복잡한 분석/그래프 작업만
-
-## 세션 시작 시 필수 확인
-- `~/claude-sync/session-bridge.md` 를 읽어서 다른 세션의 최근 작업을 파악할 것
-- (회사 PC 한정) `C:/Users/SHIFTUP/.claude/shared-context/current-unreal.md` + `current-hermes-ops.md` 를 읽어 UE/SB2 작업 전제·Hermes 운영 컨텍스트 반영. 파일 없으면 멈추고 사용자 확인 (추측으로 다른 파일 대체 금지)
-- current-context는 최신 컨텍스트일 뿐 ground truth 아님 — UE/SB2는 실측/PIE/로그/Monolith dump 최종 우선
-- 관련 메모리에 최신 digest 충돌/stale 항목이 있으면 최신 ground truth 우선
-
-<!-- SANJUK-WORK-BRAIN:START -->
-## 회사 PC Work Brain
-
-- Work Brain: H:\내 드라이브\Obsidian\Sanjuk Work Brain
-- 운영 정본: H:\내 드라이브\Claude\Sanjuk-Unreal
-- 시작 시 Work Brain의 00_START_HERE.md, 01_WORK_RULES.md,
-  02_RETRIEVAL.md, Areas\UE_SB2.md를 순서대로 읽는다.
-- 그다음 기존 CLAUDE.md가 요구하는 session-bridge와
-  shared-context를 읽는다.
-- 기존 필수 context가 없으면 내용을 추측하거나 다른 파일로
-  위장 대체하지 않는다. 해당 context에 의존하는 판단만 BLOCK하고,
-  Work Brain 탐색과 실제 UE 실측은 계속할 수 있다.
-- Work Brain 쓰기 허용:
-  Inbox\Company-Claude\, Projects\Company-Claude\
-- Work Brain 읽기 전용:
-  Sources\, Evidence\, Areas\
-- Work Brain은 탐색·교정 계층이며 실제 UE 에디터, 에셋, 로그,
-  Monolith dump, P4 상태가 최종 ground truth다.
-- 아무 수식어 없는 "푸시"는 Evidence Packet 메모리 업로드다.
-  git push와 P4 제출은 승호가 정확히 명시한 경우에만 실행한다.
-- 중요 컨텍스트를 CLAUDE.md 본문에 계속 누적하지 않는다.
-  초안은 Inbox\Company-Claude\, 확정 정리는
-  Projects\Company-Claude\에 기록한다.
-- 투자·건강·개인 대화와 인증정보를 Work Brain에 유입하지 않는다.
-<!-- SANJUK-WORK-BRAIN:END -->
+한국어 작성. 파일명은 소문자-하이픈 또는 숫자 접두사. 가이드 추가 시 해당 폴더 README/00_INDEX 갱신.
+UE Binaries/Intermediate/Saved/DerivedDataCache 커밋 금지.
