@@ -16,40 +16,27 @@ for path in (str(UE_BOT), str(ROOT)):
 import model_router as router
 
 
-def test_success_uses_policy_and_writes_sanitized_lineage(tmp_path):
+def test_success_uses_provider_policy_and_writes_sanitized_v2_lineage(tmp_path):
     calls = []
 
     def fake(prompt, **kwargs):
         calls.append((prompt, kwargs))
         return "ok"
 
-    lineage = tmp_path / "usage.jsonl"
+    lineage = tmp_path / "usage-v2.jsonl"
     with router.briefing_model_session("UE_SCHEDULED", lineage_path=lineage, run_id="run-1"):
-        assert router.route_current("PUBLIC_RESEARCH", "secret prompt", _executor=fake) == "ok"
+        assert router.route_current("PUBLIC_RESEARCH", "public Epic UE release notes", _executor=fake) == "ok"
 
-    assert calls[0][1]["model"] == "sonnet"
+    assert calls[0][1]["provider"] == "perplexity"
+    assert calls[0][1]["authority"] == "public_evidence"
     record = json.loads(lineage.read_text(encoding="utf-8"))
+    assert record["schema_version"] == 2
     assert record["policy_version"] == router.POLICY_VERSION
     assert record["stage"] == "PUBLIC_RESEARCH"
-    assert record["outcome"] == "success"
-    assert "secret prompt" not in lineage.read_text(encoding="utf-8")
+    assert "public Epic UE release notes" not in lineage.read_text(encoding="utf-8")
 
 
-def test_quota_allows_exactly_one_declared_fallback(tmp_path, monkeypatch):
-    models = []
-
-    def fake(_prompt, **kwargs):
-        models.append(kwargs["model"])
-        return "" if len(models) == 1 else "fallback-ok"
-
-    monkeypatch.setattr(router, "get_last_failure_reason", lambda: "quota")
-    with router.briefing_model_session("UE_SCHEDULED", lineage_path=tmp_path / "usage.jsonl"):
-        assert router.route_current("BODY_GENERATION", "p", _executor=fake) == "fallback-ok"
-
-    assert models == ["sonnet", "haiku"]
-
-
-def test_non_quota_failure_is_fail_closed_without_fallback(tmp_path, monkeypatch):
+def test_provider_failure_is_fail_closed_without_fallback(tmp_path):
     calls = 0
 
     def fake(_prompt, **_kwargs):
@@ -57,11 +44,25 @@ def test_non_quota_failure_is_fail_closed_without_fallback(tmp_path, monkeypatch
         calls += 1
         return ""
 
-    monkeypatch.setattr(router, "get_last_failure_reason", lambda: "timeout")
-    with router.briefing_model_session("UE_SCHEDULED", lineage_path=tmp_path / "usage.jsonl"):
-        with pytest.raises(router.RoutingRefusal, match="timeout"):
-            router.route_current("FACT_EXTRACTION", "p", _executor=fake)
+    with router.briefing_model_session("UE_SCHEDULED", lineage_path=tmp_path / "usage-v2.jsonl"):
+        with pytest.raises(router.RoutingRefusal, match="provider_call_failed"):
+            router.route_current("BODY_GENERATION", "public technical facts", _executor=fake)
     assert calls == 1
+    assert router.POLICY["stages"]["BODY_GENERATION"]["fallback"] is None
+
+
+def test_sensitive_public_input_refuses_before_spawn(tmp_path):
+    calls = 0
+
+    def fake(_prompt, **_kwargs):
+        nonlocal calls
+        calls += 1
+        return "ok"
+
+    with router.briefing_model_session("UE_SCHEDULED", lineage_path=tmp_path / "usage-v2.jsonl"):
+        with pytest.raises(router.RoutingRefusal, match="sensitive_public_payload"):
+            router.route_current("PUBLIC_RESEARCH", "read the Perforce project path", _executor=fake)
+    assert calls == 0
 
 
 def test_stage_cap_refuses_before_extra_spawn(tmp_path, monkeypatch):
@@ -75,8 +76,13 @@ def test_stage_cap_refuses_before_extra_spawn(tmp_path, monkeypatch):
         calls += 1
         return "ok"
 
-    with router.briefing_model_session("UE_SCHEDULED", lineage_path=tmp_path / "usage.jsonl"):
-        assert router.route_current("PUBLIC_RESEARCH", "one", _executor=fake) == "ok"
+    with router.briefing_model_session("UE_SCHEDULED", lineage_path=tmp_path / "usage-v2.jsonl"):
+        assert router.route_current("PUBLIC_RESEARCH", "public one", _executor=fake) == "ok"
         with pytest.raises(router.RoutingRefusal, match="stage_cap_exceeded"):
-            router.route_current("PUBLIC_RESEARCH", "two", _executor=fake)
+            router.route_current("PUBLIC_RESEARCH", "public two", _executor=fake)
     assert calls == 1
+
+
+def test_grok_provider_flag_has_explicit_value():
+    source = (UE_BOT / "briefing_grok_cli.py").read_text(encoding="utf-8")
+    assert '"--provider",\n        _PROVIDER,\n        "-m",' in source
