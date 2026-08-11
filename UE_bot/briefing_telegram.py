@@ -17,10 +17,10 @@ def send_telegram(
     bot_token: str,
     chat_id: str,
     notion_db_id: str,
-) -> None:
+) -> dict[str, object]:
     """브리핑 결과를 텔레그램으로 전송."""
     if not bot_token or not chat_id:
-        return
+        return {"success": False, "reason_code": "telegram_config_missing", "attempts": 0}
 
     today = date.today().strftime("%Y.%m.%d")
     msg = f"🎮 언리얼 튜토리얼 가이드 비서\n{today} 업데이트\n\n"
@@ -58,9 +58,18 @@ def send_telegram(
     }
     try:
         res = requests.post(api_url, json=payload, timeout=30)
-        if res.status_code == 200:
+        api_ok = True
+        try:
+            body = res.json()
+            api_ok = not isinstance(body, dict) or body.get("ok") is not False
+        except Exception:
+            api_ok = True
+        if res.status_code == 200 and api_ok:
             print("  ✅ 텔레그램 전송 완료")
+            return {"success": True, "reason_code": "", "attempts": 1}
         else:
             print(f"  ⚠️ 텔레그램 전송 실패: {res.status_code}")
-    except Exception as e:
-        print(f"  ⚠️ 텔레그램 전송 오류: {e}")
+            return {"success": False, "reason_code": "telegram_http_failed", "attempts": 1}
+    except Exception as exc:
+        print(f"  ⚠️ 텔레그램 전송 오류: {type(exc).__name__}")
+        return {"success": False, "reason_code": "telegram_transport_failed", "attempts": 1}

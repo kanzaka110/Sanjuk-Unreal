@@ -4,7 +4,7 @@ from pathlib import Path
 def test_unreal_router_v2_has_provider_specific_public_roles_and_external_state():
     from UE_bot import model_router
 
-    assert model_router.POLICY_VERSION == "unreal-briefing-model-router.v2"
+    assert model_router.POLICY_VERSION == "unreal-briefing-model-router.v3"
     expected = {
         "PUBLIC_RESEARCH": ("perplexity", "public_evidence"),
         "FACT_EXTRACTION": ("codex", "public_editorial"),

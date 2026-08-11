@@ -187,16 +187,3 @@ def _validate_urls(body: str, facts: str) -> str:
 
     print(f"  🔍 URL 검증: {len(hallucinated)}개 환각 URL 제거")
     return cleaned
-
-
-def make_fallback(category: str, facts: str) -> dict:
-    """생성 실패 시 폴백 데이터."""
-    return {
-        "제목": f"{category} 브리핑 — {date.today().strftime('%Y.%m.%d')}",
-        "요약": facts[:600].strip(),
-        "소스_링크": "https://dev.epicgames.com/documentation/ko-kr/unreal-engine",
-        "난이도": "중급",
-        "UE_버전": "5.8",
-        "태그": [],
-        "새_정보_여부": False,
-    }

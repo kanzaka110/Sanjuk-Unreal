@@ -48,7 +48,7 @@ from notion_client import Client
 from briefing_config import CATEGORIES, UE_VERSIONS
 from briefing_search import search_with_retry, results_to_text, pick_source_link
 from briefing_analyze import map_reduce_extract, analyze_trends, cross_category_analysis
-from briefing_generate import generate_metadata, generate_body, make_fallback
+from briefing_generate import generate_metadata, generate_body
 from briefing_notion import (
     already_briefed_today, get_existing_summaries,
     is_content_duplicate, remove_new_badges, upload_to_notion,
@@ -71,6 +71,7 @@ def fetch_content(
     target_version: str | None = None,
     previous_summaries: list[dict] | None = None,
     force: bool = False,
+    natural_scheduled: bool = False,
 ) -> dict | None:
     """5 STEP 파이프라인으로 콘텐츠 수집 → 분석 → 생성."""
     ver_label = f" (UE {target_version})" if target_version else ""
@@ -84,6 +85,8 @@ def fetch_content(
             return {}
 
         raw_text = results_to_text(results)
+        if natural_scheduled:
+            raw_text = raw_text[:5000]
         print(f"  📄 수집 완료 ({len(raw_text)}자, {len(results)}건)")
 
         # ── STEP 3: Map-Reduce 핵심사실 추출 ──
@@ -134,13 +137,12 @@ def fetch_content(
         )
         print(f"  📝 본문 생성 ({len(body_markdown)}자)")
 
-        # ── 소스 링크 선택: LLM이 고른 링크가 실제 검색 결과에 있으면 사용,
-        #    아니면 신뢰도 최상위 실제 URL, 그것도 없으면 일반 폴백 ──
+        # ── 소스 링크 선택: 검증된 검색 결과만 허용; synthetic fallback 금지 ──
         source_link = pick_source_link(meta.get("소스_링크", ""), results)
         if not source_link:
-            source_link = "https://dev.epicgames.com/documentation/ko-kr/unreal-engine"
-        else:
-            print(f"  🔗 소스 링크: {source_link}")
+            print(f"  ℹ️ {category}: 검증 가능한 소스 링크 없음")
+            return {}
+        print(f"  🔗 소스 링크: {source_link}")
 
         return {
             "제목": meta.get("제목", f"{category} 브리핑 — {date.today().strftime('%Y.%m.%d')}"),
@@ -166,6 +168,7 @@ def _run_briefing(
     *,
     force: bool = False,
     per_version: bool = False,
+    natural_scheduled: bool = False,
 ) -> None:
     """지정된 카테고리 목록에 대해 브리핑을 실행."""
     if not NOTION_API_KEY:
@@ -224,6 +227,7 @@ def _run_briefing(
                 target_version=version,
                 previous_summaries=existing_summaries,
                 force=force,
+                natural_scheduled=natural_scheduled,
             )
             if data is not None:
                 break
@@ -293,12 +297,16 @@ def _run_briefing(
     print(f"📌 Notion: https://www.notion.so/{NOTION_DATABASE_ID.replace('-', '')}")
     print(f"{'='*60}\n")
 
-    send_telegram(
+    delivery = send_telegram(
         telegram_results,
         bot_token=TELEGRAM_BOT_TOKEN,
         chat_id=TELEGRAM_CHAT_ID,
         notion_db_id=NOTION_DATABASE_ID,
     )
+    from model_router import record_delivery
+    record_delivery(**delivery)
+    if not delivery["success"]:
+        raise RuntimeError(str(delivery["reason_code"]))
 
     if failed > 0 and success == 0 and skipped == 0:
         sys.exit(1)
@@ -309,12 +317,16 @@ def run_briefing(
     *,
     force: bool = False,
     per_version: bool = False,
+    natural_scheduled: bool = False,
 ) -> None:
     """Run one UE briefing inside the central model-routing session."""
     from model_router import briefing_model_session
 
-    with briefing_model_session("UE_SCHEDULED"):
-        _run_briefing(categories, force=force, per_version=per_version)
+    with briefing_model_session("UE_SCHEDULED", natural_default=natural_scheduled):
+        _run_briefing(
+            categories, force=force, per_version=per_version,
+            natural_scheduled=natural_scheduled,
+        )
 
 
 def main() -> None:
@@ -339,7 +351,14 @@ def main() -> None:
         random.seed(date.today().toordinal())
         targets = random.sample(CATEGORIES, min(args.count, len(CATEGORIES)))
 
-    run_briefing(targets, force=args.force, per_version=args.per_version)
+    natural_scheduled = (
+        not args.all and not args.category and args.count == 3
+        and not args.force and not args.per_version
+    )
+    run_briefing(
+        targets, force=args.force, per_version=args.per_version,
+        natural_scheduled=natural_scheduled,
+    )
 
 
 if __name__ == "__main__":
