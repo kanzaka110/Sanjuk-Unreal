@@ -1,0 +1,19 @@
+{
+  "name": "sanjuk-unreal",
+  "owner": {
+    "name": "kanzaka110",
+    "email": "kanzaka110@shiftup.co.kr"
+  },
+  "metadata": {
+    "description": "Sanjuk-Unreal 리포 내장 마켓플레이스 — SB2 UE5 애니메이션 TA 자산",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "sanjuk-ue",
+      "description": "SB2 애니메이션 TA 워크플로 — 진단·튜닝 에이전트 6종 + 슬래시 커맨드 17종",
+      "source": "./sanjuk-ue-plugin",
+      "strict": false
+    }
+  ]
+}

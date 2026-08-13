@@ -1,0 +1,19 @@
+{
+  "name": "sanjuk-ue",
+  "version": "1.0.0",
+  "description": "SB2(UE5 커스텀 5.7.4) 애니메이션 TA 워크플로 — AnimBP/Simulation 진단·튜닝 에이전트, Monolith 기반 진단 커맨드, Hermes/Evidence 동기화 커맨드 묶음",
+  "author": {
+    "name": "kanzaka110",
+    "email": "kanzaka110@shiftup.co.kr"
+  },
+  "license": "UNLICENSED",
+  "keywords": [
+    "unreal-engine",
+    "animation",
+    "sb2",
+    "monolith",
+    "animbp",
+    "groom",
+    "chaos-cloth"
+  ]
+}
