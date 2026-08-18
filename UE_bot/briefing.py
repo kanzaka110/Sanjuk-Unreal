@@ -53,14 +53,14 @@ from briefing_notion import (
     already_briefed_today, get_existing_summaries,
     is_content_duplicate, remove_new_badges, upload_to_notion,
 )
-from briefing_telegram import send_telegram
+from briefing_slack import send_briefing
 
 # ─── 설정 ─────────────────────────────────────────────────────────────────────
 
 NOTION_DATABASE_ID = os.getenv("NOTION_DATABASE_ID", "4fd756cb968d4439b9e80bbc69184a57")
 NOTION_API_KEY = os.getenv("NOTION_API_KEY", "")
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
+SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN", "")
+SLACK_CHANNEL = os.getenv("UE_BRIEFING_SLACK_CHANNEL", "언리얼-브리핑")
 
 
 # ─── 콘텐츠 파이프라인 ────────────────────────────────────────────────────────
@@ -202,7 +202,7 @@ def _run_briefing(
     print(f"  → {len(existing_summaries)}개 기존 요약 로드 완료\n")
 
     success, skipped, failed = 0, 0, 0
-    telegram_results: list[dict] = []
+    briefing_results: list[dict] = []
     all_category_facts: dict[str, str] = {}
 
     # ── Phase A: 전체 카테고리 검색 + 사실 추출 ──
@@ -278,7 +278,7 @@ def _run_briefing(
 
         if upload_to_notion(notion_client, NOTION_DATABASE_ID, data):
             success += 1
-            telegram_results.append({
+            briefing_results.append({
                 "category": category,
                 "title": data.get("제목", "").replace("🆕 ", ""),
                 "difficulty": data.get("난이도", ""),
@@ -297,11 +297,11 @@ def _run_briefing(
     print(f"📌 Notion: https://www.notion.so/{NOTION_DATABASE_ID.replace('-', '')}")
     print(f"{'='*60}\n")
 
-    delivery = send_telegram(
-        telegram_results,
-        bot_token=TELEGRAM_BOT_TOKEN,
-        chat_id=TELEGRAM_CHAT_ID,
+    delivery = send_briefing(
+        briefing_results,
+        channel=SLACK_CHANNEL,
         notion_db_id=NOTION_DATABASE_ID,
+        token=SLACK_BOT_TOKEN,
     )
     from model_router import record_delivery
     record_delivery(**delivery)
