@@ -64,3 +64,6 @@ perf_monitor/__pycache__/
 
 # transcript-vault Tier1 암호문 백업 (git 추적 금지 — 로컬 정본 C:\Users\SHIFTUP\.claude\transcript-vault)
 /.transcript-vault-backup/
+
+# UE_bot 런타임 데이터(로그/DB)
+UE_bot/data/

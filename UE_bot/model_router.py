@@ -27,8 +27,8 @@ POLICY = {
     "stages": {
         "PUBLIC_RESEARCH": {"provider": "perplexity", "role": "public_evidence", "model": "sonar-search", "authority": "public_evidence", "timeout": 20, "max_calls": 6, "fallback": None},
         "FACT_EXTRACTION": {"provider": "codex", "role": "technical_extract", "model": "gpt-5.6-sol", "authority": "public_editorial", "timeout": 300, "max_calls": 16, "fallback": None},
-        "TREND_ANALYSIS": {"provider": "grok", "role": "public_trend", "model": "grok-build-0.1", "authority": "public_analysis", "timeout": 180, "max_calls": 6, "fallback": None},
-        "CROSS_ANALYSIS": {"provider": "grok", "role": "public_cross_analysis", "model": "grok-build-0.1", "authority": "public_analysis", "timeout": 180, "max_calls": 2, "fallback": None},
+        "TREND_ANALYSIS": {"provider": "grok", "role": "public_trend", "model": "grok-4.6", "authority": "public_analysis", "timeout": 180, "max_calls": 6, "fallback": None},
+        "CROSS_ANALYSIS": {"provider": "grok", "role": "public_cross_analysis", "model": "grok-4.6", "authority": "public_analysis", "timeout": 180, "max_calls": 2, "fallback": None},
         "METADATA": {"provider": "codex", "role": "structured_metadata", "model": "gpt-5.6-sol", "authority": "public_editorial", "timeout": 300, "max_calls": 6, "fallback": None},
         "BODY_GENERATION": {"provider": "codex", "role": "technical_editorial", "model": "gpt-5.6-sol", "authority": "public_editorial", "timeout": 300, "max_calls": 6, "fallback": None},
     },

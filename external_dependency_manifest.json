@@ -7,7 +7,7 @@
       "reviewed_commit": "3c27eb6234bf91b8ceee9e9071591b31e9b148cb",
       "license": "MIT",
       "adapter": "UE_bot/briefing_grok_cli.py",
-      "model": "xai-oauth/grok-build-0.1",
+      "model": "xai-oauth/grok-4.6",
       "authority": "public_analysis"
     },
     "openai_codex_cli": {

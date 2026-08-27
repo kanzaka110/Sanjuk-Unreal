@@ -114,7 +114,7 @@ def ask_claude(chat_id: int, user_message: str) -> str:
 
         assistant_msg = claude_cli(
             prompt,
-            model="sonnet",
+            model="claude-sonnet-5",
             system_prompt=SYSTEM_PROMPT,
             web_search=is_ue,
             timeout=60,
