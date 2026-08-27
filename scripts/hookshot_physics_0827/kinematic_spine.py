@@ -19,11 +19,11 @@ KIN = ("(MovementType=Kinematic,CollisionType=QueryAndPhysics,GravityMultiplier=
        "bEnableGravityMultiplier=True,bEnablePhysicsBlendWeight=True,bEnableKinematicTargetSpace=True,"
        "bEnablebUpdateKinematicFromSimulation=True)")
 
-VALUE = "({0},{1},{2})".format(
+VALUE = [
     '(Name="LegLeft",Data=%s)' % KIN,
     '(Name="LegRight",Data=%s)' % KIN,
     '(Name="Spine",Data=%s)' % KIN,
-)
+]
 
 
 def call(args, timeout=120):
